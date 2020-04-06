@@ -1,0 +1,9 @@
+{
+  "terms": {
+    "a": "a",
+    "b": "b"
+  },
+  "nonTerms": ["S","A","B"],
+  "productions": [{"S": "a"},{"S": "A"},{"A": ["A","B"]},{"B": "b"}],
+  "start": "S"
+}

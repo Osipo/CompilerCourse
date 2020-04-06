@@ -1,0 +1,66 @@
+plugins {
+    id 'java'
+    id 'application'
+    id "org.springframework.boot" version "2.1.7.RELEASE"
+    id "io.spring.dependency-management" version "1.0.8.RELEASE"
+}
+
+group 'ru.osipov.labs'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+mainClassName = 'ru.osipov.labs.lab2.Main'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+repositories {
+    mavenCentral()
+}
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+build.mustRunAfter clean
+task stage(dependsOn: ['build', 'clean'])
+
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from(configurations.compile)
+}
+
+stage.dependsOn(copyToLib)
+
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-dependencies:2.1.7.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version: '2.1.8.RELEASE', ext: 'pom'
+}
+test{
+    useJUnitPlatform()
+}
+jar {
+    manifest {
+        attributes('Implementation-Title': 'CompilerCourse: Gradle Jar File ',
+                'Implementation-Version': '1.0.0',
+                'Main-Class':  "ru.osipov.labs.lab2.Main")
+    }
+    archiveFileName = "${project.name}.jar"
+    enabled = true
+    apply plugin: 'org.springframework.boot'
+}
+bootJar {
+    archiveFileName = "${project.name}.jar"
+}

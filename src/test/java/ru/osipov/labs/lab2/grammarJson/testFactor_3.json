@@ -1,0 +1,12 @@
+{
+  "terms": {
+    "a": "a",
+    "b": "b",
+    "c": "c",
+    "d": "d",
+    "eps": null
+  },
+  "nonTerms": ["S"],
+  "productions": [{"S": "a"},{"S": ["a","b"]},{"S": ["a","b","c"]},{"S": ["a","b","c","d"]}],
+  "start": "S"
+}

@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Implementation-Title: CompilerCourse: Gradle Jar File 
+Implementation-Version: 1.0.0
+Main-Class: ru.osipov.labs.lab2.Main
+
