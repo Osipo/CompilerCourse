@@ -91,15 +91,16 @@ public class Main implements CommandLineRunner {
 //            }
 //            System.out.println("Grammar without rules A -> B (A,B are non-terminals)");
 //            System.out.println(G.getNonCycledGrammar());
-            Grammar G_r = Grammar.deleteLeftRecursion(G);//Grammar.deleteLeftRecursion(G);
+            Grammar G_r = Grammar.deleteLeftRecursion(G);
             System.out.println(G_r);
             System.out.println("Remove preffixes");
             Grammar G_rd = G_r.deleteLeftFactor();
             System.out.println(G_rd);
             System.out.println("end");
-//            System.out.println("Delete loops A -> B");
-//            System.out.println(G_rd.getNonCycledGrammar().getGrammarWithoutEqualRules());
-//
+
+            System.out.println("Delete loops A -> B");
+            System.out.println(G_rd.getNonCycledGrammar().getGrammarWithoutEqualRules());
+
 //
 //            Grammar G_rde = G_rd.getNonCycledGrammar().getGrammarWithoutEqualRules();
         }

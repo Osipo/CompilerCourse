@@ -564,7 +564,15 @@ public class Grammar {
         for(String p : ps){
             if(p.equals(n))
                 continue;
-            Set<GrammarString> r2 = P.get(p);
+            Set<GrammarString> r2 = new HashSet(P.get(p));
+//            GrammarString empty = null;
+//            for(GrammarString e : r2){
+//                if(e.getSymbols().get(0).getVal().equals(this.E)) {
+//                    empty = e;
+//                    break;
+//                }
+//            }
+//            r2.remove(empty);//do not include empty as it was generated on left-factorising...
             if(r1.equals(r2))
                 altNames.add(p);
         }
@@ -574,30 +582,57 @@ public class Grammar {
     public Grammar getGrammarWithoutEqualRules(){
         Map<String,Set<GrammarString>> newP = new HashMap<>();
         Set<String> NN = new HashSet<>();
-        Set<String> ps = P.keySet();
-        for(String p : ps){
-            Set<GrammarString> ns = new HashSet<>();
-            Set<GrammarString> alts = P.get(p);
-            for(GrammarString rule : alts){
-                GrammarString nrule = new GrammarString();
-                for(GrammarSymbol sym : rule.getSymbols()){
-                    GrammarSymbol nsym = new GrammarSymbol(sym.getType(),sym.getVal());
-                    if(sym.getType() == 'n'){
-                        List<String> eNames = equalRules(sym.getVal());
-                        if(eNames.size() > 1){
-                            eNames.remove(sym.getVal());
-                            eNames.sort((x,y)->{if(x.length() > y.length()) return 1; else if(x.length() < y.length()) return -1; else return 0;});
-                            nsym = new GrammarSymbol(sym.getType(),eNames.get(0));
-                        }
-                        NN.add(nsym.getVal());
+        Set<String> ps = P.keySet().stream().sorted((x,y) -> {
+            return Integer.compare(y.length(), x.length());}).collect(Collectors.toSet());
+        Map<String,String> names = new HashMap<>();
+        ArrayList<String> mapped = new ArrayList<>();
+        for(String p : ps) {
+            List<String> l = equalRules(p);
+            if(l.size() > 0){
+                String s = l.stream().sorted((x,y) -> {
+                    return Integer.compare(x.length(), y.length());
+                }).collect(Collectors.toList()).get(0);
+                System.out.println(p+": "+l+"  "+s);
+                if(!mapped.contains(p)){
+                    for(String alts : l){
+                        names.put(alts,s);
+                        mapped.add(alts);
                     }
-                    nrule.addSymbol(nsym);
+                    names.put(p,s);
+                    mapped.add(p);
                 }
-                ns.add(nrule);
             }
-            newP.put(p,ns);
+            else {
+                names.put(p, p);
+                mapped.add(p);
+            }
         }
-        return new Grammar(T,NN,newP,this.S,this.E,lex_rules).deleteUselessSymbols();
+        String start = null;
+        for(String k : names.keySet()){
+            NN.add(names.get(k));
+            if(k.equals(this.S))
+                start = names.get(k);
+        }
+        System.out.println(NN);
+        System.out.println(start);
+        for(String prod : NN){
+            Set<GrammarString> alts = P.get(prod);
+            Set<GrammarString> nalts = new HashSet<>();
+            for(GrammarString b : alts){
+                GrammarString nb = new GrammarString();
+                for(GrammarSymbol s : b.getSymbols()){
+                    GrammarSymbol ns = null;
+                    if(s.getType() == 't')
+                         ns = new GrammarSymbol(s.getType(),s.getVal());
+                    else
+                        ns = new GrammarSymbol(s.getType(),names.get(s.getVal()));
+                    nb.addSymbol(ns);
+                }
+                nalts.add(nb);
+            }
+            newP.put(prod,nalts);
+        }
+        return new Grammar(T,NN,newP,start,this.E,lex_rules).deleteUselessSymbols();
     }
 
     public static Grammar getChomskyGrammar(Grammar G){
@@ -664,7 +699,7 @@ public class Grammar {
     public static Grammar deleteLeftRecursion(Grammar G){
         G = G.deleteUselessSymbols();
         G = G.getNonEmptyWordsGrammar();
-        G = G.getNonCycledGrammar();
+        //G = G.getNonCycledGrammar();
         G = G.getIndexedGrammar();
         int n = G.getNonTerminals().size();
         Map<String,Set<GrammarString>> newP = new HashMap<>();
@@ -1010,11 +1045,11 @@ public class Grammar {
             HashSet<String> NT = new HashSet<>(this.T);
             NT.add(this.E);
             NN.addAll(N);
-          return new Grammar(NT,NN,newP,this.S,this.E,lex_rules);
-           // return new Grammar(NT,NN,newP,this.S,this.E,lex_rules).getNonCycledGrammar().getGrammarWithoutEqualRules();
+          //return new Grammar(NT,NN,newP,this.S,this.E,lex_rules);
+            return new Grammar(NT,NN,newP,this.S,this.E,lex_rules).getNonCycledGrammar().getGrammarWithoutEqualRules();
         }
         NN.addAll(N);
-        return new Grammar(this.T,NN,newP,this.S,this.E,lex_rules);//.getNonCycledGrammar().getGrammarWithoutEqualRules();
+        return new Grammar(this.T,NN,newP,this.S,this.E,lex_rules).getNonCycledGrammar().getGrammarWithoutEqualRules();
     }
 
     private int commonMinLength(Set<GrammarString> prod){

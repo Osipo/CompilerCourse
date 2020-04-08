@@ -128,33 +128,23 @@ public class DFA extends Graph {
             n = mapped.get(s.getName());
             count.setV1(Integer.parseInt(n.getName().substring(0,n.getName().length() - 1)));
         }
-//        List<String> prg = group.stream().map(Vertex::getName).filter(mapped::containsKey).collect(Collectors.toList());
-//        if(prg.size() > 0){
-//            n = mapped.get(prg.get(0));
-//            count.setV1(Integer.parseInt(n.getName().substring(0,n.getName().length() - 1)));
-//        }
         if(group.stream().anyMatch(Vertex::isStart)){
             this.start = n;
-            System.out.println("Start_"+s.getName());
             n.setStart(true);
         }
         if(group.stream().anyMatch(Vertex::isDead)){
-            System.out.println("Dead_"+s.getName());
             this.dead = n;
             n.setDead(true);
         }
         if(group.stream().anyMatch(Vertex::isFinish)){
-            System.out.println("Finish_"+s.getName());
             this.finished.add(n);
             n.setFinish(true);
         }
         List<Pair<Vertex,Character>> l = oldTran.keySet().stream().filter(x -> x.getV1().equals(s)).sorted(Comparator.comparing(Pair::getV2)).collect(Collectors.toList());
-        //System.out.println(s.getName()+" : "+l.size());
         for(Vertex s_i : group)
             mapped.put(s_i.getName(),n);
         for(Pair<Vertex,Character> k : l){
             Vertex t = oldTran.get(k);
-            //System.out.println("From "+s.getName()+" to "+t.getName());
             if(group.contains(t)) {
                 Edge tran = new Edge(n, n, k.getV2());//loop to the same state if it has the same group.
                 tranTable.put(new Pair<>(n,k.getV2()),n);//update new tran_table.
@@ -194,29 +184,23 @@ public class DFA extends Graph {
             queue.add(new Pair<Set<Vertex>, Character>(NF,c));
         }
         while(!queue.isEmpty()){
-            System.out.println(P);
             Pair<Set<Vertex>,Character> p = queue.front(); // pair <C, a>
             queue.dequeue();
             involved = new HashMap<>();
-            //inverse = new HashSet<>();
 
-            //Compute inverse.
+            //Compute involved..
             for(Vertex q : p.getV1()){// for q in C and r in Q such tran(r,a) in C
                 List<Pair<Vertex,Character>> keys = table.keySet().stream().filter(x -> x.getV2() == p.getV2()).collect(Collectors.toList());
                 for(Pair<Vertex,Character> k : keys) {
                     if (q.equals(table.get(k))) {//if q = tran(r,a)
                         Vertex r = k.getV1();
-                        System.out.println(r.getName());
                         int i = clz.get(r.getName());
                         if (!involved.containsKey(i))
                             involved.put(i, new HashSet<Vertex>());
                         involved.get(i).add(r);
                         }
                     }
-            }//Inverse was computed.
-            System.out.println(involved.get(0));
-            System.out.println(involved.get(1));
-            //System.out.println("Inverse"+inverse);
+            }//Involved was computed.
             for(int i : involved.keySet()){
                 Set<Vertex> P_i = P.get(i);  // ColUtils.<ArrayList<Set<Vertex>>,Set<Vertex>>getElemOfSet(P,i);
                 if(involved.get(i).size() < P_i.size()){
