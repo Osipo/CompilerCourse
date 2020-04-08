@@ -37,7 +37,7 @@ public class Pair<T,R> {
             p = (Pair<T,R>)o;
         }
         catch (ClassCastException e){
-
+            return false;
         }
         return p != null && p.getV1().equals(v1) && p.getV2().equals(v2);
     }

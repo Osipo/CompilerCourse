@@ -19,6 +19,14 @@ public class Vertex {
         this.edges = new ArrayList<>();
     }
 
+    public Vertex(String name){
+        this.name = name;
+        this.isStart = false;
+        this.isFinish = false;
+        this.isDead = false;
+        this.edges = new ArrayList<>();
+    }
+
     public void setStart(boolean e){
         this.isStart = e;
     }

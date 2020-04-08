@@ -14,6 +14,17 @@ public class DFA extends Graph {
     private HashSet<Vertex> finished;
     private HashMap<Pair<Vertex,Character>,Vertex> tranTable;
 
+    public DFA(HashMap<Pair<Vertex,Character>,Vertex> tranTable, Vertex start, HashSet<Vertex> fihished){
+        this.start = start;
+        this.finished = fihished;
+        this.tranTable = tranTable;
+        this.dead = null;
+        this.alpha = new HashSet<>();
+        for(Pair<Vertex,Character> p : tranTable.keySet()){
+            alpha.add(p.getV2());
+        }
+    }
+
     public DFA(NFA nfa){
         this.finished = new HashSet<>();
         this.tranTable = new HashMap<>();
@@ -111,29 +122,39 @@ public class DFA extends Graph {
     }
 
     private void makeRecord(HashMap<Pair<Vertex,Character>,Vertex> oldTran, Set<Vertex> group,Vertex s,Vertex n, Elem<Integer> count, HashMap<String,Vertex> mapped){
-        n.setName(count.getV1()+"");
-        List<String> prg = group.stream().map(Vertex::getName).filter(mapped::containsKey).collect(Collectors.toList());
-        if(prg.size() > 0){
-            n = mapped.get(prg.get(0));
-            count.setV1(Integer.parseInt(n.getName()));
+        n.setName(count.getV1()+"_");
+        //System.out.println("Rep: "+s);
+        if(mapped.get(s.getName()) != null){
+            n = mapped.get(s.getName());
+            count.setV1(Integer.parseInt(n.getName().substring(0,n.getName().length() - 1)));
         }
+//        List<String> prg = group.stream().map(Vertex::getName).filter(mapped::containsKey).collect(Collectors.toList());
+//        if(prg.size() > 0){
+//            n = mapped.get(prg.get(0));
+//            count.setV1(Integer.parseInt(n.getName().substring(0,n.getName().length() - 1)));
+//        }
         if(group.stream().anyMatch(Vertex::isStart)){
             this.start = n;
+            System.out.println("Start_"+s.getName());
             n.setStart(true);
         }
         if(group.stream().anyMatch(Vertex::isDead)){
+            System.out.println("Dead_"+s.getName());
             this.dead = n;
             n.setDead(true);
         }
         if(group.stream().anyMatch(Vertex::isFinish)){
+            System.out.println("Finish_"+s.getName());
             this.finished.add(n);
             n.setFinish(true);
         }
-        List<Pair<Vertex,Character>> l = oldTran.keySet().stream().filter(x -> x.getV1().equals(s)).collect(Collectors.toList());
-        l.sort(Comparator.comparing(Pair::getV2));
-
+        List<Pair<Vertex,Character>> l = oldTran.keySet().stream().filter(x -> x.getV1().equals(s)).sorted(Comparator.comparing(Pair::getV2)).collect(Collectors.toList());
+        //System.out.println(s.getName()+" : "+l.size());
+        for(Vertex s_i : group)
+            mapped.put(s_i.getName(),n);
         for(Pair<Vertex,Character> k : l){
             Vertex t = oldTran.get(k);
+            //System.out.println("From "+s.getName()+" to "+t.getName());
             if(group.contains(t)) {
                 Edge tran = new Edge(n, n, k.getV2());//loop to the same state if it has the same group.
                 tranTable.put(new Pair<>(n,k.getV2()),n);//update new tran_table.
@@ -142,7 +163,7 @@ public class DFA extends Graph {
             else if(!mapped.containsKey(t.getName())){//new group was not added.
                 Vertex n2 = new Vertex();
                 count.setV1(count.getV1() + 1);
-                n2.setName(count.getV1()+"");
+                n2.setName(count.getV1()+"_");
                 Edge tran = new Edge(n,n2,k.getV2());
                 tranTable.put(new Pair<>(n,k.getV2()),n2);
                 mapped.put(t.getName(),n2);//mark group
@@ -153,10 +174,9 @@ public class DFA extends Graph {
                 tranTable.put(new Pair<>(n,k.getV2()),prev);
             }
         }
-        mapped.put(s.getName(),n);
     }
 
-    private ArrayList<Set<Vertex>> minimize(Set<Vertex> NF, Set<Vertex> F,List<Vertex> Q,HashMap<Pair<Vertex,Character>,Vertex> tranTable){
+    private ArrayList<Set<Vertex>> minimize(Set<Vertex> NF, Set<Vertex> F,List<Vertex> Q,HashMap<Pair<Vertex,Character>,Vertex> table){
         ArrayList<Set<Vertex>> P = new ArrayList<>(Q.size());
         P.add(F);//F
         P.add(NF);//Q - F (Q\F)
@@ -173,43 +193,44 @@ public class DFA extends Graph {
             queue.add(new Pair<Set<Vertex>,Character>(F,c));
             queue.add(new Pair<Set<Vertex>, Character>(NF,c));
         }
-
-        HashSet<Vertex> inverse = new HashSet<>();
-
         while(!queue.isEmpty()){
+            System.out.println(P);
             Pair<Set<Vertex>,Character> p = queue.front(); // pair <C, a>
             queue.dequeue();
             involved = new HashMap<>();
-            inverse = new HashSet<>();
+            //inverse = new HashSet<>();
 
             //Compute inverse.
             for(Vertex q : p.getV1()){// for q in C and r in Q such tran(r,a) in C
-                    List<Pair<Vertex,Character>> keys = tranTable.keySet().stream().filter(x -> x.getV2() == p.getV2()).collect(Collectors.toList());
-                    for(Pair<Vertex,Character> k : keys) {
-                        if (q.equals(tranTable.get(k))) {//if q = tran(r,a)
-                            Vertex r = k.getV1();
-                            inverse.add(r);
-                            int i = clz.get(r.getName());
-                            if (!involved.containsKey(i))
-                                involved.put(i, new HashSet<Vertex>());
-                            involved.get(i).add(r);
+                List<Pair<Vertex,Character>> keys = table.keySet().stream().filter(x -> x.getV2() == p.getV2()).collect(Collectors.toList());
+                for(Pair<Vertex,Character> k : keys) {
+                    if (q.equals(table.get(k))) {//if q = tran(r,a)
+                        Vertex r = k.getV1();
+                        System.out.println(r.getName());
+                        int i = clz.get(r.getName());
+                        if (!involved.containsKey(i))
+                            involved.put(i, new HashSet<Vertex>());
+                        involved.get(i).add(r);
                         }
                     }
             }//Inverse was computed.
+            System.out.println(involved.get(0));
+            System.out.println(involved.get(1));
+            //System.out.println("Inverse"+inverse);
             for(int i : involved.keySet()){
-                Set<Vertex> P_i = ColUtils.<ArrayList<Set<Vertex>>,Set<Vertex>>getElemOfSet(P,i);
+                Set<Vertex> P_i = P.get(i);  // ColUtils.<ArrayList<Set<Vertex>>,Set<Vertex>>getElemOfSet(P,i);
                 if(involved.get(i).size() < P_i.size()){
                     Set<Vertex> P_j = new HashSet<>();
                     P.add(P_j);
                     int j = P.size() - 1;
-                    for(Vertex r : involved.get(i)){
+                    for(Vertex r : involved.get(i)){//ERROR: CHECK equals vertex.
                         P_i.remove(r);
                         P_j.add(r);
                     }
                     if(P_j.size() > P_i.size()){
                         Collections.swap(P,i,j);
-                        P_i = ColUtils.<ArrayList<Set<Vertex>>, Set<Vertex>>getElemOfSet(P, i);
-                        P_j = ColUtils.<ArrayList<Set<Vertex>>, Set<Vertex>>getElemOfSet(P, j);
+                        P_i = P.get(i);//ColUtils.<ArrayList<Set<Vertex>>, Set<Vertex>>getElemOfSet(P, i);
+                        P_j = P.get(j);//ColUtils.<ArrayList<Set<Vertex>>, Set<Vertex>>getElemOfSet(P, j);
                     }
                     assert P_j != null;
                     for(Vertex v : P_j){
@@ -225,7 +246,7 @@ public class DFA extends Graph {
                 }
             }
         }
-        //System.out.println(P);
+        System.out.println("P = "+P);
         return P;
     }
 

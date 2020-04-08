@@ -585,6 +585,7 @@ public class Grammar {
                     if(sym.getType() == 'n'){
                         List<String> eNames = equalRules(sym.getVal());
                         if(eNames.size() > 1){
+                            eNames.remove(sym.getVal());
                             eNames.sort((x,y)->{if(x.length() > y.length()) return 1; else if(x.length() < y.length()) return -1; else return 0;});
                             nsym = new GrammarSymbol(sym.getType(),eNames.get(0));
                         }
@@ -597,6 +598,66 @@ public class Grammar {
             newP.put(p,ns);
         }
         return new Grammar(T,NN,newP,this.S,this.E,lex_rules).deleteUselessSymbols();
+    }
+
+    public static Grammar getChomskyGrammar(Grammar G){
+        G = G.getShortenedGrammar();
+        G = G.getNonEmptyWordsGrammar();
+        G = G.deleteUselessSymbols();
+        G = G.getNonCycledGrammar();
+        Set<String> NN = new HashSet<>();
+        Map<String, Set<GrammarString>> newP = new HashMap<>();
+        String s = G.S;
+        Set<String> ps = G.P.keySet();
+        for(String p : ps){
+            Set<GrammarString> alts = G.P.get(p);
+            Set<GrammarString> nalts = new HashSet<>();
+            for(GrammarString b : alts){
+                if(b.getSymbols().size() == 2){
+                    GrammarSymbol x1 = b.getSymbols().get(0);
+                    GrammarSymbol x2 = b.getSymbols().get(1);
+                    GrammarString nb = new GrammarString();;
+                    if(x1.getType() != 't' && x2.getType() != 't'){
+                        nb.addSymbol(new GrammarSymbol(x1.getType(),x1.getVal()));
+                        nb.addSymbol(new GrammarSymbol(x2.getType(),x2.getVal()));
+                        nalts.add(nb);
+                    }
+                    else{
+                        if(x1.getType() == 't'){
+                            String nT = x1.getVal()+"-";
+                            NN.add(nT);
+                            HashSet<GrammarString> termB = new HashSet<>();
+                            GrammarString termBB = new GrammarString();
+                            termBB.addSymbol(new GrammarSymbol(x1.getType(),x1.getVal()));
+                            termB.add(termBB);
+                            newP.put(nT,termB);
+                            nb.addSymbol(new GrammarSymbol('n',nT));
+                        }
+                        else
+                            nb.addSymbol(new GrammarSymbol(x1.getType(),x1.getVal()));
+                        if(x2.getType() == 't'){
+                            String nT = x2.getVal()+"-";
+                            NN.add(nT);
+                            HashSet<GrammarString> termB = new HashSet<>();
+                            GrammarString termBB = new GrammarString();
+                            termBB.addSymbol(new GrammarSymbol(x2.getType(),x2.getVal()));
+                            termB.add(termBB);
+                            newP.put(nT,termB);
+                            nb.addSymbol(new GrammarSymbol('n',nT));
+                        }
+                        else
+                            nb.addSymbol(new GrammarSymbol(x2.getType(),x2.getVal()));
+                        nalts.add(nb);
+                    }
+                }
+                else{
+                    nalts.add(new GrammarString(new ArrayList<>(b.getSymbols())));
+                }
+            }
+            newP.put(p,nalts);
+            NN.add(p);
+        }
+        return new Grammar(G.T,NN,newP,s,G.E,G.lex_rules);
     }
 
     //ELIMINATE LEFT RECURSION. (all type)

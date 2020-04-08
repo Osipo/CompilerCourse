@@ -10,12 +10,4 @@ public abstract class JsonElement<T> {
         return getValue().toString();
     }
 
-    public static boolean isSimpleJsArray(JsonArray el){
-        ArrayList<JsonElement> l = el.getElements();
-        for(JsonElement element : l){
-            if(element instanceof JsonArray || element instanceof JsonObject)
-                return false;
-        }
-        return true;
-    }
 }

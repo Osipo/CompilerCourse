@@ -5,10 +5,12 @@ import org.springframework.boot.SpringBootConfiguration;
 import ru.osipov.labs.lab1.structures.automats.DFA;
 import ru.osipov.labs.lab1.structures.automats.NFA;
 import ru.osipov.labs.lab1.structures.graphs.Edge;
+import ru.osipov.labs.lab1.structures.graphs.Pair;
 import ru.osipov.labs.lab1.structures.graphs.Vertex;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import ru.osipov.labs.lab1.utils.RegexRPNParser;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -44,25 +46,57 @@ public class Main implements CommandLineRunner {
         System.out.println("Start: "+dfa.getStart());
         System.out.println("Finish: "+dfa.getFinished());
 
-
-        //dfa.showTranTable();
+        System.out.println("dfa_1: tranTable");
+        dfa.showTranTable();
         DFA minDfa = new DFA(dfa);
-        //minDfa.showTranTable();
         System.out.println("MinDFA: "+minDfa.getNodes());
         System.out.println("Start: "+minDfa.getStart());
         System.out.println("Dead: "+minDfa.getDead());
         System.out.println("Finish:"+minDfa.getFinished());
-
+        System.out.println("minDfa_1: tranTable");
+        minDfa.showTranTable();
         System.out.println("Input str to recognize: ");
         String i = in.nextLine();
 
         System.out.println("Recognize nfa: "+nfa.Recognize(i));
         System.out.println("Recognize dfa: "+dfa.Recognize(i));
         System.out.println("Recognize minDfa: "+minDfa.Recognize(i));
-        //System.out.println("DFA TABLE: ");
-      //  dfa.showTranTable();
-        System.out.println("MIN DFA: ");
-        minDfa.showTranTable();
+
+        System.out.println("TEST TABLE");
+        HashMap<Pair<Vertex,Character>,Vertex> table = new HashMap<>();
+        Vertex start = new Vertex("A");
+        start.setStart(true);
+        Vertex B = new Vertex("B");
+        Vertex C = new Vertex("C");
+        Vertex D = new Vertex("D");
+        Vertex E = new Vertex("E");
+        Vertex F = new Vertex("F");
+        HashSet<Vertex> FF = new HashSet<>();
+        FF.add(E);FF.add(F);
+        E.setFinish(true);F.setFinish(true);
+        table.put(new Pair<>(start,'0'),B);
+        table.put(new Pair<>(start,'1'),C);
+        table.put(new Pair<>(B,'0'),E);
+        table.put(new Pair<>(B,'1'),F);
+        table.put(new Pair<>(C,'0'),start);
+        table.put(new Pair<>(C,'1'),start);//F = 1_, D = _2, C = _3, A = _4
+        table.put(new Pair<>(D,'0'),F);
+        table.put(new Pair<>(D,'1'),E);
+        table.put(new Pair<>(E,'0'),D);
+        table.put(new Pair<>(E,'1'),F);
+        table.put(new Pair<>(F,'0'),D);
+        table.put(new Pair<>(F,'1'),E);
+        DFA dfa_control = new DFA(table,start,FF);
+        dfa_control.addNode(start);
+        dfa_control.addNode(B);
+        dfa_control.addNode(C);
+        dfa_control.addNode(D);
+        dfa_control.addNode(E);dfa_control.addNode(F);
+        dfa_control.showTranTable();
+        DFA min2 = new DFA(dfa_control);
+        min2.showTranTable();
+        System.out.println("START: "+min2.getStart());
+        System.out.println("F: "+min2.getFinished());
     }
 
 
