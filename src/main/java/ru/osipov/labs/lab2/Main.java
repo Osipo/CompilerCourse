@@ -1,11 +1,13 @@
 package ru.osipov.labs.lab2;
 
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab2.grammars.GrammarString;
 import ru.osipov.labs.lab2.grammars.GrammarSymbol;
+import ru.osipov.labs.lab2.grammars.json.InvalidJsonGrammarException;
 import ru.osipov.labs.lab2.jsonParser.SimpleJsonParser;
 import ru.osipov.labs.lab2.jsonParser.jsElements.JsonObject;
 
@@ -23,7 +25,6 @@ public class Main implements CommandLineRunner {
         System.out.println("Current working dir: "+p);
         p = p + "\\src\\main\\java\\ru\\osipov\\labs\\lab2\\";
         p = p + "grammars\\json\\G_2_27.json";
-
 
         SimpleJsonParser parser = new SimpleJsonParser();
         JsonObject ob = parser.parse(p);
@@ -53,7 +54,14 @@ public class Main implements CommandLineRunner {
 
         if (ob != null) {
             System.out.println("Json was read successfull.");
-            Grammar G = new Grammar(ob);
+            Grammar G = null;
+            try {
+                 G = new Grammar(ob);
+            }
+            catch (InvalidJsonGrammarException e){
+                System.out.println(e.getMessage());
+                System.exit(-2);
+            }
             //System.out.println("G: 2_4_11");
             System.out.println(G);
 //            Grammar DG = G.deleteUselessSymbols();
@@ -91,18 +99,32 @@ public class Main implements CommandLineRunner {
 //            }
 //            System.out.println("Grammar without rules A -> B (A,B are non-terminals)");
 //            System.out.println(G.getNonCycledGrammar());
-            Grammar G_r = Grammar.deleteLeftRecursion(G);
-            System.out.println(G_r);
-            System.out.println("Remove preffixes");
-            Grammar G_rd = G_r.deleteLeftFactor();
-            System.out.println(G_rd);
-            System.out.println("end");
-
-            System.out.println("Delete loops A -> B");
-            System.out.println(G_rd.getNonCycledGrammar().getGrammarWithoutEqualRules());
+            //G = G.getNonCycledGrammar();
+           // System.out.println("delete cycles");
+           // System.out.println(G);
+            G = Grammar.deleteLeftRecursion(G);
+            System.out.println("deleted recursion");
+            System.out.println(G);
+            G = G.deleteLeftFactor();
+            System.out.println("deleted preffix");
+            System.out.println(G);
+//            System.out.println(G.getNonEmptyWordsGrammar());
+//            Grammar G_r = Grammar.deleteLeftRecursion(G);
+//            System.out.println(G_r);
+//           System.out.println("Remove preffixes");
+//            Grammar G_rd = G_r.deleteLeftFactor();
+//            System.out.println(G_rd);
+//            System.out.println("end");
+////
+//            System.out.println("Delete loops A -> B");
+//            System.out.println(G_rd.getNonCycledGrammar().getGrammarWithoutEqualRules());
 
 //
 //            Grammar G_rde = G_rd.getNonCycledGrammar().getGrammarWithoutEqualRules();
+        }
+        else{
+            System.out.println("Invalid json. Json document is required!");
+            System.exit(-3);
         }
     }
 }

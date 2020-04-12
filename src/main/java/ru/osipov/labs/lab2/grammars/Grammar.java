@@ -509,6 +509,8 @@ public class Grammar {
         return true;
     }
 
+
+
     //Get indexed grammar where each non-terminal is ordered. (by specifying unique number begining with start production S)
     //Example: S -> aSbS | bSaS | e => S1 -> aS1bS1 | bS1aS1 | e.
     public Grammar getIndexedGrammar(){
@@ -564,15 +566,7 @@ public class Grammar {
         for(String p : ps){
             if(p.equals(n))
                 continue;
-            Set<GrammarString> r2 = new HashSet(P.get(p));
-//            GrammarString empty = null;
-//            for(GrammarString e : r2){
-//                if(e.getSymbols().get(0).getVal().equals(this.E)) {
-//                    empty = e;
-//                    break;
-//                }
-//            }
-//            r2.remove(empty);//do not include empty as it was generated on left-factorising...
+            Set<GrammarString> r2 = P.get(p);
             if(r1.equals(r2))
                 altNames.add(p);
         }
@@ -592,7 +586,7 @@ public class Grammar {
                 String s = l.stream().sorted((x,y) -> {
                     return Integer.compare(x.length(), y.length());
                 }).collect(Collectors.toList()).get(0);
-                System.out.println(p+": "+l+"  "+s);
+//                System.out.println(p+": "+l+"  "+s);
                 if(!mapped.contains(p)){
                     for(String alts : l){
                         names.put(alts,s);
@@ -613,8 +607,6 @@ public class Grammar {
             if(k.equals(this.S))
                 start = names.get(k);
         }
-        System.out.println(NN);
-        System.out.println(start);
         for(String prod : NN){
             Set<GrammarString> alts = P.get(prod);
             Set<GrammarString> nalts = new HashSet<>();
@@ -699,7 +691,8 @@ public class Grammar {
     public static Grammar deleteLeftRecursion(Grammar G){
         G = G.deleteUselessSymbols();
         G = G.getNonEmptyWordsGrammar();
-        //G = G.getNonCycledGrammar();
+        if(G.hasCycles())
+            G = G.getNonCycledGrammar();
         G = G.getIndexedGrammar();
         int n = G.getNonTerminals().size();
         Map<String,Set<GrammarString>> newP = new HashMap<>();
@@ -909,11 +902,44 @@ public class Grammar {
         return NG.deleteNonReachableSymbols();
     }
 
-    public Set<String> compute_allGeneratedN(String N){
+
+
+    public Set<String> getAllChainedNonTerms(){
+        Set<String> r = new HashSet<>();
+        Set<String> ps = P.keySet();
+        for(String p : ps){
+            Set<GrammarString> alts = P.get(p);
+            for(GrammarString rule : alts){
+                if(rule.getSymbols().size() == 1 && rule.getSymbols().get(0).getType() != 't')
+                    r.add(p);
+            }
+        }
+        return r;
+    }
+
+    public boolean hasCycles(){
+        Set<String> C = getAllChainedNonTerms();
+        for(String r : C){
+            if(compute_allGeneratedN(r,true).contains(r))
+                return true;
+        }
+        return false;
+    }
+
+    public Set<String> compute_allGeneratedN(String N,boolean isCicled){
         Set<String> V_0 = new HashSet<>();
         Set<String> V_i = new HashSet<>();
         LinkedStack<Set<String>> S = new LinkedStack<>();
-        V_0.add(N);
+        if(isCicled){
+            Set<GrammarString> pr1 = P.get(N);
+            for (GrammarString alpha : pr1) {//for each alternative
+                if (alpha.getSymbols().size() == 1 && alpha.getSymbols().get(0).getType() != 't')
+                    V_0.add(alpha.getSymbols().get(0).getVal());
+            }
+        }
+        else {
+            V_0.add(N);
+        }
         S.push(V_0);
         while(true){
             V_0 = S.top();//i++
@@ -943,7 +969,7 @@ public class Grammar {
         Map<String,Set<GrammarString>> newP = new HashMap<>();
         Map<String,Set<String>> NG = new HashMap<>();
         for(String n : N){
-            NG.put(n,compute_allGeneratedN(n));
+            NG.put(n,compute_allGeneratedN(n,false));
         }
         Set<String> ps = P.keySet();
         for(String p : ps){
@@ -991,6 +1017,7 @@ public class Grammar {
         while(!rules.isEmpty()){
             String ph = rules.top();
             rules.pop();
+//            System.out.println(ph);
             Set<GrammarString> alts = new HashSet<>(newP.get(ph));
             Set<GrammarString> nonPref = nonPreffix(alts);
 //            System.out.println("P: "+alts);
@@ -1033,6 +1060,7 @@ public class Grammar {
                 newP.put(ph,nonPref);
                 newP.put(nName,bodyOfnewTerm);
                 id++;
+//                System.out.println(nName);
                 newRidxs.put(ph,id);
                 newRidxs.put(nName,1);
                 rules.push(ph);
@@ -1046,10 +1074,18 @@ public class Grammar {
             NT.add(this.E);
             NN.addAll(N);
           //return new Grammar(NT,NN,newP,this.S,this.E,lex_rules);
-            return new Grammar(NT,NN,newP,this.S,this.E,lex_rules).getNonCycledGrammar().getGrammarWithoutEqualRules();
+            Grammar NG = new Grammar(NT,NN,newP,this.S,this.E,lex_rules);
+            NG = NG.getGrammarWithoutEqualRules();
+            //System.out.println(NG);
+            return NG.getNonCycledGrammar().deleteUselessSymbols();
         }
         NN.addAll(N);
-        return new Grammar(this.T,NN,newP,this.S,this.E,lex_rules).getNonCycledGrammar().getGrammarWithoutEqualRules();
+        Grammar NG = new Grammar(T,NN,newP,this.S,this.E,lex_rules);
+        NG = NG.getGrammarWithoutEqualRules();
+        //System.out.println(NG);
+        return NG.getNonCycledGrammar().deleteUselessSymbols();
+        //return new Grammar(T,NN,newP,this.S,this.E,lex_rules);
+        //return new Grammar(this.T,NN,newP,this.S,this.E,lex_rules).deleteChainedRules(emptyRules()).getGrammarWithoutEqualRules();
     }
 
     private int commonMinLength(Set<GrammarString> prod){
