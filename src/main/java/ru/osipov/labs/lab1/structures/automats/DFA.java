@@ -207,7 +207,7 @@ public class DFA extends Graph {
                     Set<Vertex> P_j = new HashSet<>();
                     P.add(P_j);
                     int j = P.size() - 1;
-                    for(Vertex r : involved.get(i)){//ERROR: CHECK equals vertex.
+                    for(Vertex r : involved.get(i)){
                         P_i.remove(r);
                         P_j.add(r);
                     }
