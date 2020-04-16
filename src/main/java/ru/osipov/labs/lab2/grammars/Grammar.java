@@ -204,6 +204,10 @@ public class Grammar {
 
     public Set<String> getN_g(){return N_g;}
 
+    public String getEmpty(){
+        return this.E;
+    }
+
     //Compute set of non-terminals which generates empty-strings
     private void computeN_e(){
         Set<String> N_0 = new HashSet<>();
@@ -1087,6 +1091,42 @@ public class Grammar {
         //return new Grammar(T,NN,newP,this.S,this.E,lex_rules);
         //return new Grammar(this.T,NN,newP,this.S,this.E,lex_rules).deleteChainedRules(emptyRules()).getGrammarWithoutEqualRules();
     }
+
+    /*
+    private Grammar deleteLeftFactor2(Grammar g){
+        Set<String> NN = new HashSet<>();
+        Map<String,Set<GrammarString>> newP = new HashMap<>();
+        for(String p : P.keySet()){
+            List<String> N = ColUtils.fromSet(G.N);
+        N.sort((x,y) -> {
+            int x_i = Integer.parseInt(x.split("_")[1]);
+            int y_i = Integer.parseInt(y.split("_")[1]);
+            return Integer.compare(x_i, y_i);
+        });
+        //System.out.println(N);
+        for(int i = 1; i <= n; i++){
+            String Ai = N.get(i - 1);//S_1.
+            for(int j = 1; j < i; j++){
+                String Aj = N.get(j - 1);
+                Set<GrammarString> A_j = G.P.get(Aj);
+                Set<GrammarString> A_i = replaceAlternativesWithFirstN(G.P.get(Ai),A_j,Aj);//replace A_i -> bA_jb to A_i -> bal1b|bal2b|bal3b where  A_j -> al1|al2|al3
+                //System.out.println(A_i);
+                G.P.put(Ai,A_i);//add replaced rule A_i -> bA_jb.
+            }
+            Set<GrammarString> A_i = G.P.get(Ai);
+            //System.out.println(A_i);
+            Set<GrammarString> rb1 = new HashSet<>();
+            Set<GrammarString> lb1 = new HashSet<>();
+            boolean flag = false;
+            if(!hasImmediateLeftRecursion(A_i,Ai)){//each alternative has no immediate left-recursion.
+                newP.put(Ai,A_i);
+                NN.add(Ai);
+                continue;
+            }
+        }
+        }
+        return null;
+    }*/
 
     private int commonMinLength(Set<GrammarString> prod){
         List<GrammarString> rules = ColUtils.fromSet(prod);

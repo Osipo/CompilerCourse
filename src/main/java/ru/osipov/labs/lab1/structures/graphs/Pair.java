@@ -41,4 +41,11 @@ public class Pair<T,R> {
         }
         return p != null && p.getV1().equals(v1) && p.getV2().equals(v2);
     }
+
+    @Override
+    public int hashCode(){
+        String b = getV1().toString() +
+                getV2().toString();
+        return b.hashCode();
+    }
 }

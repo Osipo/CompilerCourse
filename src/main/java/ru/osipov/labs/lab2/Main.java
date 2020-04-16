@@ -1,6 +1,4 @@
 package ru.osipov.labs.lab2;
-
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
@@ -64,6 +62,11 @@ public class Main implements CommandLineRunner {
             }
             //System.out.println("G: 2_4_11");
             System.out.println(G);
+            System.out.println("Delete left recursion");
+            G = Grammar.deleteLeftRecursion(G);
+            System.out.println(G);
+            System.out.println("Delete preffixes");
+            System.out.println(G.deleteLeftFactor());
 //            Grammar DG = G.deleteUselessSymbols();
 //            System.out.println("Grammar G without useless symbols");
 //            System.out.println(DG);
@@ -102,25 +105,6 @@ public class Main implements CommandLineRunner {
             //G = G.getNonCycledGrammar();
            // System.out.println("delete cycles");
            // System.out.println(G);
-            G = Grammar.deleteLeftRecursion(G);
-            System.out.println("deleted recursion");
-            System.out.println(G);
-            G = G.deleteLeftFactor();
-            System.out.println("deleted preffix");
-            System.out.println(G);
-//            System.out.println(G.getNonEmptyWordsGrammar());
-//            Grammar G_r = Grammar.deleteLeftRecursion(G);
-//            System.out.println(G_r);
-//           System.out.println("Remove preffixes");
-//            Grammar G_rd = G_r.deleteLeftFactor();
-//            System.out.println(G_rd);
-//            System.out.println("end");
-////
-//            System.out.println("Delete loops A -> B");
-//            System.out.println(G_rd.getNonCycledGrammar().getGrammarWithoutEqualRules());
-
-//
-//            Grammar G_rde = G_rd.getNonCycledGrammar().getGrammarWithoutEqualRules();
         }
         else{
             System.out.println("Invalid json. Json document is required!");
