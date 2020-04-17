@@ -295,7 +295,7 @@ public class Grammar {
         Iterator<GrammarString> S_r = P.get(this.S).iterator();
         b.append(S_r.next());
         while(S_r.hasNext()){
-            b.append("|").append(S_r.next());
+            b.append("| ").append(S_r.next());
         }
 
         kp = P.keySet().stream().filter(x -> !x.equals(getStart())).collect(Collectors.toSet());
@@ -304,7 +304,7 @@ public class Grammar {
             Iterator<GrammarString> alternatives = P.get(k).iterator();
             b.append(alternatives.next());
             while(alternatives.hasNext()){
-                b.append("|").append(alternatives.next());
+                b.append("| ").append(alternatives.next());
             }
         }
         b.append("\n\t}");

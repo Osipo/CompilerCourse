@@ -24,9 +24,9 @@ public class Lab3 implements CommandLineRunner {
         String p = System.getProperty("user.dir");
         System.out.println("Current working dir: "+p);
         String sc = System.getProperty("user.dir")+"\\src\\main\\java\\ru\\osipov\\labs\\lab3";
-        sc = sc + "\\S_G_2_27.txt";
+        sc = sc + "\\S_G_lab3.txt";
         p = p + "\\src\\main\\java\\ru\\osipov\\labs\\lab2\\";
-        p = p + "grammars\\json\\G_2_27.json";
+        p = p + "grammars\\json\\G_Lab3_3.json";
 
         SimpleJsonParser parser = new SimpleJsonParser();
         JsonObject ob = parser.parse(p);

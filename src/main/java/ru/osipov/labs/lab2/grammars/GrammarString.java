@@ -61,7 +61,7 @@ public class GrammarString {
     public String toString(){
         StringBuilder b = new StringBuilder();
         for(GrammarSymbol s : symbols){
-            b.append(s.getVal());
+            b.append(s.getVal()).append(" ");
         }
         return b.toString();
     }

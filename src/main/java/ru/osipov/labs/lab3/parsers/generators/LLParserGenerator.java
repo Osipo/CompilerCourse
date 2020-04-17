@@ -2,6 +2,7 @@ package ru.osipov.labs.lab3.parsers.generators;
 
 import ru.osipov.labs.lab1.structures.graphs.Pair;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
+import ru.osipov.labs.lab1.structures.observable.ObservableHashSet;
 import ru.osipov.labs.lab1.utils.ColUtils;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab2.grammars.GrammarString;
@@ -76,6 +77,9 @@ public class LLParserGenerator {
                     else{
                         if(res.containsKey(s.getVal())){
                             if(res.get(s.getVal()).contains(G.getEmpty())) {
+                                Set<String> without_empty = res.get(s.getVal());
+                                without_empty.remove(G.getEmpty());
+                                first_i.addAll(without_empty);
                                 ec++;//continue scanning string.
                                 continue;
                             }
@@ -88,9 +92,11 @@ public class LLParserGenerator {
                 }
                 if(addAll){
                     S.push(p);
-                    for(GrammarSymbol s2 : str.getSymbols()){
-                        if(s2.getType() == 'n')
-                            S.push(s2.getVal());
+
+                    List<GrammarSymbol> ns = str.getSymbols();
+                    for(int i = ns.size() - 1; i >= 0; i--){
+                        if(ns.get(i).getType() == 'n')
+                            S.push(ns.get(i).getVal());
                     }
                     continue M1;
                 }
@@ -125,6 +131,7 @@ public class LLParserGenerator {
         return res;
     }
 
+    /* NOT WORKED. May be DELETED.
     public Map<String,Set<String>> followTable(Grammar G,Map<String,Set<String>> firstTable){
         List<String> NT = ColUtils.fromSet(G.getNonTerminals());
         String empty = G.getEmpty();
@@ -179,6 +186,49 @@ public class LLParserGenerator {
                 if(last.getType() != 't'){
                     Set<String> first = res.get(p);
                     res.put(last.getVal(),first);
+                }
+            }
+        }
+        return res;
+    }*/
+
+    public Map<String,Set<String>> followTable(Grammar G,Map<String,Set<String>> firstTable){
+        List<String> NT = ColUtils.fromSet(G.getNonTerminals());
+        String empty = G.getEmpty();
+        HashMap<String,Set<String>> res = new HashMap<String,Set<String>>();
+        LinkedStack<String> S = new LinkedStack<>();
+        for(String N : NT) {
+            S.push(N);
+            res.put(N,new ObservableHashSet<String>());
+        }
+        res.get(G.getStart()).add("$");//add $ to FOLLOW(S) where S = start symbol of G.
+        while(!S.isEmpty()){
+            String p = S.top();
+            S.pop();
+            Set<GrammarString> bodies = G.getProductions().get(p);
+            for(GrammarString str : bodies){
+                List<GrammarSymbol> l = str.getSymbols();
+                for(int i = 0; i < l.size()-1;i++){
+                    GrammarSymbol sym = l.get(i);
+                    if(sym.getType() != 't'){
+                        GrammarString subStr = new GrammarString(new ArrayList<>(l.subList(i+1,l.size())));
+                        Set<String> first =  first(subStr,firstTable,empty);
+                        if(first.contains(empty)) {
+                            ((ObservableHashSet<String>) res.get(p)).attach((ObservableHashSet<String>) res.get(l.get(i).getVal()));
+                            first.addAll(res.get(p));
+                        }
+                        first.remove(empty);
+//                        if(sym.getVal().equals(G.getStart()))
+//                            first.add("$");
+                        res.get(l.get(i).getVal()).addAll(first);
+                        //res.put(l.get(i).getVal(),first);
+                    }
+                }
+                GrammarSymbol last = l.get(l.size() - 1);
+                if(last.getType() != 't'){
+                    Set<String> first = res.get(p);
+                    ((ObservableHashSet<String>) first).attach((ObservableHashSet<String>) res.get(last.getVal()));
+                    //res.put(last.getVal(),first);
                 }
             }
         }

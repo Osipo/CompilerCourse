@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 public class LLParser {
     private LLParserGenerator gen;
     private Map<Pair<String,String>, GrammarString> table;
@@ -48,23 +49,22 @@ public class LLParser {
         try {
             f = new FileInputStream(new File(fname).getAbsolutePath());
             InputStreamReader ch = new InputStreamReader(f);
-            int c = f.read();
             LinkedStack<LinkedNode<String>> S = new LinkedStack<>();
             LinkedNode<String> root = new LinkedNode<>();
             LinkedNode<String> EOF = new LinkedNode<>();
             EOF.setValue("$");
             root.setValue(G.getStart());
             S.push(EOF);
-            S.push(root);
+            S.push(root);// Stack: S,$.
             LinkedNode<String> X = S.top();
             String t = readLexem(f);
             String empty = G.getEmpty();
             while(!X.getValue().equals("$")) {
-                for(LinkedNode n : S){
-                    System.out.print(n.getValue()+" ");
-                }
-                System.out.println("");
-                System.out.println("Current: "+X.getValue()+": "+t);
+//                for(LinkedNode n : S){
+//                    System.out.print(n.getValue()+" ");
+//                }
+//                System.out.println("");
+//                System.out.println("Current: "+X.getValue()+": "+t);
                 if(X.getValue().equals(t)){
                     S.pop();
                     t = readLexem(f);
