@@ -10,6 +10,7 @@ public class LinkedNode<T> extends Node<T> {
     private LinkedNode<T> parent;
     public LinkedNode(){
         children = new ArrayList<>();
+        idx = -1;
     }
 
     public void setParent(LinkedNode<T> parent) {

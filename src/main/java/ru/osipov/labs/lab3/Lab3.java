@@ -1,8 +1,10 @@
 package ru.osipov.labs.lab3;
 
+import guru.nidi.graphviz.engine.Format;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
+import ru.osipov.labs.lab1.structures.graphs.Graph;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab2.grammars.json.InvalidJsonGrammarException;
 import ru.osipov.labs.lab2.jsonParser.SimpleJsonParser;
@@ -10,7 +12,9 @@ import ru.osipov.labs.lab2.jsonParser.jsElements.JsonObject;
 import ru.osipov.labs.lab3.parsers.LLParser;
 import ru.osipov.labs.lab3.parsers.generators.LLParserGenerator;
 import ru.osipov.labs.lab3.trees.LinkedTree;
+import guru.nidi.graphviz.engine.Graphviz;
 
+import java.io.File;
 import java.util.*;
 
 @SpringBootConfiguration
@@ -66,8 +70,11 @@ public class Lab3 implements CommandLineRunner {
             System.out.println("Get Tree of G");
             LinkedTree<String> tree = syntaxP.parse(G,sc);
             System.out.println("--------");
-            if(tree != null)
+            if(tree != null) {
                 System.out.println(tree);
+                System.out.println(tree.toDot("tr"));
+                Graphviz.fromString(tree.toDot("tr")).render(Format.PNG).toFile(new File(sc.substring(0,sc.lastIndexOf('\\') + 1)+"tr"));
+            }
         }
         else{
             System.out.println("Invalid json. Json document is required!");

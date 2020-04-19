@@ -47,6 +47,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version: '2.1.8.RELEASE', ext: 'pom'
+    compile group: 'guru.nidi', name: 'graphviz-java', version: '0.15.1'
 }
 test{
     useJUnitPlatform()

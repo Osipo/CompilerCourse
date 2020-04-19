@@ -54,11 +54,13 @@ public class LLParser {
             LinkedNode<String> EOF = new LinkedNode<>();
             EOF.setValue("$");
             root.setValue(G.getStart());
+            root.setIdx(1);
             S.push(EOF);
             S.push(root);// Stack: S,$.
             LinkedNode<String> X = S.top();
             String t = readLexem(f);
             String empty = G.getEmpty();
+            int nidx = 1;
             while(!X.getValue().equals("$")) {
 //                for(LinkedNode n : S){
 //                    System.out.print(n.getValue()+" ");
@@ -83,14 +85,23 @@ public class LLParser {
                 else{
                     List<GrammarSymbol> symbols = prod.getSymbols();
                     S.pop();
+                    //LinkedStack<LinkedNode<String>> RS = new LinkedStack<>();//used only to order children YK..Y1 -> Y1..Yk in brace notation
                     for(int i = symbols.size() - 1; i >= 0; i--){
                         LinkedNode<String> node = new LinkedNode<>();
+                        nidx++;
                         node.setValue(symbols.get(i).getVal());
+                        node.setIdx(nidx);
                         node.setParent(X);
+                        //RS.push(node);
                         X.getChildren().add(node);
                         if(!node.getValue().equals(empty))
                             S.push(node);
                     }
+//                    while(!RS.isEmpty()){
+//                        X.getChildren().add(RS.top());
+//                        RS.pop();
+//                    }
+
                 }
                 X = S.top();
             }

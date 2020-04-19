@@ -49,6 +49,7 @@ public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
         }
     }
 
+
     public void add(T item){
         LinkedNode<T> n = _r;
         while(n.getChildren().size() != 0){
@@ -192,6 +193,32 @@ public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
                 }
             }
         }
+        return sb.toString();
+    }
+
+    public String toDot(String fName){
+        StringBuilder sb = new StringBuilder();
+        HashSet<Node<T>> hs = new HashSet<Node<T>>();
+        LinkedStack<Node<T>> STACK = new LinkedStack<>();
+        Node<T> n;
+        STACK.push(root());
+        sb.append("digraph ").append(fName).append(" {");
+        while(!STACK.isEmpty()){
+            n = STACK.top();
+            if(hs.contains(n)) {
+                STACK.pop();
+            } else {
+                hs.add(n);
+                String name = n.getIdx()+"";
+                sb.append(name).append(" [label=\"").append(n.getValue().toString()).append("\"];");
+                List<Node<T>> children = getChildren(n);
+                for(int c = children.size() - 1; c >= 0; c--){
+                    STACK.push(children.get(c));
+                    sb.append(name).append(" -> ").append(children.get(c).getIdx()).append(";");
+                }
+            }
+        }
+        sb.append("}");
         return sb.toString();
     }
 }
