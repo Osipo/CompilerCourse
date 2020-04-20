@@ -25,20 +25,23 @@ public class Graph {
         StringBuilder sb = new StringBuilder();
         sb.append("digraph ").append(name).append("{\n");
         for(Vertex v : nodes){
-            boolean f = false;
             sb.append(v.getName());
             sb.append("[ label=\"").append(v.getName()).append("\"");
             if(v.isStart()){
-                f = true;
-                sb.append(",color=\"blue\", shape=\"invtriangle\"");
+                if(v.isFinish()){
+                    sb.append(",color=\"blue\", shape=\"doublecircle\"");
+                    sb.append("];\n");
+                    continue;
+                }
+                else
+                    sb.append(",color=\"blue\", shape=\"invtriangle\"];\n");
+                continue;
             }
             if(v.isFinish()){
-                f = true;
-                sb.append(",color=\"black\", shape=\"doublecircle\"");
+                sb.append(",color=\"black\", shape=\"doublecircle\"];\n");
+                continue;
             }
-            if(!f){
-                sb.append(",shape=\"circle\"");
-            }
+            sb.append(",shape=\"circle\"");
 //            if(v.isDead()){
 //                sb.append(",color=\"red\", shape=\"box\"");
 //            }
