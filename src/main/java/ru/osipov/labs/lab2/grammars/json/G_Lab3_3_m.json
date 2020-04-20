@@ -8,19 +8,25 @@
     "^": "^",
     "(": "(",
     ")": ")",
+    "{": "{",
+    "}": "}",
     "<": "<",
     "<=": "<=",
+    "=": "=",
     "==": "==",
     ">": ">",
     ">=": ">=",
     "<>": "<>",
+    ";": ";",
     "id": "id",
     "num": "num",
     "e": null
   },
-  "nonTerms": ["E","AE","T","F","PE","RELOP","PLUSOP","MULLOP"],
-  "productions": [
-    {"E" : ["AE","RELOP","AE"]}
+  "nonTerms": ["E","AE","T","F","PE","RELOP","PLUSOP","MULLOP","OP","OPLIST","P","B"],
+  "productions": [{"P": ["B"]},{"B": ["{","OPLIST","}"]},
+    {"OPLIST": ["OPLIST",";","OP"]},{"OPLIST": "OP"},
+    {"OP": ["id","=","E"]},{"OP": "B"},
+    {"E" : ["AE","RELOP","AE"]},{"E": "AE"}
   ,{"AE": ["T"]},{"AE": ["PLUSOP","T"]},{"AE": ["AE","PLUSOP","T"]}
   ,{"T" : ["F"]}, {"T": ["T","MULLOP","F"]}
   ,{"F": ["PE"]},{"F": ["F","^","PE"]}
@@ -29,5 +35,5 @@
   ,{"MULLOP": "*"},{"MULLOP": "/"},{"MULLOP": "%"}
   ,{"RELOP": "<"},{"RELOP": "<="},{"RELOP": ">"},{"RELOP": ">="},{"RELOP": "=="},{"RELOP": "<>"}
   ],
-  "start": "E"
+  "start": "P"
 }

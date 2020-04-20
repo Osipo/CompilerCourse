@@ -1,0 +1,7 @@
+{
+   id = id + id * id <> num ^ id ;
+   id = id ^ num ;
+   {
+     id = num <= num + id * id
+   }
+}

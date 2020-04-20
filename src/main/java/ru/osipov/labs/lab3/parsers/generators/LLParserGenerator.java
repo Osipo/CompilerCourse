@@ -46,12 +46,16 @@ public class LLParserGenerator {
     //Compute FIRST for each terminal and non-terminal.
     public Map<String,Set<String>> firstTable(Grammar G){
         Set<String> T = G.getTerminals();
+        Set<String> NT = G.getNonTerminals();
         HashMap<String,Set<String>> res = new HashMap<String,Set<String>>();
         LinkedStack<String> S = new LinkedStack<>();
         for(String t : T){ //for each terminal put first(t) = t.
             HashSet<String> f = new HashSet<>();
             f.add(t);
             res.put(t,f);
+        }
+        for(String n : NT){
+            S.push(n);
         }
         S.push(G.getStart());
         M1: while(!S.isEmpty()){//compute first for each nonTerminal p.

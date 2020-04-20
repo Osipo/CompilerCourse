@@ -28,9 +28,9 @@ public class Lab3 implements CommandLineRunner {
         String p = System.getProperty("user.dir");
         System.out.println("Current working dir: "+p);
         String sc = System.getProperty("user.dir")+"\\src\\main\\java\\ru\\osipov\\labs\\lab3";
-        sc = sc + "\\S_G_lab3.txt";
+        sc = sc + "\\S_G_lab3_mod.txt";
         p = p + "\\src\\main\\java\\ru\\osipov\\labs\\lab2\\";
-        p = p + "grammars\\json\\G_Lab3_3.json";
+        p = p + "grammars\\json\\G_Lab3_3_m.json";
 
         SimpleJsonParser parser = new SimpleJsonParser();
         JsonObject ob = parser.parse(p);
@@ -73,7 +73,10 @@ public class Lab3 implements CommandLineRunner {
             if(tree != null) {
                 System.out.println(tree);
                 //System.out.println(tree.toDot("tr"));
-                Graphviz.fromString(tree.toDot("tr")).render(Format.PNG).toFile(new File(sc.substring(0,sc.lastIndexOf('\\') + 1)+"tr"));
+                Graphviz.fromString(tree.toDot("trModified")).render(Format.PNG).toFile(new File(sc.substring(0,sc.lastIndexOf('\\') + 1)+"trModified"));
+            }
+            else{
+                System.out.println("Syntax errors detected! Cannot build tree.");
             }
         }
         else{
