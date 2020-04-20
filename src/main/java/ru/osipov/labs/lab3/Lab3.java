@@ -72,7 +72,7 @@ public class Lab3 implements CommandLineRunner {
             System.out.println("--------");
             if(tree != null) {
                 System.out.println(tree);
-                System.out.println(tree.toDot("tr"));
+                //System.out.println(tree.toDot("tr"));
                 Graphviz.fromString(tree.toDot("tr")).render(Format.PNG).toFile(new File(sc.substring(0,sc.lastIndexOf('\\') + 1)+"tr"));
             }
         }

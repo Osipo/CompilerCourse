@@ -10,6 +10,7 @@ import ru.osipov.labs.lab1.structures.graphs.Vertex;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import ru.osipov.labs.lab1.utils.RegexRPNParser;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +20,9 @@ import java.util.stream.Collectors;
 @SpringBootConfiguration
 public class Main implements CommandLineRunner {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        String p = System.getProperty("user.dir");
+        p = p + "\\src\\main\\java\\ru\\osipov\\labs\\lab1\\";
         RegexRPNParser parser = new RegexRPNParser();
         Scanner in = new Scanner(System.in);
         System.out.println("Input regex: ");
@@ -97,6 +100,10 @@ public class Main implements CommandLineRunner {
         min2.showTranTable();
         System.out.println("START: "+min2.getStart());
         System.out.println("F: "+min2.getFinished());
+
+        nfa.getImagefromStr(p,"nfa_1");
+        dfa.getImagefromStr(p,"dfa_1");
+        minDfa.getImagefromStr(p,"minDfa_1");
     }
 
 

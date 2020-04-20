@@ -122,11 +122,11 @@ public class DFA extends Graph {
     }
 
     private void makeRecord(HashMap<Pair<Vertex,Character>,Vertex> oldTran, Set<Vertex> group,Vertex s,Vertex n, Elem<Integer> count, HashMap<String,Vertex> mapped){
-        n.setName(count.getV1()+"_");
+        n.setName("M"+count.getV1());
         //System.out.println("Rep: "+s);
         if(mapped.get(s.getName()) != null){
             n = mapped.get(s.getName());
-            count.setV1(Integer.parseInt(n.getName().substring(0,n.getName().length() - 1)));
+            count.setV1(Integer.parseInt(n.getName().substring(1)));
         }
         if(group.stream().anyMatch(Vertex::isStart)){
             this.start = n;
@@ -153,7 +153,7 @@ public class DFA extends Graph {
             else if(!mapped.containsKey(t.getName())){//new group was not added.
                 Vertex n2 = new Vertex();
                 count.setV1(count.getV1() + 1);
-                n2.setName(count.getV1()+"_");
+                n2.setName("M"+count.getV1());
                 Edge tran = new Edge(n,n2,k.getV2());
                 tranTable.put(new Pair<>(n,k.getV2()),n2);
                 mapped.put(t.getName(),n2);//mark group
