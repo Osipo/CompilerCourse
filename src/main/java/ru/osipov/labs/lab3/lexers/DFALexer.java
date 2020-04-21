@@ -28,11 +28,12 @@ public class DFALexer extends DFA implements ILexer {
 
     public DFALexer(CNFA nfa){
         super(nfa);
+        this.deleteDeadState();
         this.io = new LookAheadBufferedLexer();
     }
 
     public DFALexer(DFA dfa){
-        super(dfa);
+        super(dfa,true);//fix Minimization for lexer.
         this.io = new LookAheadBufferedLexer();
     }
 

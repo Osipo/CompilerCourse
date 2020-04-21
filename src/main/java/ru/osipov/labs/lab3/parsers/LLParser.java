@@ -148,7 +148,7 @@ public class LLParser {
                     S.top().getValue().setLexem(tok.getLexem());
                     S.pop();
                     tok = lexer.recognize(f);
-                    System.out.println(tok);
+                    //System.out.println(tok);
                     t = tok.getName();
                     X = S.top();
                     continue;

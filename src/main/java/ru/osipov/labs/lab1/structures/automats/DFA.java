@@ -4,6 +4,7 @@ import ru.osipov.labs.lab1.structures.graphs.*;
 import ru.osipov.labs.lab1.structures.lists.LinkedQueue;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import ru.osipov.labs.lab1.utils.ColUtils;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -252,46 +253,86 @@ public class DFA extends Graph {
         }
     }
 
+    //isLexer :: ifTrue => build initial partition with patterns, dead state and others.
+    //TODO: fix method when isLexer == true. (initial partition generation)
     private ArrayList<Set<Vertex>> minimize(Set<Vertex> NF, Set<Vertex> F,List<Vertex> Q,HashMap<Pair<Vertex,Character>,Vertex> table,boolean isLexer){
         ArrayList<Set<Vertex>> P = new ArrayList<>(Q.size());
         HashMap<String,Integer> clz = new HashMap<>();//indicies of class which state is belonging.
         HashMap<Integer,Set<Vertex>> involved = new HashMap<>();//classes which have states with edges to splitter.
         LinkedQueue<Pair<Set<Vertex>,Character>> queue = new LinkedQueue<>();
-
-//        Set<Vertex> FD = new HashSet<>();
-//        List<Vertex> l = ColUtils.fromSet(F);
-//        FD.add(l.get(0));
-//        String id = l.get(0).getValue();
-//        int clzi = 0;clz.put(l.get(0).getName(),0);
-//        for(int i = 1; i < l.size();i++){
-//            if(l.get(i).getValue().equals(id)) {
-//                FD.add(l.get(i));
-//                clz.put(l.get(i).getName(), clzi);
-//            }
-//            else{
-//                P.add(FD);
-//                for(Character c : alpha)
-//                     queue.add(new Pair<Set<Vertex>,Character>(FD,c));
-//                FD = new HashSet<>();
-//                id = l.get(i).getValue();
-//                clzi++;
-//                FD.add(l.get(i));
-//                clz.put(l.get(i).getName(),clzi);
-//            }
-//        }
-//        P.add(FD);
-//        clzi++;
-        P.add(F);//F
-        P.add(NF);//Q - F (Q\F)
-        for(Vertex q : F){
-            clz.put(q.getName(),0);
+        if(isLexer) {
+            Set<Vertex> FD = new HashSet<>();
+            List<Vertex> l = ColUtils.fromSet(F);
+            FD.add(l.get(0));
+            String id = l.get(0).getValue();
+            Vertex dead = null;
+            for(int i = 0; i < l.size();i++){
+                if(l.get(i).isDead()){
+                    dead = l.get(i);
+                    break;
+                }
+            }
+            if(dead == null){
+                for(Vertex v : NF){
+                    if(v.isDead()){
+                        dead = v;
+                        break;
+                    }
+                }
+                NF.remove(dead);
+            }
+            l.remove(dead);
+            int clzi = 0;
+            clz.put(l.get(0).getName(), 0);
+            for (int i = 1; i < l.size(); i++) {
+                if (l.get(i).getValue().equals(id)) {
+                    FD.add(l.get(i));
+                    clz.put(l.get(i).getName(), clzi);
+                } else {
+                    P.add(FD);
+                    for (Character c : alpha)
+                        queue.add(new Pair<Set<Vertex>, Character>(FD, c));
+                    FD = new HashSet<>();
+                    id = l.get(i).getValue();
+                    clzi++;
+                    FD.add(l.get(i));
+                    clz.put(l.get(i).getName(), clzi);
+                }
+            }
+            P.add(FD);
+            clzi++;
+            P.add(NF);
+            for(Vertex v : NF){
+                clz.put(v.getName(),clzi);
+            }
+            for(Character c : alpha){
+                queue.add(new Pair<Set<Vertex>, Character>(NF, c));
+            }
+            clzi++;
+            if(dead != null) {
+                Set<Vertex> Dead = new HashSet<>();
+                Dead.add(dead);
+                P.add(Dead);
+                clz.put(dead.getName(), clzi);
+                for(Character c : alpha){
+                    queue.add(new Pair<Set<Vertex>, Character>(Dead, c));
+                }
+            }
+            System.out.println("IP = "+P);
         }
-        for(Vertex q: NF){
-            clz.put(q.getName(),1);
-        }
-        for(Character c : alpha){
-            queue.add(new Pair<Set<Vertex>,Character>(F,c));
-            queue.add(new Pair<Set<Vertex>, Character>(NF,c));
+        else {
+            P.add(F);//F
+            P.add(NF);//Q - F (Q\F)
+            for (Vertex q : F) {
+                clz.put(q.getName(), 0);
+            }
+            for (Vertex q : NF) {
+                clz.put(q.getName(), 1);
+            }
+            for (Character c : alpha) {
+                queue.add(new Pair<Set<Vertex>, Character>(F, c));
+                queue.add(new Pair<Set<Vertex>, Character>(NF, c));
+            }
         }
         while(!queue.isEmpty()){
             Pair<Set<Vertex>,Character> p = queue.front(); // pair <C, a>
@@ -397,5 +438,24 @@ public class DFA extends Graph {
             cs++;
         }
         return s.isFinish();
+    }
+
+    //Delete dead state from DFA.
+    public void deleteDeadState(){
+        if(dead != null){
+            List<Edge> conns = new ArrayList<>(dead.getEdges());
+            this.nodes.remove(dead);//remove from nodes.
+            for(Edge e : conns){
+                Pair<Vertex,Character> p1 = new Pair<>(e.getSource(),e.getTag());
+                Pair<Vertex,Character> p2 = new Pair<>(e.getTarget(),e.getTag());
+                if(tranTable.get(p1) != null)//remove from tranTable.
+                    tranTable.remove(p1);
+                if(tranTable.get(p2) != null)
+                    tranTable.remove(p2);
+                this.edges.remove(e);//remove from edges.
+                e.disconnectNodes();
+            }
+            this.dead = null;
+        }
     }
 }
