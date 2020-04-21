@@ -8,11 +8,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DFA extends Graph {
-    private Vertex start;
-    private Vertex dead;
-    private HashSet<Character> alpha;
-    private HashSet<Vertex> finished;
-    private HashMap<Pair<Vertex,Character>,Vertex> tranTable;
+    protected Vertex start;
+    protected Vertex dead;
+    protected HashSet<Character> alpha;
+    protected HashSet<Vertex> finished;
+    protected HashMap<Pair<Vertex,Character>,Vertex> tranTable;
 
     public DFA(HashMap<Pair<Vertex,Character>,Vertex> tranTable, Vertex start, HashSet<Vertex> fihished){
         this.start = start;
@@ -58,10 +58,14 @@ public class DFA extends Graph {
                 }
                 else
                     b = mapped.get(U);//get mapped state.
-                if(U.contains(nfa.getFinish()))
+                if(U.contains(nfa.getFinish())) {
+                    b.setValue(nfa.getFinish().getValue());
                     finished.add(b);
-                if(T.contains(nfa.getFinish()))
+                }
+                if(T.contains(nfa.getFinish())) {
+                    a.setValue(nfa.getFinish().getValue());
                     finished.add(a);
+                }
                 Edge tran = new Edge(a,b,c);//Implies tran_function.
                 tranTable.put(new Pair<>(a,c),b);
             }
@@ -78,7 +82,80 @@ public class DFA extends Graph {
             for(Pair<Vertex,Character> kk : k){
                 if(tranTable.get(kk).equals(v))
                     c++;
-            }//there are only |Alpha| records.
+            }//if any transition leads to the same vertex.
+            if(c == alpha.size()) {
+                v.setDead(true);
+                this.dead = v;
+                break;
+            }
+        }
+
+    }
+
+    public DFA(CNFA nfa){
+        this.finished = new HashSet<>();
+        this.tranTable = new HashMap<>();
+        LinkedStack<Set<Vertex>> ST = new LinkedStack<>();
+        HashSet<Vertex> s0 = new HashSet<>();
+        s0.add(nfa.getStart());
+
+        ST.push(NFA.e_closure(s0));//e-closure(s0) where s0 - start state.
+        this.start = new Vertex();//label for e-closure(s0)
+        this.start.setStart(true);
+        this.alpha = nfa.getAlpha();
+        this.start.setName("1");
+        Vertex a = this.start;
+        Vertex b = null;
+        HashMap<Set<Vertex>,Vertex> mapped = new HashMap<>();//1 iteration map s0 to a single state.
+        mapped.put(ST.top(),a);
+        int qn = 1;
+        while(!ST.isEmpty()){
+            Set<Vertex> T = ST.top();
+            ST.pop();
+            a = mapped.get(T);//get mapped state. (after 1 iteration)
+            for(char c : alpha){
+                Set<Vertex> U = NFA.e_closure(NFA.move(T,c));
+                if(!mapped.containsKey(U)){
+                    ST.push(U);
+                    qn++;
+                    b = new Vertex();
+                    b.setName(qn+"");
+                    mapped.put(U,b);//add new unmapped state.
+                }
+                else
+                    b = mapped.get(U);//get mapped state.
+                Set<Vertex> FF = new HashSet<>(U);
+                FF.retainAll(nfa.getFinished());
+                //System.out.println("U - F: "+FF);
+                if(FF.size() > 0) {//U.contains(nfa.getFinish())
+                    b.setValue(FF.stream().findFirst().get().getValue());
+                    //System.out.println(b.getValue());
+                    finished.add(b);
+                }
+                FF = new HashSet<>(T);
+                FF.retainAll(nfa.getFinished());
+                //System.out.println("T - F: "+FF);
+                if(FF.size() > 0) {
+                    a.setValue(FF.stream().findFirst().get().getValue());
+                    finished.add(a);
+                }
+                Edge tran = new Edge(a,b,c);//Implies tran_function.
+                tranTable.put(new Pair<>(a,c),b);
+            }
+        }
+        addNode(this.start);//build graph
+        for(Vertex vv: finished){
+            vv.setFinish(true);
+        }
+
+        //initiate dead_state.
+        for(Vertex v : nodes){
+            int c = 0;
+            List<Pair<Vertex,Character>> k = tranTable.keySet().stream().filter(x -> x.getV1().equals(v)).collect(Collectors.toList());
+            for(Pair<Vertex,Character> kk : k){
+                if(tranTable.get(kk).equals(v))
+                    c++;
+            }//if any transition leads to the same vertex.
             if(c == alpha.size()) {
                 v.setDead(true);
                 this.dead = v;
@@ -96,11 +173,11 @@ public class DFA extends Graph {
     }
 
     //CREATE min-DFA based on DFA (minimize specified dfa)
-    public DFA(DFA dfa) {
+    public DFA(DFA dfa,boolean isLexer) {
         this.alpha = dfa.getAlpha();
         Set<Vertex> F = dfa.getFinished();
         Set<Vertex> NF = dfa.getNodes().stream().filter(vertex -> !F.contains(vertex)).collect(Collectors.toSet());//Q - F.
-        ArrayList<Set<Vertex>> P = minimize(NF, F, dfa.getNodes(), dfa.getTranTable());
+        ArrayList<Set<Vertex>> P = minimize(NF, F, dfa.getNodes(), dfa.getTranTable(),isLexer);
         this.tranTable = new HashMap<Pair<Vertex, Character>, Vertex>();
         HashMap<Pair<Vertex,Character>,Vertex> oldTran = dfa.getTranTable();
         this.dead = null;
@@ -111,18 +188,26 @@ public class DFA extends Graph {
         HashMap<String,Vertex> mapped = new HashMap<>();
         for (Set<Vertex> sv : P) {//for each set -> make new state.
             for (Vertex v : sv) {//select a representer of the set
-                    //System.out.println("Rep: "+v.getName());
-                    Vertex n = new Vertex();
-                    nstatescount.setV1(nstatescount.getV1() + 1);
-                    makeRecord(oldTran,sv,v,n,nstatescount,mapped);
-                    break;
+                //System.out.println("Rep: "+v.getName());
+                Vertex n = new Vertex();
+                nstatescount.setV1(nstatescount.getV1() + 1);
+                makeRecord(oldTran,sv,v,n,nstatescount,mapped);
+                break;
             }
         }
         addNode(this.start);
     }
 
+    //CREATE min-DFA based on DFA (minimize specified dfa)
+    public DFA(DFA dfa) {
+        this(dfa,false);
+    }
+
+
+
     private void makeRecord(HashMap<Pair<Vertex,Character>,Vertex> oldTran, Set<Vertex> group,Vertex s,Vertex n, Elem<Integer> count, HashMap<String,Vertex> mapped){
         n.setName("M"+count.getV1());
+        n.setValue(s.getValue());
         //System.out.println("Rep: "+s);
         if(mapped.get(s.getName()) != null){
             n = mapped.get(s.getName());
@@ -139,6 +224,7 @@ public class DFA extends Graph {
         if(group.stream().anyMatch(Vertex::isFinish)){
             this.finished.add(n);
             n.setFinish(true);
+            n.setValue(s.getValue());
         }
         List<Pair<Vertex,Character>> l = oldTran.keySet().stream().filter(x -> x.getV1().equals(s)).sorted(Comparator.comparing(Pair::getV2)).collect(Collectors.toList());
         for(Vertex s_i : group)
@@ -166,19 +252,43 @@ public class DFA extends Graph {
         }
     }
 
-    private ArrayList<Set<Vertex>> minimize(Set<Vertex> NF, Set<Vertex> F,List<Vertex> Q,HashMap<Pair<Vertex,Character>,Vertex> table){
+    private ArrayList<Set<Vertex>> minimize(Set<Vertex> NF, Set<Vertex> F,List<Vertex> Q,HashMap<Pair<Vertex,Character>,Vertex> table,boolean isLexer){
         ArrayList<Set<Vertex>> P = new ArrayList<>(Q.size());
-        P.add(F);//F
-        P.add(NF);//Q - F (Q\F)
         HashMap<String,Integer> clz = new HashMap<>();//indicies of class which state is belonging.
         HashMap<Integer,Set<Vertex>> involved = new HashMap<>();//classes which have states with edges to splitter.
+        LinkedQueue<Pair<Set<Vertex>,Character>> queue = new LinkedQueue<>();
+
+//        Set<Vertex> FD = new HashSet<>();
+//        List<Vertex> l = ColUtils.fromSet(F);
+//        FD.add(l.get(0));
+//        String id = l.get(0).getValue();
+//        int clzi = 0;clz.put(l.get(0).getName(),0);
+//        for(int i = 1; i < l.size();i++){
+//            if(l.get(i).getValue().equals(id)) {
+//                FD.add(l.get(i));
+//                clz.put(l.get(i).getName(), clzi);
+//            }
+//            else{
+//                P.add(FD);
+//                for(Character c : alpha)
+//                     queue.add(new Pair<Set<Vertex>,Character>(FD,c));
+//                FD = new HashSet<>();
+//                id = l.get(i).getValue();
+//                clzi++;
+//                FD.add(l.get(i));
+//                clz.put(l.get(i).getName(),clzi);
+//            }
+//        }
+//        P.add(FD);
+//        clzi++;
+        P.add(F);//F
+        P.add(NF);//Q - F (Q\F)
         for(Vertex q : F){
             clz.put(q.getName(),0);
         }
         for(Vertex q: NF){
             clz.put(q.getName(),1);
         }
-        LinkedQueue<Pair<Set<Vertex>,Character>> queue = new LinkedQueue<>();
         for(Character c : alpha){
             queue.add(new Pair<Set<Vertex>,Character>(F,c));
             queue.add(new Pair<Set<Vertex>, Character>(NF,c));

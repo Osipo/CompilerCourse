@@ -58,7 +58,7 @@ public class Grammar {
                     if(!this.E.equals(""))
                         throw new InvalidJsonGrammarException("Only one empty-terminal is allowed. Found two or more",null);
                     this.E = t;
-                    l.add("");
+                    //l.add("");
                 }
                 else if(el instanceof JsonString) {
                     String val = ((JsonString) el).getValue();

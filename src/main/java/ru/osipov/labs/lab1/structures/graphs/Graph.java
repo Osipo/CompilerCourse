@@ -42,9 +42,9 @@ public class Graph {
                 continue;
             }
             sb.append(",shape=\"circle\"");
-//            if(v.isDead()){
-//                sb.append(",color=\"red\", shape=\"box\"");
-//            }
+            if(v.isDead()){
+                sb.append(",color=\"red\"");
+            }
             sb.append("]");
             sb.append(";\n");
         }

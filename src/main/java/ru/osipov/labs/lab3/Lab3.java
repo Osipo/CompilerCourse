@@ -4,11 +4,15 @@ import guru.nidi.graphviz.engine.Format;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
+import ru.osipov.labs.lab1.structures.automats.DFA;
 import ru.osipov.labs.lab1.structures.graphs.Graph;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab2.grammars.json.InvalidJsonGrammarException;
 import ru.osipov.labs.lab2.jsonParser.SimpleJsonParser;
 import ru.osipov.labs.lab2.jsonParser.jsElements.JsonObject;
+import ru.osipov.labs.lab3.lexers.DFALexer;
+import ru.osipov.labs.lab3.lexers.Token;
+import ru.osipov.labs.lab3.lexers.generators.DFALexerGenerator;
 import ru.osipov.labs.lab3.parsers.LLParser;
 import ru.osipov.labs.lab3.parsers.generators.LLParserGenerator;
 import ru.osipov.labs.lab3.trees.LinkedTree;
@@ -66,9 +70,14 @@ public class Lab3 implements CommandLineRunner {
                 System.out.println(k+": "+FOLLOW.get(k));
             }
             System.out.println("-------------");
-            LLParser syntaxP = new LLParser(G);
+
+            DFALexerGenerator lg = new DFALexerGenerator();
+            DFALexer lexer = new DFALexer(lg.buildNFA(G));
+            lexer.getImagefromStr(sc.substring(0,sc.lastIndexOf('\\') + 1),"Lexer");
+            LLParser syntaxP = new LLParser(G,lexer);
+
             System.out.println("Get Tree of G");
-            LinkedTree<String> tree = syntaxP.parse(G,sc);
+            LinkedTree<Token> tree = syntaxP.parse2(G,sc);
             System.out.println("--------");
             if(tree != null) {
                 System.out.println(tree);

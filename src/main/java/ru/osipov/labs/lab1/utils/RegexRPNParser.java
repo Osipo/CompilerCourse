@@ -1,5 +1,10 @@
 package ru.osipov.labs.lab1.utils;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Set;
+
 public class RegexRPNParser {
     public RegexRPNParser(){ }
     private char[] terminals = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
@@ -10,6 +15,20 @@ public class RegexRPNParser {
                 return true;
         }
         return false;
+    }
+
+    //Set array of t
+    public void setTerminals(char[] t){
+        this.terminals = t;
+    }
+
+    //Set terms of regex.
+    public void setTerminals(Set<Character> symbols){
+        terminals = new char[symbols.size()];
+        int i = 0;
+        for(Character c : symbols){
+            terminals[i++] = c;
+        }
     }
 
 

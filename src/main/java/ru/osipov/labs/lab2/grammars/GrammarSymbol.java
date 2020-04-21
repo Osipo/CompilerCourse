@@ -1,8 +1,8 @@
 package ru.osipov.labs.lab2.grammars;
 
 public class GrammarSymbol {
-    private char type;
-    private String val;
+    protected char type;
+    protected String val;
 
     public GrammarSymbol(char type, String val){
         this.type = type;

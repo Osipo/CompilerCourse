@@ -6,10 +6,10 @@ import java.util.List;
 public class Vertex {
     private String name;
     private List<Edge> edges;
-    private boolean isStart;//redundant
+    private boolean isStart;
     private boolean isFinish;
     private boolean isDead;
-
+    private String value;//label inside
 
     public Vertex(){
         this.name = "";
@@ -17,6 +17,7 @@ public class Vertex {
         this.isFinish = false;
         this.isDead = false;
         this.edges = new ArrayList<>();
+        this.value = null;
     }
 
     public Vertex(String name){
@@ -75,6 +76,19 @@ public class Vertex {
             return isStart == b.isStart && isFinish == b.isFinish && name.equals(b.name);
         }
         return false;
+    }
+
+    @Override
+    public int hashCode(){
+        return this.getName().hashCode();
+    }
+
+    public void setValue(String v){
+        this.value = v;
+    }
+
+    public String getValue(){
+        return value;
     }
 
     public boolean isDead() {

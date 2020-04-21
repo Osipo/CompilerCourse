@@ -12,11 +12,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NFA extends Graph {
-    private Vertex start;
+    protected Vertex start;
     private Vertex finish;//when NFA is modeling, the Final states set is the set of the next possible states which contains final state.
-    private HashSet<Character> alpha;
-
-    public NFA(){}
+    protected HashSet<Character> alpha;
+    private HashSet<Vertex> comboF;
+    public NFA(){
+        this.comboF = new HashSet<>();
+    }
 
     public void setStart(Vertex v){
         addNode(v);
@@ -29,6 +31,11 @@ public class NFA extends Graph {
             }
         }
     }
+
+    public void setFinish(Vertex v){
+        this.finish = v;
+    }
+
 
     public void setAlpha(HashSet<Character> alpha) {
         this.alpha = alpha;

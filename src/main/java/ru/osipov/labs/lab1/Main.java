@@ -5,6 +5,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import ru.osipov.labs.lab1.structures.automats.DFA;
 import ru.osipov.labs.lab1.structures.automats.NFA;
 import ru.osipov.labs.lab1.structures.graphs.Edge;
+import ru.osipov.labs.lab1.structures.graphs.Elem;
 import ru.osipov.labs.lab1.structures.graphs.Pair;
 import ru.osipov.labs.lab1.structures.graphs.Vertex;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
@@ -192,6 +193,102 @@ public class Main implements CommandLineRunner {
             }
         }
         result.top().setAlpha(alpha);
+        return result.top();
+    }
+
+    //Algorithm: Mac Naughton-Yamada-Tompson (Мак-Нотона, Ямады, Томпсона)
+    public static NFA buildNFA(LinkedStack<Character> expr, RegexRPNParser parser, Elem<Integer> el){
+        LinkedStack<NFA> result = new LinkedStack<>();
+        HashSet<Character> alpha = new HashSet<>();
+        int c = el.getV1();
+        for(Character tok : expr){
+            if(parser.isUnaryOp(tok)){
+                NFA g = result.top();
+                result.pop();
+                for(Vertex v: g.getNodes()){
+                    //v.setName("");
+                    v.setFinish(false);
+                }
+                Vertex s = new Vertex(c+"");
+                c++;
+                Vertex t = new Vertex(c+"");
+                c++;
+                Edge iloop = new Edge(g.getFinish(), g.getStart(), (char) 1);
+                g.getFinish().setFinish(false);
+                g.getStart().setStart(false);
+                Edge se = new Edge(s, g.getStart(), (char) 1);
+                Edge fe = new Edge(g.getFinish(), t, (char) 1);
+                if(tok == '*') {// '+' and '*' differ only with one edge.
+                    Edge loop = new Edge(s, t, (char) 1);//for '*' add empty from start to finish
+                }
+                NFA R = new NFA();
+                t.setFinish(true);
+                R.setStart(s);
+                result.push(R);
+            }
+            else if(parser.isOperator(tok)){
+                NFA g2 = result.top();
+                result.pop();
+                NFA g1 = result.top();
+                result.pop();
+                for(Vertex v: g2.getNodes()){
+                    v.setFinish(false);
+                }
+                for(Vertex v: g1.getNodes()){
+                    v.setFinish(false);
+                }
+                if(tok == '^') {
+                    Vertex inter = g1.getFinish();
+                    inter.setFinish(false);
+                    List<Edge> outE = g2.getStart().getEdges().stream().filter(edge -> edge.getSource().equals(g2.getStart())).collect(Collectors.toList());
+                    for(Edge e: outE){
+                        Edge ae = new Edge(inter,e.getTarget(),e.getTag());
+                        g2.disconnectVertexByEdge(e,g2.getStart(),e.getTarget());
+                    }
+                    NFA FC = new NFA();
+                    g2.getFinish().setFinish(true);
+                    FC.setStart(g1.getStart());
+                    result.push(FC);
+                }
+                else if(tok == '|'){
+                    Vertex s = new Vertex(c+"");
+                    c++;
+                    Vertex t = new Vertex(c+"");
+                    c++;
+                    Vertex s1 = g1.getStart();
+                    Vertex s2 = g2.getStart();
+                    Vertex t1 = g1.getFinish();
+                    Vertex t2 = g2.getFinish();
+                    Edge s_s1 = new Edge(s,s1,(char)1);
+                    Edge s_s2 = new Edge(s,s2,(char)1);
+                    Edge t_t1 = new Edge(t1,t,(char)1);
+                    Edge t_t2 = new Edge(t2,t,(char)1);
+                    s.setStart(true);
+                    s1.setStart(false);
+                    s2.setStart(false);
+                    t1.setFinish(false);
+                    t2.setFinish(false);
+                    t.setFinish(true);
+                    NFA FU = new NFA();
+                    FU.setStart(s);
+                    result.push(FU);
+                }
+            }
+            else{//token is not operator.
+                Vertex v1 = new Vertex(c+"");
+                c++;
+                Vertex v2 = new Vertex(c+"");
+                c++;
+                v2.setFinish(true);
+                Edge e = new Edge(v1,v2,tok);
+                NFA F = new NFA();
+                F.setStart(v1);
+                alpha.add(tok);
+                result.push(F);
+            }
+        }
+        result.top().setAlpha(alpha);
+        el.setV1(c);
         return result.top();
     }
 
