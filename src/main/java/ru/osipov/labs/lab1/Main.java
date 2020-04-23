@@ -103,7 +103,7 @@ public class Main implements CommandLineRunner {
         System.out.println("F: "+min2.getFinished());
 
         nfa.getImagefromStr(p,"nfa_1");
-        dfa.getImagefromStr(p,"dfa_1");// can be too big for dot.exe
+        //dfa.getImagefromStr(p,"dfa_1");// can be too big for dot.exe
         minDfa.getImagefromStr(p,"minDfa_1");
     }
 
@@ -346,7 +346,7 @@ public class Main implements CommandLineRunner {
                     return result.toString();
                 if((s.charAt(i) == ')' || s.charAt(i) == '*' || s.charAt(i) == '+')){
                     result.append(s.charAt(i));
-                    if(i + 1 < s.length() && s.charAt(i + 1) != ')' && s.charAt(i + 1) != '+' && s.charAt(i + 1) != '*' && s.charAt(i + 1) != '|')
+                    if(i + 1 < s.length() && s.charAt(i + 1) != ')' && s.charAt(i + 1) != '+' && s.charAt(i + 1) != '*' && s.charAt(i + 1) != '|' && s.charAt(i + 1) != '[')
                         result.append('^');
                 }
                 else if(parser.isTerminal(s.charAt(i)) || s.charAt(i) == '('){
