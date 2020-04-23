@@ -12,7 +12,7 @@ import ru.osipov.labs.lab2.jsonParser.SimpleJsonParser;
 import ru.osipov.labs.lab2.jsonParser.jsElements.JsonObject;
 import ru.osipov.labs.lab3.lexers.DFALexer;
 import ru.osipov.labs.lab3.lexers.Token;
-import ru.osipov.labs.lab3.lexers.generators.DFALexerGenerator;
+import ru.osipov.labs.lab3.lexers.generators.FALexerGenerator;
 import ru.osipov.labs.lab3.parsers.LLParser;
 import ru.osipov.labs.lab3.parsers.generators.LLParserGenerator;
 import ru.osipov.labs.lab3.trees.LinkedTree;
@@ -35,7 +35,6 @@ public class Lab3 implements CommandLineRunner {
         sc = sc + "\\S_G_lab3_mod.txt";
         p = p + "\\src\\main\\java\\ru\\osipov\\labs\\lab2\\";
         p = p + "grammars\\json\\G_Lab3_3_m.json";
-
         SimpleJsonParser parser = new SimpleJsonParser();
         JsonObject ob = parser.parse(p);
         if (ob != null) {
@@ -71,9 +70,9 @@ public class Lab3 implements CommandLineRunner {
             }
             System.out.println("-------------");
 
-            DFALexerGenerator lg = new DFALexerGenerator();
-            DFALexer lexer = new DFALexer(lg.buildNFA(G));
-            lexer.getImagefromStr(sc.substring(0,sc.lastIndexOf('\\') + 1),"Lexer");
+            FALexerGenerator lg = new FALexerGenerator();
+            DFALexer lexer = new DFALexer(new DFA(lg.buildNFA(G)));
+            //lexer.getImagefromStr(sc.substring(0,sc.lastIndexOf('\\') + 1),"Lexer");
             LLParser syntaxP = new LLParser(G,lexer);
 
             System.out.println("Get Tree of G");
@@ -81,7 +80,6 @@ public class Lab3 implements CommandLineRunner {
             System.out.println("--------");
             if(tree != null) {
                 System.out.println(tree);
-                //System.out.println(tree.toDot("tr"));
                 Graphviz.fromString(tree.toDot("trModified")).render(Format.PNG).toFile(new File(sc.substring(0,sc.lastIndexOf('\\') + 1)+"trModified"));
             }
             else{

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Graph {
     protected List<Vertex> nodes;
@@ -72,14 +73,13 @@ public class Graph {
             LinkedStack<Vertex> others = new LinkedStack<>();
             nodes.add(v);
             for (Edge e : v.getEdges()) {
+                _addEdgeFrom(e);
                 if(e.getSource().equals(v) && e.getTarget().equals(v))
                     continue;//skip loops.
                 if(e.getSource().equals(v))//from v
                     others.push(e.getTarget());
                 else if(e.getTarget().equals(v))
                     others.push(e.getSource());
-
-                _addEdgeFrom(e);
             }
             while(!others.isEmpty()){
                 Vertex t = others.top();

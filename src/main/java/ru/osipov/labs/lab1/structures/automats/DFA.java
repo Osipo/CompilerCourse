@@ -68,6 +68,7 @@ public class DFA extends Graph {
                     finished.add(a);
                 }
                 Edge tran = new Edge(a,b,c);//Implies tran_function.
+                this.edges.add(tran);
                 tranTable.put(new Pair<>(a,c),b);
             }
         }
@@ -75,7 +76,6 @@ public class DFA extends Graph {
         for(Vertex vv: finished){
             vv.setFinish(true);
         }
-
         //initiate dead_state.
         for(Vertex v : nodes){
             int c = 0;
@@ -141,6 +141,7 @@ public class DFA extends Graph {
                     finished.add(a);
                 }
                 Edge tran = new Edge(a,b,c);//Implies tran_function.
+                this.edges.add(tran);
                 tranTable.put(new Pair<>(a,c),b);
             }
         }
@@ -148,7 +149,6 @@ public class DFA extends Graph {
         for(Vertex vv: finished){
             vv.setFinish(true);
         }
-
         //initiate dead_state.
         for(Vertex v : nodes){
             int c = 0;
@@ -163,7 +163,10 @@ public class DFA extends Graph {
                 break;
             }
         }
-
+        System.out.println("States of DFA: "+this.nodes.size());
+        System.out.println("Finished: "+this.finished.size());
+        if(dead != null)
+            System.out.println("Dead: "+dead);
     }
 
     public void showTranTable(){
@@ -187,12 +190,13 @@ public class DFA extends Graph {
 
         Elem<Integer> nstatescount = new Elem<>(0);
         HashMap<String,Vertex> mapped = new HashMap<>();
+        HashMap<String,Set<Vertex>> representers = new HashMap<>();
         for (Set<Vertex> sv : P) {//for each set -> make new state.
             for (Vertex v : sv) {//select a representer of the set
                 //System.out.println("Rep: "+v.getName());
                 Vertex n = new Vertex();
                 nstatescount.setV1(nstatescount.getV1() + 1);
-                makeRecord(oldTran,sv,v,n,nstatescount,mapped);
+                makeRecord(P,oldTran,sv,v,n,nstatescount,mapped);
                 break;
             }
         }
@@ -206,13 +210,13 @@ public class DFA extends Graph {
 
 
 
-    private void makeRecord(HashMap<Pair<Vertex,Character>,Vertex> oldTran, Set<Vertex> group,Vertex s,Vertex n, Elem<Integer> count, HashMap<String,Vertex> mapped){
+    private void makeRecord(ArrayList<Set<Vertex>> P,HashMap<Pair<Vertex,Character>,Vertex> oldTran, Set<Vertex> group,Vertex s,Vertex n, Elem<Integer> count, HashMap<String,Vertex> mapped){
         n.setName("M"+count.getV1());
         n.setValue(s.getValue());
+        //System.out.println(n.getName());
         //System.out.println("Rep: "+s);
         if(mapped.get(s.getName()) != null){
             n = mapped.get(s.getName());
-            count.setV1(Integer.parseInt(n.getName().substring(1)));
         }
         if(group.stream().anyMatch(Vertex::isStart)){
             this.start = n;
@@ -234,6 +238,7 @@ public class DFA extends Graph {
             Vertex t = oldTran.get(k);
             if(group.contains(t)) {
                 Edge tran = new Edge(n, n, k.getV2());//loop to the same state if it has the same group.
+                this.edges.add(tran);
                 tranTable.put(new Pair<>(n,k.getV2()),n);//update new tran_table.
                 mapped.put(t.getName(),n);
             }
@@ -242,29 +247,34 @@ public class DFA extends Graph {
                 count.setV1(count.getV1() + 1);
                 n2.setName("M"+count.getV1());
                 Edge tran = new Edge(n,n2,k.getV2());
+                this.edges.add(tran);
                 tranTable.put(new Pair<>(n,k.getV2()),n2);
                 mapped.put(t.getName(),n2);//mark group
+                //another group must be fully labeled!
+                P.stream().filter(x -> x.contains(t)).forEach(
+                        x ->{
+                            for(Vertex g2_v : x)
+                                mapped.put(g2_v.getName(),n2);
+                        }
+                );
             }
             else{//new group was added.
                 Vertex prev = mapped.get(t.getName());
                 Edge tran = new Edge(n,prev,k.getV2());
+                this.edges.add(tran);
                 tranTable.put(new Pair<>(n,k.getV2()),prev);
             }
         }
     }
 
-    //isLexer :: ifTrue => build initial partition with patterns, dead state and others.
-    //TODO: fix method when isLexer == true. (initial partition generation)
+    //isLexer :: ifTrue => build initial partition with patterns, dead state and others. ({p1},{p2}...{pn}{dead}{NF states})
     private ArrayList<Set<Vertex>> minimize(Set<Vertex> NF, Set<Vertex> F,List<Vertex> Q,HashMap<Pair<Vertex,Character>,Vertex> table,boolean isLexer){
         ArrayList<Set<Vertex>> P = new ArrayList<>(Q.size());
         HashMap<String,Integer> clz = new HashMap<>();//indicies of class which state is belonging.
         HashMap<Integer,Set<Vertex>> involved = new HashMap<>();//classes which have states with edges to splitter.
         LinkedQueue<Pair<Set<Vertex>,Character>> queue = new LinkedQueue<>();
         if(isLexer) {
-            Set<Vertex> FD = new HashSet<>();
             List<Vertex> l = ColUtils.fromSet(F);
-            FD.add(l.get(0));
-            String id = l.get(0).getValue();
             Vertex dead = null;
             for(int i = 0; i < l.size();i++){
                 if(l.get(i).isDead()){
@@ -283,24 +293,19 @@ public class DFA extends Graph {
             }
             l.remove(dead);
             int clzi = 0;
-            clz.put(l.get(0).getName(), 0);
-            for (int i = 1; i < l.size(); i++) {
-                if (l.get(i).getValue().equals(id)) {
-                    FD.add(l.get(i));
-                    clz.put(l.get(i).getName(), clzi);
-                } else {
-                    P.add(FD);
-                    for (Character c : alpha)
-                        queue.add(new Pair<Set<Vertex>, Character>(FD, c));
-                    FD = new HashSet<>();
-                    id = l.get(i).getValue();
-                    clzi++;
-                    FD.add(l.get(i));
-                    clz.put(l.get(i).getName(), clzi);
+            LinkedStack<String> ids = new LinkedStack<>();
+            HashMap<String,Set<Vertex>> ig = new HashMap<>();
+            for(int i = 0; i < l.size();i++){
+                String gname = l.get(i).getValue();
+                if(!ids.contains(gname)){
+                    ids.push(gname);
+                    ig.put(gname,new HashSet<>());
                 }
             }
-            P.add(FD);
-            clzi++;
+            for(int i = 0; i < l.size();i++){
+                Set<Vertex> group = ig.get(l.get(i).getValue());
+                group.add(l.get(i));
+            }
             P.add(NF);
             for(Vertex v : NF){
                 clz.put(v.getName(),clzi);
@@ -309,6 +314,17 @@ public class DFA extends Graph {
                 queue.add(new Pair<Set<Vertex>, Character>(NF, c));
             }
             clzi++;
+            for(String k : ig.keySet()){
+                Set<Vertex> group = ig.get(k);
+                for(Vertex v : group){
+                    clz.put(v.getName(),clzi);
+                }
+                for(Character c : alpha){
+                    queue.add(new Pair<Set<Vertex>,Character>(group,c));
+                }
+                P.add(group);
+                clzi++;
+            }
             if(dead != null) {
                 Set<Vertex> Dead = new HashSet<>();
                 Dead.add(dead);
@@ -345,6 +361,7 @@ public class DFA extends Graph {
                 for(Pair<Vertex,Character> k : keys) {
                     if (q.equals(table.get(k))) {//if q = tran(r,a)
                         Vertex r = k.getV1();
+                        //System.out.println(r.getName());
                         int i = clz.get(r.getName());
                         if (!involved.containsKey(i))
                             involved.put(i, new HashSet<Vertex>());
@@ -456,6 +473,21 @@ public class DFA extends Graph {
                 e.disconnectNodes();
             }
             this.dead = null;
+        }
+    }
+
+    //Add nodes to the graph. All edges has already been added before building DFA.
+    //(On step constructing DFA from NFA) or
+    //(On step minimization DFA)
+    //param: Vertex v is useless (used only to override method)
+    @Override
+    public void addNode(Vertex v){
+        for(Pair<Vertex,Character> k : tranTable.keySet()){
+            Vertex dest = tranTable.get(k);
+            if(!nodes.contains(dest))
+                this.nodes.add(dest);
+            if(!nodes.contains(k.getV1()))
+                this.nodes.add(k.getV1());
         }
     }
 }

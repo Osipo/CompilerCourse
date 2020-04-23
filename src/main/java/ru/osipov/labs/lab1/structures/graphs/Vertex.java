@@ -17,7 +17,7 @@ public class Vertex {
         this.isFinish = false;
         this.isDead = false;
         this.edges = new ArrayList<>();
-        this.value = null;
+        this.value = "";
     }
 
     public Vertex(String name){
@@ -26,6 +26,7 @@ public class Vertex {
         this.isFinish = false;
         this.isDead = false;
         this.edges = new ArrayList<>();
+        this.value = "";
     }
 
     public void setStart(boolean e){

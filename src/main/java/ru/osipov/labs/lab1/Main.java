@@ -103,7 +103,7 @@ public class Main implements CommandLineRunner {
         System.out.println("F: "+min2.getFinished());
 
         nfa.getImagefromStr(p,"nfa_1");
-        dfa.getImagefromStr(p,"dfa_1");
+        dfa.getImagefromStr(p,"dfa_1");// can be too big for dot.exe
         minDfa.getImagefromStr(p,"minDfa_1");
     }
 
@@ -297,11 +297,12 @@ public class Main implements CommandLineRunner {
         for(int i = 0; i < s.length(); i++){
             if(s.charAt(i) == '['){// replace class [A-Z] with expression (A|B|...|Z) and add '^' if needed.
                 char t = s.charAt(i);
-                if(i > 0){
+                if(i > 0 && s.charAt(i - 1) != '('){
                     result.append('^');
                 }
                 result.append('(');
                 int j = i + 1;
+                boolean wflag = false;
                 while(t != ']' && j < s.length()){
                     t = s.charAt(j);
                     if(j + 1 < s.length() && s.charAt(j) == '-'){
@@ -319,19 +320,40 @@ public class Main implements CommandLineRunner {
                         CharSequence subor = result.subSequence(0,result.length() - 1);
                         result = new StringBuilder().append(subor);
                         j = j + 2;
+                        wflag = true;
                         continue;
+                    }
+                    if(wflag && t != ']'){
+                        result.append("|");
+                        wflag = false;
                     }
                     String or =  (j + 1 == s.length() || s.charAt(j + 1) == ']') ? s.charAt(j)+"" : s.charAt(j)+"|";
                     result.append(s.charAt(j) == ']' ? ")" : or);
+                    if(s.charAt(j) == ']'){
+                        j++;
+                        break;
+                    }
+                    if(s.charAt(j + 1) == ']'){
+                        result.append(')');
+                        j++;
+                        j++;
+                        break;
+                    }
                     j++;
                 }
-                if(j < s.length() && s.charAt(j) == ']')
-                    result.append('^');
-                if(j + 1 == s.length()) {
-                    result.append(s.charAt(j));
-                    return result.toString();
-                }
                 i = j;
+                if(i == s.length())
+                    return result.toString();
+                if((s.charAt(i) == ')' || s.charAt(i) == '*' || s.charAt(i) == '+')){
+                    result.append(s.charAt(i));
+                    if(i + 1 < s.length() && s.charAt(i + 1) != ')' && s.charAt(i + 1) != '+' && s.charAt(i + 1) != '*' && s.charAt(i + 1) != '|')
+                        result.append('^');
+                }
+                else if(parser.isTerminal(s.charAt(i)) || s.charAt(i) == '('){
+                    result.append('^').append(s.charAt(i));
+                }
+                else if(s.charAt(i) == '[')
+                    i = j - 1;
                 continue;
             }
             result.append(s.charAt(i));

@@ -17,23 +17,30 @@ public class DFALexer extends DFA implements ILexer {
     private LexerIO io;
 
     public DFALexer(DFA dfa, LexerIO io){
-        super(dfa);//get minimized dfa.
+        super(dfa,true);
+        this.deleteDeadState();
         this.io = io;
     }
 
     public DFALexer(NFA nfa, LexerIO io){
         super(nfa);
+        this.deleteDeadState();
         this.io = io;
     }
 
     public DFALexer(CNFA nfa){
         super(nfa);
         this.deleteDeadState();
+        System.out.println("DFA States: "+this.getNodes().size());
+        System.out.println("Patterns (F): "+this.getFinished().size());
         this.io = new LookAheadBufferedLexer();
     }
 
     public DFALexer(DFA dfa){
-        super(dfa,true);//fix Minimization for lexer.
+        super(dfa,true);//set Minimization for lexer true.
+        this.deleteDeadState();
+        System.out.println("MinDFA States: "+this.getNodes().size());
+        System.out.println("Patterns (F): "+this.getFinished().size());
         this.io = new LookAheadBufferedLexer();
     }
 

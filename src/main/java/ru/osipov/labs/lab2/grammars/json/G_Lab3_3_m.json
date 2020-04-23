@@ -18,9 +18,10 @@
     ">=": ">=",
     "<>": "<>",
     ";": ";",
-    "id": "id",
-    "num": "num",
-    "e": null
+    "id": "[A-Za-z_]([A-Za-z_0-9]+|empty)",
+    "num": "[0-9]+",
+    "realNum": "[0-9]+.[0-9]+(((E|e)(-|empty)[0-9]+)|empty)",
+    "empty": null
   },
   "nonTerms": ["E","AE","T","F","PE","RELOP","PLUSOP","MULLOP","OP","OPLIST","P","B"],
   "productions": [{"P": ["B"]},{"B": ["{","OPLIST","}"]},
@@ -30,7 +31,7 @@
   ,{"AE": ["T"]},{"AE": ["PLUSOP","T"]},{"AE": ["AE","PLUSOP","T"]}
   ,{"T" : ["F"]}, {"T": ["T","MULLOP","F"]}
   ,{"F": ["PE"]},{"F": ["F","^","PE"]}
-  ,{"PE": "num"},{"PE": "id"},{"PE": ["(","AE",")"]}
+  ,{"PE": "num"},{"PE": "id"},{"PE": "realNum"},{"PE": ["(","AE",")"]}
   ,{"PLUSOP": "+"},{"PLUSOP": "-"}
   ,{"MULLOP": "*"},{"MULLOP": "/"},{"MULLOP": "%"}
   ,{"RELOP": "<"},{"RELOP": "<="},{"RELOP": ">"},{"RELOP": ">="},{"RELOP": "=="},{"RELOP": "<>"}

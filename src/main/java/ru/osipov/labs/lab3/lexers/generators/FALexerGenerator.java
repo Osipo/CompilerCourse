@@ -13,7 +13,7 @@ import ru.osipov.labs.lab2.grammars.Grammar;
 
 import java.util.*;
 
-public class DFALexerGenerator {
+public class FALexerGenerator {
     public CNFA buildNFA(Grammar G){
         Map<String, List<String>> rules = G.getLexicalRules();
         HashSet<Character> alpha = new HashSet<>();
@@ -29,7 +29,6 @@ public class DFALexerGenerator {
         for(String id : rules.keySet()){
             List<String> patterns = rules.get(id);
             for(String pattern : patterns){
-                parser.setTerminals(pattern.toCharArray());
                 LinkedStack<Character> rpn = new LinkedStack<>();
                 if(pattern.length() == 1) {
                     char c = pattern.charAt(0);
@@ -51,8 +50,18 @@ public class DFALexerGenerator {
                     continue;
                 }
                 else {
-                    String p_i = Main.addConcat(pattern,parser);
+                    String p_i = new String(pattern.toCharArray());
+                    p_i = p_i.replaceAll(G.getEmpty(),(char)1+"");
+                    //System.out.println("Pattern: " +p_i);
+                    parser.setTerminals(p_i.toCharArray());
+                    p_i = Main.addConcat(p_i,parser);
+                    //System.out.println("expr: "+p_i);
+                    //System.out.println("Conc: "+ p_i);
+                    parser.setTerminals(p_i.toCharArray());
+                    //System.out.println("PT:"+ Arrays.toString(parser.getTerminals()));
                     rpn = parser.GetInput(p_i);
+                    //System.out.println("Stack:"+rpn);
+                    //System.out.println("Parsed: "+rpn);
                 }
                 NFA nfa = Main.buildNFA(rpn,parser,idC);
                 alpha.addAll(nfa.getAlpha());
@@ -72,8 +81,11 @@ public class DFALexerGenerator {
         comboNFA.setComboStart(vs);
         comboNFA.setFinish(nf);
         comboNFA.setFinished(Fs);
-        //System.out.println(comboNFA.getFinished());
+//        System.out.println(comboNFA.getNodes());
+//        System.out.println(comboNFA.getStart());
+//        System.out.println(comboNFA.getFinished());
         comboNFA.setAlpha(alpha);
+        System.out.println("States of NFA: "+comboNFA.getCountOfStates());
         return comboNFA;
     }
 }

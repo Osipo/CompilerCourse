@@ -19,7 +19,15 @@ public class RegexRPNParser {
 
     //Set array of t
     public void setTerminals(char[] t){
-        this.terminals = t;
+        this.terminals = new char[t.length];
+        for(int i = 0; i < t.length; i++){
+            if(t[i] != '+' && t[i] != '*' && t[i] != '|' && t[i] != '(' && t[i] != ')' && t[i] != '^' && t[i] != '[' && t[i] != ']')
+                this.terminals[i] = t[i];
+        }
+    }
+
+    public char[] getTerminals(){
+        return terminals;
     }
 
     //Set terms of regex.
