@@ -35,17 +35,9 @@ public class Lab3 implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         RegexRPNParser rpn = new RegexRPNParser();
-//        String test_p = "[0-2]+.[0-2]+(((E|e)(-|"+(char)1+")[0-2]+)|"+(char)1+")";
-//        rpn.setTerminals(test_p.toCharArray());
-//        test_p = Main.addConcat(test_p,rpn);
-//        rpn.setTerminals(test_p.toCharArray());
-//        LinkedStack<Character> test_e = rpn.GetInput(test_p);
-//        DFA test_d = new DFA(new DFA(Main.buildNFA(test_e,rpn)));
         String p = System.getProperty("user.dir");
         System.out.println("Current working dir: "+p);
         String sc = System.getProperty("user.dir")+"\\src\\main\\java\\ru\\osipov\\labs\\lab3";
-        //test_d.getImagefromStr(sc,"id_lex");
-
         sc = sc + "\\S_G_lab3_mod.txt";
         p = p + "\\src\\main\\java\\ru\\osipov\\labs\\lab2\\";
         p = p + "grammars\\json\\G_Lab3_3_m.json";

@@ -5,4 +5,5 @@ import java.io.InputStream;
 
 public interface ILexer {
     Token recognize(InputStream f) throws IOException;
+    Token generateError(String s1, String s2);
 }

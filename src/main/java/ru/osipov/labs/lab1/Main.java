@@ -207,7 +207,6 @@ public class Main implements CommandLineRunner {
                 CNFA g = result.top();
                 result.pop();
                 for(Vertex v: g.getNodes()){//nullify finish
-                    //v.setName("");
                     v.setFinish(false);
                 }
                 Vertex s = new Vertex(c+"");
@@ -233,49 +232,24 @@ public class Main implements CommandLineRunner {
                 result.pop();
                 CNFA g1 = result.top();
                 result.pop();
-//                if(isEmptyNFA(g2) || isEmptyNFA(g1)){
-//                    CNFA res = isEmptyNFA(g1) ? g2 : g1;
-//                    if(tok == '|') {
-//                        res.getStart().setFinish(true);
-//                        Fe.add(res.getStart());
-//                    }
-//                    //res.addToFinished(res.getStart());
-////                    result.push(res);//ae = ea = a.
-////                    continue;
-//                }
                 for(Vertex v: g2.getNodes()){//nullify finish
-//                    if(v.isStart())
-//                        continue;
                     v.setFinish(false);
                 }
                 for(Vertex v: g1.getNodes()){
-//                    if(v.isStart())
-//                        continue;
                     v.setFinish(false);
                 }
                 if(tok == '^') {
                     Vertex inter = g1.getFinish();
                     List<Edge> outE = g2.getStart().getEdges().stream().filter(edge -> edge.getSource().equals(g2.getStart())).collect(Collectors.toList());
                     List<Edge> outEi = g2.getStart().getEdges().stream().filter(edge -> edge.getTarget().equals(g2.getStart())).collect(Collectors.toList());
-//                    if(Fe.contains(g2.getStart())) {//(a|e)^(b|e) => {a,b,ab,e}.
-//                        Fe.add(inter);
-//                        //inter.setFinish(true);
-//                    }
-//                    else
-                        inter.setFinish(false);
+                    inter.setFinish(false);
                     for(Edge e: outE){//union output edges.
                         Edge ae = new Edge(inter,e.getTarget(),e.getTag());
                         g2.disconnectVertexByEdge(e,g2.getStart(),e.getTarget());
-//                        if(Fe.contains(g1.getStart())) {
-//                            Edge se = new Edge(g1.getStart(), e.getTarget(), e.getTag());
-//                        }
                     }
                     for(Edge e : outEi){//union input edges.
                         Edge ea = new Edge(e.getSource(),inter,e.getTag());
                         g2.disconnectVertexByEdge(e,e.getSource(),g2.getStart());
-//                        if(Fe.contains(g1.getStart())) {
-//                            Edge se = new Edge(e.getSource(), g1.getStart(), e.getTag());
-//                        }
                     }
                     CNFA FC = new CNFA();
                     g2.getFinish().setFinish(true);

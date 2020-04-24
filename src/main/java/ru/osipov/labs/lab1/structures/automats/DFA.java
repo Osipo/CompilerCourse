@@ -294,7 +294,6 @@ public class DFA extends Graph {
                 NF.remove(dead);
             }
             l.remove(dead);
-            //int clzi = 0;
             LinkedStack<String> ids = new LinkedStack<>();
             HashMap<String,Set<Vertex>> ig = new HashMap<>();
             for(int i = 0; i < l.size();i++){
@@ -309,32 +308,14 @@ public class DFA extends Graph {
                 group.add(l.get(i));
             }
             P.add(NF);
-//            for(Vertex v : NF){
-//                clz.put(v.getName(),clzi);
-//            }
-//            for(Character c : alpha){
-//                queue.add(new Pair<Set<Vertex>, Character>(NF, c));
-//            }
-//            clzi++;
             for(String k : ig.keySet()){
                 Set<Vertex> group = ig.get(k);
-//                for(Vertex v : group){
-//                    clz.put(v.getName(),clzi);
-//                }
-//                for(Character c : alpha){
-//                    queue.add(new Pair<Set<Vertex>,Character>(group,c));
-//                }
                 P.add(group);
-                //clzi++;
             }
             if(dead != null) {
                 Set<Vertex> Dead = new HashSet<>();
                 Dead.add(dead);
                 P.add(Dead);
-//                clz.put(dead.getName(), clzi);
-//                for(Character c : alpha){
-//                    queue.add(new Pair<Set<Vertex>, Character>(Dead, c));
-//                }
             }
             System.out.println("IP = "+P);
             W.addAll(P);
@@ -342,16 +323,6 @@ public class DFA extends Graph {
         else {
             P.add(F);//F
             P.add(NF);//Q - F (Q\F)
-//            for (Vertex q : F) {
-//                clz.put(q.getName(), 0);
-//            }
-//            for (Vertex q : NF) {
-//                clz.put(q.getName(), 1);
-//            }
-//            for (Character c : alpha) {
-//                queue.add(new Pair<Set<Vertex>, Character>(F, c));
-//                queue.add(new Pair<Set<Vertex>, Character>(NF, c));
-//            }
             W.add(F);
             W.add(NF);
         }

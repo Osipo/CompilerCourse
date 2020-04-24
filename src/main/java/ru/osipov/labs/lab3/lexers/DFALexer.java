@@ -66,6 +66,8 @@ public class DFALexer extends DFA implements ILexer {
             if(s == null || s.isDead()){
                 while(s == null || !s.isFinish()){
                     cur = sb.charAt(sb.length() - 1);
+                    if(sb.length() == 0)
+                          return new Token("Unrecognized","Error at ("+io.getLine()+":"+io.getCol()+") :: Unrecognized token: "+sb.toString()+"\n",'e');
                     sb.deleteCharAt(sb.length() - 1);
                     io.ungetch(cur);
                     s = states.top();
@@ -94,5 +96,9 @@ public class DFALexer extends DFA implements ILexer {
     private Vertex moveTo(Vertex v, char c){
         List<Pair<Vertex,Character>> k = tranTable.keySet().stream().filter(x -> x.getV1().equals(v) && x.getV2() == c).collect(Collectors.toList());
         return k.size() > 0 ? tranTable.get(k.get(0)) : null;
+    }
+
+    public Token generateError(String s1, String s2){
+        return new Token("Unrecognized","Error at ("+io.getLine()+":"+io.getCol()+") :: Expected token: "+s1+"  but actual: "+s2+"\n",'e');
     }
 }

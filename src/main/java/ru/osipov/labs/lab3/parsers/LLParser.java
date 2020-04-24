@@ -23,6 +23,7 @@ import java.util.Map;
 public class LLParser {
     private LLParserGenerator gen;
     private Map<Pair<String,String>, GrammarString> table;
+    private ILexer lexer;
     //Lexer parts.
     private char[] buf;
     private int bsize;
@@ -31,7 +32,6 @@ public class LLParser {
 
     private int line;
     private int col;
-    private ILexer lexer;
 
     public LLParser(Grammar G, ILexer lexer){
         gen = new LLParserGenerator();
@@ -48,6 +48,7 @@ public class LLParser {
     }
 
     //Algorithm 4.20
+    /*
     public LinkedTree<String> parse(Grammar G, String fname){
         FileInputStream f;
         boolean isParsed = true;
@@ -121,10 +122,10 @@ public class LLParser {
             System.out.println("File is not available now.");
             return null;
         }
-    }
+    }*/
 
     //Algorithm 4.20 with lexer module.
-    public LinkedTree<Token> parse2(Grammar G, String fname){
+    public LinkedTree<Token> parse(Grammar G, String fname){
         FileInputStream f;
         boolean isParsed = true;
         try {
@@ -186,8 +187,13 @@ public class LLParser {
             }
             if(isParsed)
                 return new LinkedTree<Token>(root);
-            else
-                System.out.println(tok);
+            else {
+                if(tok.getType() != 'e') {
+                    lexer.generateError(S.top().getValue().getName(),tok.getLexem());
+                }
+                else
+                    System.out.println(tok);
+            }
             return null;//if syntax error return null.
         }
         catch (FileNotFoundException e){
