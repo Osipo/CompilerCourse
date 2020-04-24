@@ -37,7 +37,7 @@ public class DFA extends Graph {
         this.start = new Vertex();//label for e-closure(s0)
         this.start.setStart(true);
         this.alpha = nfa.getAlpha();
-
+        this.alpha.remove((char)1);
         this.start.setName("1");
         Vertex a = this.start;
         Vertex b = null;
@@ -257,6 +257,7 @@ public class DFA extends Graph {
                                 mapped.put(g2_v.getName(),n2);
                         }
                 );
+
             }
             else{//new group was added.
                 Vertex prev = mapped.get(t.getName());
@@ -273,6 +274,7 @@ public class DFA extends Graph {
         HashMap<String,Integer> clz = new HashMap<>();//indicies of class which state is belonging.
         HashMap<Integer,Set<Vertex>> involved = new HashMap<>();//classes which have states with edges to splitter.
         LinkedQueue<Pair<Set<Vertex>,Character>> queue = new LinkedQueue<>();
+        ArrayList<Set<Vertex>> W = new ArrayList<>();
         if(isLexer) {
             List<Vertex> l = ColUtils.fromSet(F);
             Vertex dead = null;
@@ -292,7 +294,7 @@ public class DFA extends Graph {
                 NF.remove(dead);
             }
             l.remove(dead);
-            int clzi = 0;
+            //int clzi = 0;
             LinkedStack<String> ids = new LinkedStack<>();
             HashMap<String,Set<Vertex>> ig = new HashMap<>();
             for(int i = 0; i < l.size();i++){
@@ -307,97 +309,139 @@ public class DFA extends Graph {
                 group.add(l.get(i));
             }
             P.add(NF);
-            for(Vertex v : NF){
-                clz.put(v.getName(),clzi);
-            }
-            for(Character c : alpha){
-                queue.add(new Pair<Set<Vertex>, Character>(NF, c));
-            }
-            clzi++;
+//            for(Vertex v : NF){
+//                clz.put(v.getName(),clzi);
+//            }
+//            for(Character c : alpha){
+//                queue.add(new Pair<Set<Vertex>, Character>(NF, c));
+//            }
+//            clzi++;
             for(String k : ig.keySet()){
                 Set<Vertex> group = ig.get(k);
-                for(Vertex v : group){
-                    clz.put(v.getName(),clzi);
-                }
-                for(Character c : alpha){
-                    queue.add(new Pair<Set<Vertex>,Character>(group,c));
-                }
+//                for(Vertex v : group){
+//                    clz.put(v.getName(),clzi);
+//                }
+//                for(Character c : alpha){
+//                    queue.add(new Pair<Set<Vertex>,Character>(group,c));
+//                }
                 P.add(group);
-                clzi++;
+                //clzi++;
             }
             if(dead != null) {
                 Set<Vertex> Dead = new HashSet<>();
                 Dead.add(dead);
                 P.add(Dead);
-                clz.put(dead.getName(), clzi);
-                for(Character c : alpha){
-                    queue.add(new Pair<Set<Vertex>, Character>(Dead, c));
-                }
+//                clz.put(dead.getName(), clzi);
+//                for(Character c : alpha){
+//                    queue.add(new Pair<Set<Vertex>, Character>(Dead, c));
+//                }
             }
             System.out.println("IP = "+P);
+            W.addAll(P);
         }
         else {
             P.add(F);//F
             P.add(NF);//Q - F (Q\F)
-            for (Vertex q : F) {
-                clz.put(q.getName(), 0);
-            }
-            for (Vertex q : NF) {
-                clz.put(q.getName(), 1);
-            }
-            for (Character c : alpha) {
-                queue.add(new Pair<Set<Vertex>, Character>(F, c));
-                queue.add(new Pair<Set<Vertex>, Character>(NF, c));
-            }
+//            for (Vertex q : F) {
+//                clz.put(q.getName(), 0);
+//            }
+//            for (Vertex q : NF) {
+//                clz.put(q.getName(), 1);
+//            }
+//            for (Character c : alpha) {
+//                queue.add(new Pair<Set<Vertex>, Character>(F, c));
+//                queue.add(new Pair<Set<Vertex>, Character>(NF, c));
+//            }
+            W.add(F);
+            W.add(NF);
         }
-        while(!queue.isEmpty()){
-            Pair<Set<Vertex>,Character> p = queue.front(); // pair <C, a>
-            queue.dequeue();
-            involved = new HashMap<>();
-
-            //Compute involved..
-            for(Vertex q : p.getV1()){// for q in C and r in Q such tran(r,a) in C
-                List<Pair<Vertex,Character>> keys = table.keySet().stream().filter(x -> x.getV2() == p.getV2()).collect(Collectors.toList());
+        while(W.size() > 0){
+            Set<Vertex> C = W.get(0);
+            W.remove(C);
+            for(Character c : alpha){
+                List<Pair<Vertex,Character>> keys = table.keySet().stream().filter(x -> x.getV2() == c).collect(Collectors.toList());
+                Set<Vertex> X = new HashSet<>();
                 for(Pair<Vertex,Character> k : keys) {
-                    if (q.equals(table.get(k))) {//if q = tran(r,a)
-                        Vertex r = k.getV1();
-                        //System.out.println(r.getName());
-                        int i = clz.get(r.getName());
-                        if (!involved.containsKey(i))
-                            involved.put(i, new HashSet<Vertex>());
-                        involved.get(i).add(r);
+                    if(C.contains(table.get(k))){
+                        X.add(k.getV1());
+                    }
+                }
+                int k = 0;
+                while(k < P.size()) {
+                    Set<Vertex> Y = P.get(k);
+                    Set<Vertex> Y_i = new HashSet<>(Y);
+                    Set<Vertex> X_i = new HashSet<>(X);
+                    Y_i.removeAll(X);//Y - X.
+                    X_i.retainAll(Y);// X INTERSECT Y
+                    if (X_i.size() > 0 && Y_i.size() > 0){
+                        P.remove(Y);
+                        P.add(X_i);//replaced current
+                        P.add(Y_i);
+                        if(W.contains(Y)){
+                            W.remove(Y);
+                            W.add(X_i);
+                            W.add(Y_i);
+                        }
+                        else{
+                            if(X_i.size() <= Y_i.size()){
+                                W.add(X_i);
+                            }
+                            else
+                                W.add(Y_i);
                         }
                     }
-            }//Involved was computed.
-            for(int i : involved.keySet()){
-                Set<Vertex> P_i = P.get(i);  // ColUtils.<ArrayList<Set<Vertex>>,Set<Vertex>>getElemOfSet(P,i);
-                if(involved.get(i).size() < P_i.size()){
-                    Set<Vertex> P_j = new HashSet<>();
-                    P.add(P_j);
-                    int j = P.size() - 1;
-                    for(Vertex r : involved.get(i)){
-                        P_i.remove(r);
-                        P_j.add(r);
-                    }
-                    if(P_j.size() > P_i.size()){
-                        Collections.swap(P,i,j);
-                        P_i = P.get(i);//ColUtils.<ArrayList<Set<Vertex>>, Set<Vertex>>getElemOfSet(P, i);
-                        P_j = P.get(j);//ColUtils.<ArrayList<Set<Vertex>>, Set<Vertex>>getElemOfSet(P, j);
-                    }
-                    assert P_j != null;
-                    for(Vertex v : P_j){
-                        clz.put(v.getName(),j);
-                    }
-                    for(Character c : alpha){
-                        Vertex vj = new Vertex();
-                        vj.setName(""+j);
-                        HashSet<Vertex> s = new HashSet<>();
-                        s.add(vj);
-                        queue.enqueue(new Pair<>(s,c));
-                    }
+                    k++;
                 }
             }
         }
+//        while(!queue.isEmpty()){
+//            Pair<Set<Vertex>,Character> p = queue.front(); // pair <C, a>
+//            queue.dequeue();
+//            involved = new HashMap<>();
+//            System.out.println(p.getV1()+" : "+P);
+//            for(Vertex q : p.getV1()){// for q in C and r in Q such tran(r,a) in C
+//                List<Pair<Vertex,Character>> keys = table.keySet().stream().filter(x -> x.getV2() == p.getV2()).collect(Collectors.toList());
+//                for(Pair<Vertex,Character> k : keys) {
+//                    if (q.equals(table.get(k))) {//if q = tran(r,a)
+//                        Vertex r = k.getV1();
+//                        //System.out.println(r+" -> "+r);
+//                        //System.out.println(r.getName());
+//                        int i = clz.get(r.getName());
+//                        if (!involved.containsKey(i))
+//                            involved.put(i, new HashSet<Vertex>());
+//                        involved.get(i).add(r);
+//                        }
+//                    }
+//            }//Involved was computed.
+//            for(int i : involved.keySet()){
+//                Set<Vertex> P_i = P.get(i);  // ColUtils.<ArrayList<Set<Vertex>>,Set<Vertex>>getElemOfSet(P,i);
+//                if(involved.get(i).size() < P_i.size()){
+//                    Set<Vertex> P_j = new HashSet<>();
+//                    P.add(P_j);
+//                    int j = P.size() - 1;
+//                    for(Vertex r : involved.get(i)){
+//                        P_i.remove(r);
+//                        P_j.add(r);
+//                        clz.put(r.getName(),j);
+//                    }
+//                    if(P_j.size() > P_i.size()){
+//                        Collections.swap(P,i,j);
+//                        //P_i = P.get(i);//ColUtils.<ArrayList<Set<Vertex>>, Set<Vertex>>getElemOfSet(P, i);
+//                        //P_j = P.get(j);//ColUtils.<ArrayList<Set<Vertex>>, Set<Vertex>>getElemOfSet(P, j);
+//                    }
+////                    for(Vertex v : P_j){
+////                        clz.put(v.getName(),j);
+////                    }
+//                    for(Character c : alpha){
+//                        Vertex vj = new Vertex();
+//                        vj.setName(""+j);
+//                        HashSet<Vertex> s = new HashSet<>();
+//                        s.add(vj);
+//                        queue.enqueue(new Pair<>(s,c));
+//                    }
+//                }
+//            }
+//        }
         System.out.println("P = "+P);
         return P;
     }

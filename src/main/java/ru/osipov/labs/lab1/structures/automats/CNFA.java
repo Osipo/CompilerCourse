@@ -13,6 +13,10 @@ public class CNFA extends NFA{
         this.comboF = new HashSet<>();
     }
 
+    public boolean hasMultipleFinish(){
+        return comboF.size() > 1;
+    }
+
     public void setComboStart(Vertex v){
         addNode(v);
         v.setStart(true);
@@ -26,11 +30,21 @@ public class CNFA extends NFA{
         }
     }
 
+    public void addToFinished(Vertex v){
+        if(v.isFinish())
+            comboF.add(v);
+    }
+
     public void setFinished(List<Vertex> v){
         comboF.addAll(v);
     }
 
     public Set<Vertex> getFinished(){
         return comboF;
+    }
+
+    public void setFinish(Vertex v){
+        this.finish = v;
+        comboF.add(v);
     }
 }

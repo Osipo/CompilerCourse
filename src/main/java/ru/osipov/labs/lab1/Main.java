@@ -2,6 +2,7 @@ package ru.osipov.labs.lab1;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringBootConfiguration;
+import ru.osipov.labs.lab1.structures.automats.CNFA;
 import ru.osipov.labs.lab1.structures.automats.DFA;
 import ru.osipov.labs.lab1.structures.automats.NFA;
 import ru.osipov.labs.lab1.structures.graphs.Edge;
@@ -197,15 +198,15 @@ public class Main implements CommandLineRunner {
     }
 
     //Algorithm: Mac Naughton-Yamada-Tompson (Мак-Нотона, Ямады, Томпсона)
-    public static NFA buildNFA(LinkedStack<Character> expr, RegexRPNParser parser, Elem<Integer> el){
-        LinkedStack<NFA> result = new LinkedStack<>();
+    public static CNFA buildNFA(LinkedStack<Character> expr, RegexRPNParser parser, Elem<Integer> el,List<Vertex> Fe){
+        LinkedStack<CNFA> result = new LinkedStack<>();
         HashSet<Character> alpha = new HashSet<>();
         int c = el.getV1();
         for(Character tok : expr){
             if(parser.isUnaryOp(tok)){
-                NFA g = result.top();
+                CNFA g = result.top();
                 result.pop();
-                for(Vertex v: g.getNodes()){
+                for(Vertex v: g.getNodes()){//nullify finish
                     //v.setName("");
                     v.setFinish(false);
                 }
@@ -221,33 +222,65 @@ public class Main implements CommandLineRunner {
                 if(tok == '*') {// '+' and '*' differ only with one edge.
                     Edge loop = new Edge(s, t, (char) 1);//for '*' add empty from start to finish
                 }
-                NFA R = new NFA();
+                CNFA R = new CNFA();
                 t.setFinish(true);
                 R.setStart(s);
+                R.setFinish(t);
                 result.push(R);
             }
             else if(parser.isOperator(tok)){
-                NFA g2 = result.top();
+                CNFA g2 = result.top();
                 result.pop();
-                NFA g1 = result.top();
+                CNFA g1 = result.top();
                 result.pop();
-                for(Vertex v: g2.getNodes()){
+//                if(isEmptyNFA(g2) || isEmptyNFA(g1)){
+//                    CNFA res = isEmptyNFA(g1) ? g2 : g1;
+//                    if(tok == '|') {
+//                        res.getStart().setFinish(true);
+//                        Fe.add(res.getStart());
+//                    }
+//                    //res.addToFinished(res.getStart());
+////                    result.push(res);//ae = ea = a.
+////                    continue;
+//                }
+                for(Vertex v: g2.getNodes()){//nullify finish
+//                    if(v.isStart())
+//                        continue;
                     v.setFinish(false);
                 }
                 for(Vertex v: g1.getNodes()){
+//                    if(v.isStart())
+//                        continue;
                     v.setFinish(false);
                 }
                 if(tok == '^') {
                     Vertex inter = g1.getFinish();
-                    inter.setFinish(false);
                     List<Edge> outE = g2.getStart().getEdges().stream().filter(edge -> edge.getSource().equals(g2.getStart())).collect(Collectors.toList());
-                    for(Edge e: outE){
+                    List<Edge> outEi = g2.getStart().getEdges().stream().filter(edge -> edge.getTarget().equals(g2.getStart())).collect(Collectors.toList());
+//                    if(Fe.contains(g2.getStart())) {//(a|e)^(b|e) => {a,b,ab,e}.
+//                        Fe.add(inter);
+//                        //inter.setFinish(true);
+//                    }
+//                    else
+                        inter.setFinish(false);
+                    for(Edge e: outE){//union output edges.
                         Edge ae = new Edge(inter,e.getTarget(),e.getTag());
                         g2.disconnectVertexByEdge(e,g2.getStart(),e.getTarget());
+//                        if(Fe.contains(g1.getStart())) {
+//                            Edge se = new Edge(g1.getStart(), e.getTarget(), e.getTag());
+//                        }
                     }
-                    NFA FC = new NFA();
+                    for(Edge e : outEi){//union input edges.
+                        Edge ea = new Edge(e.getSource(),inter,e.getTag());
+                        g2.disconnectVertexByEdge(e,e.getSource(),g2.getStart());
+//                        if(Fe.contains(g1.getStart())) {
+//                            Edge se = new Edge(e.getSource(), g1.getStart(), e.getTag());
+//                        }
+                    }
+                    CNFA FC = new CNFA();
                     g2.getFinish().setFinish(true);
                     FC.setStart(g1.getStart());
+                    FC.setFinish(g2.getFinish());
                     result.push(FC);
                 }
                 else if(tok == '|'){
@@ -269,8 +302,9 @@ public class Main implements CommandLineRunner {
                     t1.setFinish(false);
                     t2.setFinish(false);
                     t.setFinish(true);
-                    NFA FU = new NFA();
+                    CNFA FU = new CNFA();
                     FU.setStart(s);
+                    FU.setFinish(t);
                     result.push(FU);
                 }
             }
@@ -281,8 +315,9 @@ public class Main implements CommandLineRunner {
                 c++;
                 v2.setFinish(true);
                 Edge e = new Edge(v1,v2,tok);
-                NFA F = new NFA();
-                F.setStart(v1);
+                CNFA F = new CNFA();
+                F.setComboStart(v1);
+                F.setFinish(v2);
                 alpha.add(tok);
                 result.push(F);
             }
@@ -365,6 +400,11 @@ public class Main implements CommandLineRunner {
             }
         }
         return result.toString();
+    }
+
+    private static boolean isEmptyNFA(NFA nfa){
+        return nfa.getCountOfStates() == 2 && nfa.getStart().getEdges().size() == 1 &&
+                nfa.getStart().getEdges().get(0).getTag() == (char)1;
     }
 
     @Override
