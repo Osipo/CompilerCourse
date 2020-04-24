@@ -127,15 +127,12 @@ public class DFA extends Graph {
                     b = mapped.get(U);//get mapped state.
                 Set<Vertex> FF = new HashSet<>(U);
                 FF.retainAll(nfa.getFinished());
-                //System.out.println("U - F: "+FF);
                 if(FF.size() > 0) {//U.contains(nfa.getFinish())
                     b.setValue(FF.stream().findFirst().get().getValue());
-                    //System.out.println(b.getValue());
                     finished.add(b);
                 }
                 FF = new HashSet<>(T);
                 FF.retainAll(nfa.getFinished());
-                //System.out.println("T - F: "+FF);
                 if(FF.size() > 0) {
                     a.setValue(FF.stream().findFirst().get().getValue());
                     finished.add(a);
@@ -193,7 +190,6 @@ public class DFA extends Graph {
         HashMap<String,Set<Vertex>> representers = new HashMap<>();
         for (Set<Vertex> sv : P) {//for each set -> make new state.
             for (Vertex v : sv) {//select a representer of the set
-                //System.out.println("Rep: "+v.getName());
                 Vertex n = new Vertex();
                 nstatescount.setV1(nstatescount.getV1() + 1);
                 makeRecord(P,oldTran,sv,v,n,nstatescount,mapped);
@@ -213,8 +209,6 @@ public class DFA extends Graph {
     private void makeRecord(ArrayList<Set<Vertex>> P,HashMap<Pair<Vertex,Character>,Vertex> oldTran, Set<Vertex> group,Vertex s,Vertex n, Elem<Integer> count, HashMap<String,Vertex> mapped){
         n.setName("M"+count.getV1());
         n.setValue(s.getValue());
-        //System.out.println(n.getName());
-        //System.out.println("Rep: "+s);
         if(mapped.get(s.getName()) != null){
             n = mapped.get(s.getName());
         }
@@ -365,54 +359,6 @@ public class DFA extends Graph {
                 }
             }
         }
-//        while(!queue.isEmpty()){
-//            Pair<Set<Vertex>,Character> p = queue.front(); // pair <C, a>
-//            queue.dequeue();
-//            involved = new HashMap<>();
-//            System.out.println(p.getV1()+" : "+P);
-//            for(Vertex q : p.getV1()){// for q in C and r in Q such tran(r,a) in C
-//                List<Pair<Vertex,Character>> keys = table.keySet().stream().filter(x -> x.getV2() == p.getV2()).collect(Collectors.toList());
-//                for(Pair<Vertex,Character> k : keys) {
-//                    if (q.equals(table.get(k))) {//if q = tran(r,a)
-//                        Vertex r = k.getV1();
-//                        //System.out.println(r+" -> "+r);
-//                        //System.out.println(r.getName());
-//                        int i = clz.get(r.getName());
-//                        if (!involved.containsKey(i))
-//                            involved.put(i, new HashSet<Vertex>());
-//                        involved.get(i).add(r);
-//                        }
-//                    }
-//            }//Involved was computed.
-//            for(int i : involved.keySet()){
-//                Set<Vertex> P_i = P.get(i);  // ColUtils.<ArrayList<Set<Vertex>>,Set<Vertex>>getElemOfSet(P,i);
-//                if(involved.get(i).size() < P_i.size()){
-//                    Set<Vertex> P_j = new HashSet<>();
-//                    P.add(P_j);
-//                    int j = P.size() - 1;
-//                    for(Vertex r : involved.get(i)){
-//                        P_i.remove(r);
-//                        P_j.add(r);
-//                        clz.put(r.getName(),j);
-//                    }
-//                    if(P_j.size() > P_i.size()){
-//                        Collections.swap(P,i,j);
-//                        //P_i = P.get(i);//ColUtils.<ArrayList<Set<Vertex>>, Set<Vertex>>getElemOfSet(P, i);
-//                        //P_j = P.get(j);//ColUtils.<ArrayList<Set<Vertex>>, Set<Vertex>>getElemOfSet(P, j);
-//                    }
-////                    for(Vertex v : P_j){
-////                        clz.put(v.getName(),j);
-////                    }
-//                    for(Character c : alpha){
-//                        Vertex vj = new Vertex();
-//                        vj.setName(""+j);
-//                        HashSet<Vertex> s = new HashSet<>();
-//                        s.add(vj);
-//                        queue.enqueue(new Pair<>(s,c));
-//                    }
-//                }
-//            }
-//        }
         System.out.println("P = "+P);
         return P;
     }

@@ -135,66 +135,6 @@ public class LLParserGenerator {
         return res;
     }
 
-    /* NOT WORKED. May be DELETED.
-    public Map<String,Set<String>> followTable(Grammar G,Map<String,Set<String>> firstTable){
-        List<String> NT = ColUtils.fromSet(G.getNonTerminals());
-        String empty = G.getEmpty();
-        HashMap<String,Set<String>> res = new HashMap<String,Set<String>>();
-        LinkedStack<String> S = new LinkedStack<>();
-        for(String N : NT)
-            S.push(N);
-
-        while(!S.isEmpty()){
-            String p = S.top();
-            S.pop();
-            Set<GrammarString> bodies = G.getProductions().get(p);
-            for(GrammarString str : bodies){
-                List<GrammarSymbol> l = str.getSymbols();
-                for(int i = 0; i < l.size()-1;i++){
-                    GrammarSymbol sym = l.get(i);
-                    if(sym.getType() != 't'){
-                        GrammarString subStr = new GrammarString(new ArrayList<>(l.subList(i+1,l.size())));
-                        Set<String> first = first(subStr,firstTable,empty);
-                        first.remove(empty);
-                        if(sym.getVal().equals(G.getStart()))
-                            first.add("$");
-                        res.put(l.get(i).getVal(),first);
-                    }
-                }
-            }
-        }
-//        for(String k : res.keySet())
-//             System.out.println(k+": "+res.get(k));
-        for(int i = NT.size() - 1; i >= 0; i--)
-            S.push(NT.get(i));
-        while(!S.isEmpty()){
-            String p = S.top();
-            S.pop();
-            Set<GrammarString> bodies = G.getProductions().get(p);
-            for(GrammarString str : bodies){
-                List<GrammarSymbol> l = str.getSymbols();
-                for(int i = 0; i < l.size()-1;i++){
-                    GrammarSymbol sym = l.get(i);
-                    if(sym.getType() != 't'){
-                        GrammarString subStr = new GrammarString(new ArrayList<>(l.subList(i+1,l.size())));
-                        Set<String> first =  first(subStr,firstTable,empty);
-                        if(first.contains(empty))
-                            first.addAll(res.get(p));
-                        first.remove(empty);
-                        if(sym.getVal().equals(G.getStart()))
-                            first.add("$");
-                        res.put(l.get(i).getVal(),first);
-                    }
-                }
-                GrammarSymbol last = l.get(l.size() - 1);
-                if(last.getType() != 't'){
-                    Set<String> first = res.get(p);
-                    res.put(last.getVal(),first);
-                }
-            }
-        }
-        return res;
-    }*/
 
     public Map<String,Set<String>> followTable(Grammar G,Map<String,Set<String>> firstTable){
         List<String> NT = ColUtils.fromSet(G.getNonTerminals());

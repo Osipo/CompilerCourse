@@ -65,9 +65,9 @@ public class DFALexer extends DFA implements ILexer {
             s = moveTo(s,cur);
             if(s == null || s.isDead()){
                 while(s == null || !s.isFinish()){
-                    cur = sb.charAt(sb.length() - 1);
                     if(sb.length() == 0)
-                          return new Token("Unrecognized","Error at ("+io.getLine()+":"+io.getCol()+") :: Unrecognized token: "+sb.toString()+"\n",'e');
+                        return new Token("Unrecognized ","Error at ("+io.getLine()+":"+io.getCol()+") :: Unrecognized token: "+sb.toString()+"\n",'e');
+                    cur = sb.charAt(sb.length() - 1);
                     sb.deleteCharAt(sb.length() - 1);
                     io.ungetch(cur);
                     s = states.top();
@@ -76,9 +76,9 @@ public class DFALexer extends DFA implements ILexer {
                 return new Token(s.getValue(),sb.toString(),'t');
             }
             else {
-                states.push(s);
                 cur = (char)io.getch(f);
                 sb.append(cur);
+                states.push(s);
             }
         }
         if(sb.length() > 0){
