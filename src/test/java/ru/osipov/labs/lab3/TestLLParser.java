@@ -109,9 +109,13 @@ public class TestLLParser {
         G = Grammar.deleteLeftRecursion(G);
         G = G.deleteLeftFactor();
         assert G != null;
+        System.out.println("Target G");
+        System.out.println(G);
         FALexerGenerator lg = new FALexerGenerator();
         CNFA nfa = lg.buildNFA(G);
-        DFALexer lexer = new DFALexer(new DFA(nfa));
+        DFA dfa = new DFA(nfa);
+        dfa.deleteDeadState();
+        DFALexer lexer = new DFALexer(dfa);
         assert lexer.getFinished().size() == 22;
         lexer.getImagefromStr(dir,"lexer_Test3");
         LLParser sa = new LLParser(G,lexer);

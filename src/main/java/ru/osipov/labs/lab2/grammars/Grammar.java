@@ -5,6 +5,7 @@ import ru.osipov.labs.lab1.utils.ColUtils;
 import ru.osipov.labs.lab2.grammars.json.InvalidJsonGrammarException;
 import ru.osipov.labs.lab2.jsonParser.jsElements.*;
 
+import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -172,6 +173,97 @@ public class Grammar {
             throw new InvalidJsonGrammarException("productions is not a list!",null);
         computeN_g();
         computeN_e();
+    }
+
+    //Makes json serialization.
+    public void toJsonFile(String fname) throws IOException {
+        File f = new File(fname);
+        if(f.lastModified() != 0){
+            System.out.println("Cannot write to existing file!");
+            return;
+        }
+        try (FileWriter fw = new FileWriter(f,true);){
+            fw.write("{\n\t");
+            Set<String> k = this.lex_rules.keySet();
+            fw.write("\"terms\":{\n\t");
+            int l = 0;
+            for(String key : k) {
+                fw.write(("\t\"" + key + "\"" + " : "));
+                List<String> patterns = lex_rules.get(key);
+                if (patterns != null && patterns.size() > 1) {
+                    fw.write('[');
+                    Iterator<String> it = patterns.iterator();
+                    while (it.hasNext()) {
+                        fw.write("\""+it.next()+"\"");
+                        if (it.hasNext())
+                            fw.write(", ");
+                    }
+                    fw.write(']');
+                } else if (patterns != null && patterns.size() == 1)
+                    fw.write("\""+patterns.get(0)+"\"");
+                else
+                    fw.write("null");
+                l++;
+                if (l != k.size())
+                    fw.write(", \n\t");
+            }
+            fw.write("\n\t},\n\t");
+            fw.write("\"nonTerms\":[");
+            l = 0;
+            for(String p : this.N){
+                fw.write("\""+p+"\"");
+                l++;
+                if(l != N.size()) {
+                    fw.write(", ");
+                    if(l % 10 == 0)
+                        fw.write("\n\t");
+                }
+            }
+            fw.write("],");
+            fw.write("\n\t\"productions\": [\n\t");
+            Set<String> ps = this.P.keySet();
+            l = 0;
+            int lp = 0;
+            for(String p : ps){
+                int alts = 0;
+                Set<GrammarString> boides = this.P.get(p);
+                fw.write("\t{ \""+p+"\": [");
+                for(GrammarString b: boides){
+                    int syms = 0;
+                    for(GrammarSymbol sym : b.getSymbols()){
+                        fw.write("\""+sym.getVal()+"\"");
+                        syms++;
+                        if(syms != b.getSymbols().size()){
+                            fw.write(", ");
+                        }
+                    }
+                    alts++;
+                    lp++;
+                    if(alts != boides.size()) {
+                        fw.write("]}, ");
+                        if(lp % 10 == 0)
+                            fw.write("\n\t\t");
+                        fw.write("{ \"" + p + "\": [");
+                    }
+                }
+                fw.write("]}");
+                l++;
+                if(l != ps.size()) {
+                    fw.write(", ");
+                    if(lp % 10 == 0)
+                        fw.write("\n\t");
+                }
+            }
+            fw.write("\n\t],\n\t");
+            fw.write("\"start\": ");
+            fw.write("\""+this.S+"\"");
+            fw.write("\n}");
+        }
+        catch (FileNotFoundException e){
+            System.out.println("Cannot open file to write.");
+        } catch (IOException e) {
+            System.out.println("Cannot write to file");
+        }
     }
 
     public Set<String> getTerminals() {
@@ -1194,4 +1286,5 @@ public class Grammar {
         }
         return preffix;
     }
+
 }

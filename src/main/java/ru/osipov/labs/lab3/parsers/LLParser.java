@@ -18,19 +18,66 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class LLParser {
     private LLParserGenerator gen;
     private Map<Pair<String,String>, GrammarString> table;
     private ILexer lexer;
+    private Set<String> T;
+    private Set<String> N;
+
 
     public LLParser(Grammar G, ILexer lexer){
         gen = new LLParserGenerator();
         this.table = gen.getTable(G);
         this.lexer = lexer;
+        this.T = G.getTerminals();
+        this.N = G.getNonTerminals();
     }
 
+    //TODO: make full table with empty cells (error records)
+    public void toFile(String fname){
+        File f = new File(fname);
+        if(f.lastModified() != 0){
+            System.out.println("Cannot write to existing file!");
+            return;
+        }
+        try (FileWriter fw = new FileWriter(f,true);) {
+            fw.write("{\n\t");
+            int l = 0;
+            for(Pair<String,String> cell : table.keySet()){
+                fw.write("\""+cell.getV1()+" "+cell.getV2()+"\": ");
+                GrammarString s = table.get(cell);
+                if(s != null){
+                    fw.write('[');
+                    int syms = 0;
+                    for(GrammarSymbol sym : s.getSymbols()){
+                        fw.write("\""+sym.getVal()+"\"");
+                        syms++;
+                        if(syms != s.getSymbols().size()){
+                            fw.write(", ");
+                        }
+                    }
+                    fw.write(']');
+                }
+                else
+                    fw.write("error");
+                l++;
+                if(l != table.keySet().size()){
+                    fw.write(",\n\t");
+                }
+            }
+            fw.write("\n}");
+        }
+        catch (FileNotFoundException e){
+            System.out.println("Cannot open file to write.");
+        }
+        catch (IOException e){
+            System.out.println("Cannot write to file");
+        }
+    }
 
     //Algorithm 4.20 with lexer module.
     public LinkedTree<Token> parse(Grammar G, String fname){

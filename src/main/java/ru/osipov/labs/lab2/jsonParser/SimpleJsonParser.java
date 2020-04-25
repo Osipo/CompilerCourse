@@ -34,14 +34,16 @@ public class SimpleJsonParser {
     }
 
 
-    public JsonObject parse(String fileName)  {
+    public JsonObject parse(String fileName) {
         LinkedStack<JsonObject> obs = new LinkedStack<>();
         obs.push(new JsonObject());
-        FileInputStream f;
+        //FileInputStream f = null;
         LinkedStack<JsonArray> arrays = new LinkedStack<>();
-        try {
-            f = new FileInputStream(new File(fileName).getAbsolutePath());
-            InputStreamReader ch = new InputStreamReader(f);
+        try (FileInputStream f  = new FileInputStream(new File(fileName).getAbsolutePath());
+             InputStreamReader ch = new InputStreamReader(f);
+        ){
+//            f = new FileInputStream(new File(fileName).getAbsolutePath());
+//            InputStreamReader ch = new InputStreamReader(f);
             int c = f.read();
 
             if((char)c == '{') {
@@ -63,6 +65,8 @@ public class SimpleJsonParser {
                 }
                 changeState(state,cur,f,obs,arrays,pname,pflag);
             }
+            ch.close();
+            f.close();
             if(state == JsParserState.ERR)
                 return null;
         }catch (FileNotFoundException e){

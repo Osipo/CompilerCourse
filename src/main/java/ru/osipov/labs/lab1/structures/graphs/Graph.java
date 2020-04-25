@@ -6,6 +6,8 @@ import guru.nidi.graphviz.engine.Graphviz;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,8 +63,63 @@ public class Graph {
         return sb.toString();
     }
 
+    public void toDotFile(String fname){
+        File f = new File(fname);
+        if(f.lastModified() != 0){
+            System.out.println("Cannot write to existing file!");
+            return;
+        }
+        try (FileWriter fw = new FileWriter(f,true);){
+            fw.write("digraph G {\n");
+            for(Vertex v : nodes){
+                fw.write(v.getName());
+                fw.write("[ label=\"");
+                fw.write(v.getName()+"\"");
+                if(v.isStart()){
+                    if(v.isFinish()){
+                        fw.write(",color=\"blue\", shape=\"doublecircle\"");
+                        fw.write("];\n");
+                        continue;
+                    }
+                    else
+                        fw.write(",color=\"blue\", shape=\"invtriangle\"];\n");
+                    continue;
+                }
+                if(v.isFinish()){
+                    fw.write(",color=\"black\", shape=\"doublecircle\"];\n");
+                    continue;
+                }
+                fw.write(",shape=\"circle\"");
+                if(v.isDead()){
+                    fw.write(",color=\"red\"");
+                }
+                fw.write(']');
+                fw.write(";\n");
+            }
+            for(Edge e : edges){
+                String a = e.getSource().getName();
+                String b = e.getTarget().getName();
+                String l = ((int)e.getTag()) == 1 ? "empty" : e.getTag()+"";
+                fw.write(a);fw.write(" -> ");fw.write(b);
+                fw.write("[ label=\"");
+                fw.write(l+"\"");
+                fw.write("];\n");
+            }
+            fw.write("}");
+        }
+        catch (FileNotFoundException e){
+            System.out.println("Cannot open file to write.");
+        } catch (IOException e) {
+            System.out.println("Cannot write to file");
+        }
+    }
+
     public void getImagefromStr(String path, String fname) throws IOException {
         Graphviz.fromString(toDotStr(fname)).render(Format.PNG).toFile(new File(path+fname));
+    }
+
+    public void getImageFromFile(String fname,String fname2) throws IOException {
+        Graphviz.fromFile(new File(fname)).render(Format.PNG).toFile(new File(fname2));
     }
 
     public void addNode(Vertex v){ //ERR
