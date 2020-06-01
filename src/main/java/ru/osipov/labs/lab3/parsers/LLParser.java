@@ -104,7 +104,6 @@ public class LLParser {
                     S.top().getValue().setLexem(tok.getLexem());
                     S.pop();
                     tok = lexer.recognize(f);
-                    //System.out.println(tok);
                     t = tok.getName();
                     X = S.top();
                     continue;
@@ -140,11 +139,12 @@ public class LLParser {
                 }
                 X = S.top();
             }
+            lexer.reset();//reset column and line counter.
             if(isParsed)
                 return new LinkedTree<Token>(root);
             else {
                 if(tok.getType() != 'e') {
-                    lexer.generateError(S.top().getValue().getName(),tok.getLexem());
+                    System.out.println(lexer.generateError(S.top().getValue().getName(),tok.getLexem()));
                 }
                 else
                     System.out.println(tok);

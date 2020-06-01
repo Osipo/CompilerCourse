@@ -51,10 +51,13 @@ public class Graph {
             sb.append("]");
             sb.append(";\n");
         }
+        boolean sh = false;
         for(Edge e : edges){
             String a = e.getSource().getName();
             String b = e.getTarget().getName();
-            String l = ((int)e.getTag()) == 1 ? "empty" : e.getTag()+"";
+            String l = ((int)e.getTag()) == 1 ? "empty" : e.getTag() == '\"' ? "\\\"" : e.getTag()+"";
+            if(e.getTag() == '\\')
+                l = "\\\\";
             sb.append(a).append(" -> ").append(b);
             sb.append("[ label=\"").append(l).append("\"");
             sb.append("];\n");

@@ -149,7 +149,7 @@ public class Grammar {
                         else if(this.N.contains(X))
                             entity = new GrammarSymbol('n',X);
                         else
-                            throw new InvalidJsonGrammarException("Illegal grammar symbol!" +
+                            throw new InvalidJsonGrammarException("Illegal grammar symbol! " + X +
                                     "\nExpected non-terminal or termnial of Grammar.",null);
                         alpha.addSymbol(entity);
                         product_rules.add(alpha);
@@ -1096,6 +1096,29 @@ public class Grammar {
         return new Grammar(this.T,this.N,newP,this.S,this.E,this.lex_rules);
     }
 
+    public Grammar getSpanningGrammar(){
+        Map<String,Set<GrammarString>> newP = new HashMap<>();
+        Set<String> NN = new HashSet<>();
+        String start = getStart();
+        NN.add(start);
+        Set<String> p = this.P.keySet();
+        Set<GrammarString> nrules = new HashSet<>();
+        for(String r : p){
+            Set<GrammarString> rules = P.get(r);
+            for(GrammarString str: rules){
+                List<GrammarSymbol> symbols = new ArrayList<>();
+                for(GrammarSymbol sym : str.getSymbols()){
+                    GrammarSymbol ns = new GrammarSymbol(sym.getType(),sym.getType() == 't' ? sym.getVal() : start);
+                    symbols.add(ns);
+                }
+                if(symbols.size() > 1 || (symbols.get(0).getType() == 't'))
+                    nrules.add(new GrammarString(symbols));
+            }
+        }
+        newP.put(start,nrules);
+        return new Grammar(T,NN,newP,this.S,this.E,lex_rules);
+    }
+
     public Grammar deleteLeftFactor(){
         Map<String,Set<GrammarString>> newP = new HashMap<>(this.P);
         Set<String> NN = new HashSet<>();
@@ -1184,41 +1207,7 @@ public class Grammar {
         //return new Grammar(this.T,NN,newP,this.S,this.E,lex_rules).deleteChainedRules(emptyRules()).getGrammarWithoutEqualRules();
     }
 
-    /*
-    private Grammar deleteLeftFactor2(Grammar g){
-        Set<String> NN = new HashSet<>();
-        Map<String,Set<GrammarString>> newP = new HashMap<>();
-        for(String p : P.keySet()){
-            List<String> N = ColUtils.fromSet(G.N);
-        N.sort((x,y) -> {
-            int x_i = Integer.parseInt(x.split("_")[1]);
-            int y_i = Integer.parseInt(y.split("_")[1]);
-            return Integer.compare(x_i, y_i);
-        });
-        //System.out.println(N);
-        for(int i = 1; i <= n; i++){
-            String Ai = N.get(i - 1);//S_1.
-            for(int j = 1; j < i; j++){
-                String Aj = N.get(j - 1);
-                Set<GrammarString> A_j = G.P.get(Aj);
-                Set<GrammarString> A_i = replaceAlternativesWithFirstN(G.P.get(Ai),A_j,Aj);//replace A_i -> bA_jb to A_i -> bal1b|bal2b|bal3b where  A_j -> al1|al2|al3
-                //System.out.println(A_i);
-                G.P.put(Ai,A_i);//add replaced rule A_i -> bA_jb.
-            }
-            Set<GrammarString> A_i = G.P.get(Ai);
-            //System.out.println(A_i);
-            Set<GrammarString> rb1 = new HashSet<>();
-            Set<GrammarString> lb1 = new HashSet<>();
-            boolean flag = false;
-            if(!hasImmediateLeftRecursion(A_i,Ai)){//each alternative has no immediate left-recursion.
-                newP.put(Ai,A_i);
-                NN.add(Ai);
-                continue;
-            }
-        }
-        }
-        return null;
-    }*/
+
 
     private int commonMinLength(Set<GrammarString> prod){
         List<GrammarString> rules = ColUtils.fromSet(prod);

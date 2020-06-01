@@ -1,13 +1,16 @@
 package ru.osipov.labs.lab1.utils;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
+import ru.osipov.labs.lab3.trees.LinkedTree;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class RegexRPNParser {
     public RegexRPNParser(){ }
     private char[] terminals = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+
 
     public boolean isTerminal(char c){
         for(int i = 0; i < terminals.length;i++){
@@ -35,7 +38,8 @@ public class RegexRPNParser {
         terminals = new char[symbols.size()];
         int i = 0;
         for(Character c : symbols){
-            terminals[i++] = c;
+            terminals[i] = c;
+            i++;
         }
     }
 
@@ -49,6 +53,10 @@ public class RegexRPNParser {
             case '^':return true;
             default:return false;
         }
+    }
+
+    public void setNonOperatorsPosition(List<Integer> pos){
+
     }
 
     public boolean isUnaryOp(Character c){
@@ -66,6 +74,7 @@ public class RegexRPNParser {
         }
     }
 
+
     public LinkedStack<Character> GetInput(String s){
         LinkedStack<Character> ops = new LinkedStack<Character>();
         LinkedStack<Character> rpn = new LinkedStack<Character>();
@@ -80,6 +89,11 @@ public class RegexRPNParser {
                     ops.pop();
                 }
                 ops.pop();
+            }
+            else if(tok == '@'){
+                rpn.push(tok);
+                i++;
+                rpn.push(s.charAt(i));//after @ only operand follows.
             }
             else if(!isOperator(tok) && isTerminal(tok)){
                 rpn.push(tok);
@@ -100,10 +114,11 @@ public class RegexRPNParser {
             ops.pop();
         }
         LinkedStack<Character> result = new LinkedStack<Character>();
-        while(!rpn.isEmpty()){
+        while(!rpn.isEmpty()){//reverse stack.
             result.push(rpn.top());
             rpn.pop();
         }
+        //System.out.println(result);
         return result;
     }
 }

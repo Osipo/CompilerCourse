@@ -42,6 +42,6 @@ public class Token {
         else if(type == 'n')
             return name;
         else
-            return name+lexem;
+            return name+" :: "+lexem;
     }
 }

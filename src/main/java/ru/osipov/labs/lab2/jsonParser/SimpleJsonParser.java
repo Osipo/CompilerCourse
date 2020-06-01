@@ -5,6 +5,8 @@ import ru.osipov.labs.lab1.structures.lists.*;
 import ru.osipov.labs.lab1.structures.graphs.Pair;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Scanner;
 
 //THIS UNIT HAS ONLY Json_Parser functions yet.
 //TODO: Parse specific JSON file to produce List of tiles.
@@ -17,20 +19,21 @@ public class SimpleJsonParser {
 
     private int line;
     private int col;
-
+    private boolean escaped;
 
     private LinkedStack<JsParserState> S1;
 
     public SimpleJsonParser(){
         this.state = JsParserState.START;
-        this.buf = new char[100];
-        this.bsize = 100;
+        this.buf = new char[255];
+        this.bsize = 255;
         this.bufp = 0;
 
         this.EOL = 0;
         this.line = 1;
         this.col = 0;
         this.S1 = new LinkedStack<>();
+        this.escaped = false;
     }
 
 
@@ -42,10 +45,7 @@ public class SimpleJsonParser {
         try (FileInputStream f  = new FileInputStream(new File(fileName).getAbsolutePath());
              InputStreamReader ch = new InputStreamReader(f);
         ){
-//            f = new FileInputStream(new File(fileName).getAbsolutePath());
-//            InputStreamReader ch = new InputStreamReader(f);
             int c = f.read();
-
             if((char)c == '{') {
                 state = JsParserState.OPENROOT;
                 this.S1.push(state);
@@ -55,13 +55,10 @@ public class SimpleJsonParser {
                 err((char)c,"{");//root not found!
             JsonString pname = new JsonString("");
             JsonString pflag = new JsonString("");
-            while(state != JsParserState.CLOSEROOT && state != JsParserState.ERR){//read characters until last '}' or error is found.
+            while(state != JsParserState.CLOSEROOT && state != JsParserState.ERR && !S1.isEmpty()){//read characters until last '}' or error is found.
                 char cur;
                 while((cur = (char)getch(f)) == ' ' || cur == '\t' || cur == '\n' || cur == '\r'){
-                    if(cur == '\n') {
-                        line++;
-                        col = 0;
-                    }
+
                 }
                 changeState(state,cur,f,obs,arrays,pname,pflag);
             }
@@ -80,8 +77,9 @@ public class SimpleJsonParser {
     }
 
     private void changeState(JsParserState state, char c, InputStream f, LinkedStack<JsonObject> objects, LinkedStack<JsonArray> arrays, JsonString propName, JsonString arflag) throws IOException {
-        //System.out.println("Current state: "+state+ " symbol -> "+c);
-        //System.out.println("Stack: "+S1+"\n");
+        System.out.println("Current state: "+state+ " symbol -> "+c);
+        System.out.println("Stack: "+S1+"\n");
+        System.out.println("At: "+line+":"+col+"\n");
         JsonObject top = objects.top();
         if(state == JsParserState.OPENROOT ){//|| state == JsParserState.OPENBRACE){
             if(c == '}' )//&& state == JsParserState.OPENROOT)
@@ -170,8 +168,8 @@ public class SimpleJsonParser {
         else if(state == JsParserState.OPENQ){
             ungetch(c);
             int l = 1;
-            while((c = (char)getFilech(f)) != '\"'){ungetch(c);l++;}
             StringBuilder b = new StringBuilder();
+            while((c = (char)getFilech(f)) != '\"' || escaped){ungetch(c);l++;escaped = false;}
             for(int i = 0; i < buf.length && i < l; i++)
                 b.append(buf[i]);
             String val = b.toString();
@@ -182,7 +180,7 @@ public class SimpleJsonParser {
                 JsonArray array = arrays.top();
                 array.add(new JsonString(val));
             }
-
+            System.out.println(propName.getValue()+":"+val);
             b = null;
             clear();
             this.state = JsParserState.CLOSEQ;
@@ -350,7 +348,68 @@ public class SimpleJsonParser {
             if(c == '\n'){
                 line++; col = 0;
             }
+            else if(c == '\\')
+                return getEscaped(r);
             return c;
+        }
+    }
+
+    private int getEscaped(InputStream r) throws IOException {
+        col++;
+        char x = (char)r.read();
+        escaped = true;
+        switch (x){
+            case 't':{
+                col++;
+                return '\t';
+            }
+            case 'r':{
+                col++;
+                return '\r';
+            }
+            case 'n':{
+                col++;
+                return '\n';
+            }
+            case 'f':{
+                col++;
+                return '\f';
+            }
+            case 'b':{
+                col++;
+                return '\b';
+            }
+            case '\'':{
+                col++;
+                return '\'';
+            }
+            case '\"':{
+                col++;
+                return '\"';
+            }
+            case '\\':{
+                col++;
+                return '\\';
+            }
+            case 'u':{
+                col++;
+                int i = 0;
+                char[] hcode = new char[4];
+                while(i < 4 && ( ((x = (char) r.read()) >= '0' && x <='9') || (x >= 'A' && x <= 'F') || (x >= 'a' && x <= 'f') )){
+                    hcode[i] = x;
+                    i++;
+                }
+                if(i < 4) {
+                    err(x, "hexDigit: one of [0-9] or [A-Fa-f]");
+                    return 0;
+                }
+                int code = (int)ProcessExp.parse(new String(hcode),null,'N',16,1);
+                return code;
+            }
+            default:{
+                ungetch(x);
+                return '\\';
+            }
         }
     }
 
@@ -360,6 +419,8 @@ public class SimpleJsonParser {
             line += 1;
             col = 0;
         }
+        else if(c == '\\')
+            return getEscaped(r);
         else{
             col += 1;
         }

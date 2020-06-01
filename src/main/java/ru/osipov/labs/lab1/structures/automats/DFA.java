@@ -206,6 +206,7 @@ public class DFA extends Graph {
 
 
 
+    //MAKERECORD__ERR
     private void makeRecord(ArrayList<Set<Vertex>> P,HashMap<Pair<Vertex,Character>,Vertex> oldTran, Set<Vertex> group,Vertex s,Vertex n, Elem<Integer> count, HashMap<String,Vertex> mapped){
         n.setName("M"+count.getV1());
         n.setValue(s.getValue());
@@ -213,6 +214,7 @@ public class DFA extends Graph {
             n = mapped.get(s.getName());
         }
         if(group.stream().anyMatch(Vertex::isStart)){
+            System.out.println(n);
             this.start = n;
             n.setStart(true);
         }
@@ -251,7 +253,6 @@ public class DFA extends Graph {
                                 mapped.put(g2_v.getName(),n2);
                         }
                 );
-
             }
             else{//new group was added.
                 Vertex prev = mapped.get(t.getName());
@@ -311,7 +312,7 @@ public class DFA extends Graph {
                 Dead.add(dead);
                 P.add(Dead);
             }
-            System.out.println("IP = "+P);
+            //System.out.println("IP = "+P);
             W.addAll(P);
         }
         else {
@@ -359,7 +360,7 @@ public class DFA extends Graph {
                 }
             }
         }
-        System.out.println("P = "+P);
+        //System.out.println("P = "+P);
         return P;
     }
 

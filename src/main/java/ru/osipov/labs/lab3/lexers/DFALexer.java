@@ -36,11 +36,13 @@ public class DFALexer extends DFA implements ILexer {
         this.io = new LookAheadBufferedLexer();
     }
 
+
     public DFALexer(DFA dfa){
         super(dfa,true);//set Minimization for lexer true.
         this.deleteDeadState();
         System.out.println("MinDFA States: "+this.getNodes().size());
         System.out.println("Patterns (F): "+this.getFinished().size());
+        System.out.println("Start: "+this.getStart());
         this.io = new LookAheadBufferedLexer();
     }
 
@@ -49,7 +51,6 @@ public class DFALexer extends DFA implements ILexer {
         char cur = (char)io.getch(f);
         while(cur == ' ' || cur == '\t' || cur == '\n' || cur == '\r') {
             if (cur == '\n') {
-                io.setLine(io.getLine() + 1);
                 io.setCol(0);
             }
             cur = (char) io.getch(f);
@@ -64,9 +65,11 @@ public class DFALexer extends DFA implements ILexer {
         while(((int)cur) != 65535 && !s.isDead()){//while not EOF or not deadState.
             s = moveTo(s,cur);
             if(s == null || s.isDead()){
+                //System.out.println("Lexeme at ("+io.getLine()+":"+io.getCol()+") :: "+sb.toString());
+                String err = sb.toString();
                 while(s == null || !s.isFinish()){
                     if(sb.length() == 0)
-                        return new Token("Unrecognized ","Error at ("+io.getLine()+":"+io.getCol()+") :: Unrecognized token: "+sb.toString()+"\n",'e');
+                        return new Token("Unrecognized ","Error at ("+io.getLine()+":"+io.getCol()+") :: Unrecognized token: "+err+"\n",'e');
                     cur = sb.charAt(sb.length() - 1);
                     sb.deleteCharAt(sb.length() - 1);
                     io.ungetch(cur);
@@ -82,6 +85,7 @@ public class DFALexer extends DFA implements ILexer {
             }
         }
         if(sb.length() > 0){
+            //System.out.println("Lexeme at ("+io.getLine()+":"+io.getCol()+") :: "+sb.toString());
             if((int)cur == 65535)
                 sb.deleteCharAt(sb.length() - 1);//remove redundant read EOF ch.
             if(s.isFinish())
@@ -100,5 +104,11 @@ public class DFALexer extends DFA implements ILexer {
 
     public Token generateError(String s1, String s2){
         return new Token("Unrecognized","Error at ("+io.getLine()+":"+io.getCol()+") :: Expected token: "+s1+"  but actual: "+s2+"\n",'e');
+    }
+
+    @Override
+    public void reset() {
+        io.setCol(0);
+        io.setLine(1);
     }
 }

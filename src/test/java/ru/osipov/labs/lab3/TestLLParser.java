@@ -2,6 +2,7 @@ package ru.osipov.labs.lab3;
 
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
+import org.mozilla.universalchardet.UniversalDetector;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -20,7 +21,12 @@ import ru.osipov.labs.lab3.parsers.LLParser;
 import ru.osipov.labs.lab3.trees.LinkedTree;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -131,5 +137,75 @@ public class TestLLParser {
                 "{MULLOP_11{*}}}{F_10{F_10'1{empty}}{PE_12{id}}}}{PLUSOP_9{+}}}{T_8{T_8'1{empty}}{F_10{F_10'1{empty}}{PE_12{id}}}}}}{=}{id}}}{{}}";
         assert e.equals(t.toString());
         Graphviz.fromString(t.toDot("parser_test3")).render(Format.PNG).toFile(new File(dir+"parser_Test3"));
+    }
+
+    @Test
+    public void testJsonGrammar() throws IOException {
+
+        //Detect coding of input files.
+        UniversalDetector codec = new UniversalDetector(null);
+
+        //prepare paths to files.
+        String p = System.getProperty("user.dir");
+        p = p+"\\src\\test\\java\\ru\\osipov\\labs\\lab3\\";
+        String dir = System.getProperty("user.dir") +"\\src\\test\\java\\ru\\osipov\\labs\\lab3\\";
+        String s = System.getProperty("user.dir")+"\\src\\test\\java\\ru\\osipov\\labs\\lab3\\";
+        String fi1 = new String(s);
+        fi1 = fi1 + "input\\json_t_1.txt";
+        String fi2 = new String(s);
+        fi2 = fi2 + "input\\dataset1.json";
+
+        p = p+"grammarJson\\Json_ECMA_404.json";//grammar description (CFG)
+
+        //build parser based on automatic model.
+        SimpleJsonParser parser = new SimpleJsonParser();
+        JsonObject ob = parser.parse(p);
+        assert ob != null;
+        Grammar G = new Grammar(ob);
+        System.out.println("Source");
+        System.out.println(G);
+        G = G.deleteLeftFactor();
+        assert G != null;
+        System.out.println("Processed Grammar");
+        System.out.println(G);
+
+        //build lexer
+        FALexerGenerator lg = new FALexerGenerator();
+        CNFA nfa = lg.buildNFA(G);
+        DFA dfa = new DFA(nfa);
+        //dfa.deleteDeadState();
+        DFALexer lexer = new DFALexer(dfa);
+        //lexer.getImagefromStr(dir,"lexer_jsonG_E404");
+
+        //build parser.
+        LLParser sa = new LLParser(G,lexer);
+
+
+        long current = System.currentTimeMillis();
+        LinkedTree<Token> t = sa.parse(G,fi1);
+        long m1 = (System.currentTimeMillis()) - current;
+        assert t != null;
+
+        current = System.currentTimeMillis();
+        JsonObject ob2 = parser.parse(fi1);
+        long m2 = (System.currentTimeMillis() - current);
+
+        System.out.println("json_t_1.txt");
+        System.out.println("Gen: "+m1);
+        System.out.println("Recurse: "+m2+"\n");
+
+        current = System.currentTimeMillis();
+        t = sa.parse(G,fi2);
+        m1 = (System.currentTimeMillis()) - current;
+        assert t != null;
+        current = System.currentTimeMillis();
+        ob2 = parser.parse(fi2);
+        m2 = (System.currentTimeMillis() - current);
+
+
+        System.out.println("dataset1.json");
+        System.out.println("Gen: "+m1);
+        System.out.println("Recurse: "+m2);
+
     }
 }

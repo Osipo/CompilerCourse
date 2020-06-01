@@ -13,10 +13,7 @@ import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import ru.osipov.labs.lab1.utils.RegexRPNParser;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SpringBootConfiguration
@@ -198,11 +195,14 @@ public class Main implements CommandLineRunner {
     }
 
     //Algorithm: Mac Naughton-Yamada-Tompson (Мак-Нотона, Ямады, Томпсона)
-    public static CNFA buildNFA(LinkedStack<Character> expr, RegexRPNParser parser, Elem<Integer> el,List<Vertex> Fe){
+    public static CNFA buildNFA(LinkedStack<Character> expr, RegexRPNParser parser, Elem<Integer> el){
         LinkedStack<CNFA> result = new LinkedStack<>();
         HashSet<Character> alpha = new HashSet<>();
         int c = el.getV1();
-        for(Character tok : expr){
+        int pos = 0;
+        Iterator<Character> itr = expr.iterator();
+        while(itr.hasNext()){
+            char tok = itr.next();
             if(parser.isUnaryOp(tok)){
                 CNFA g = result.top();
                 result.pop();
@@ -226,6 +226,7 @@ public class Main implements CommandLineRunner {
                 R.setStart(s);
                 R.setFinish(t);
                 result.push(R);
+                pos++;
             }
             else if(parser.isOperator(tok)){
                 CNFA g2 = result.top();
@@ -256,6 +257,7 @@ public class Main implements CommandLineRunner {
                     FC.setStart(g1.getStart());
                     FC.setFinish(g2.getFinish());
                     result.push(FC);
+                    pos++;
                 }
                 else if(tok == '|'){
                     Vertex s = new Vertex(c+"");
@@ -280,6 +282,7 @@ public class Main implements CommandLineRunner {
                     FU.setStart(s);
                     FU.setFinish(t);
                     result.push(FU);
+                    pos++;
                 }
             }
             else{//token is not operator.
@@ -288,12 +291,18 @@ public class Main implements CommandLineRunner {
                 Vertex v2 = new Vertex(c+"");
                 c++;
                 v2.setFinish(true);
+                if(tok == '@') {
+                    //System.out.println(tok);
+                    tok = itr.next();//get operand after @ symbol.
+                    //System.out.println(tok);
+                }
                 Edge e = new Edge(v1,v2,tok);
                 CNFA F = new CNFA();
                 F.setComboStart(v1);
                 F.setFinish(v2);
                 alpha.add(tok);
                 result.push(F);
+                pos++;
             }
         }
         result.top().setAlpha(alpha);
@@ -306,7 +315,7 @@ public class Main implements CommandLineRunner {
         for(int i = 0; i < s.length(); i++){
             if(s.charAt(i) == '['){// replace class [A-Z] with expression (A|B|...|Z) and add '^' if needed.
                 char t = s.charAt(i);
-                if(i > 0 && s.charAt(i - 1) != '('){
+                if(i > 0 && s.charAt(i - 1) != '(' && s.charAt(i - 1) != '|'){
                     result.append('^');
                 }
                 result.append('(');
@@ -314,6 +323,15 @@ public class Main implements CommandLineRunner {
                 boolean wflag = false;
                 while(t != ']' && j < s.length()){
                     t = s.charAt(j);
+                    if(t == '@'){
+                        result.append('@');
+                        result.append(s.charAt(j + 1));
+                        if(j + 2 < s.length() && s.charAt(j + 2) != ']')
+                            result.append("|");
+                        j++;
+                        j++;
+                        continue;
+                    }
                     if(j + 1 < s.length() && s.charAt(j) == '-'){
                         char a = s.charAt(j - 1);
                         char b = s.charAt(j + 1);
@@ -353,10 +371,25 @@ public class Main implements CommandLineRunner {
                 i = j;
                 if(i == s.length())
                     return result.toString();
+                //check after [] current symbol.
                 if((s.charAt(i) == ')' || s.charAt(i) == '*' || s.charAt(i) == '+')){
                     result.append(s.charAt(i));
-                    if(i + 1 < s.length() && s.charAt(i + 1) != ')' && s.charAt(i + 1) != '+' && s.charAt(i + 1) != '*' && s.charAt(i + 1) != '|' && s.charAt(i + 1) != '[')
+                    if(i + 1 < s.length() && s.charAt(i + 1) =='@') {
+                        result.append(s.charAt(i + 1));
+                        if(i + 2 < s.length()) {
+                            result.append(s.charAt(i + 2));
+                            i++;
+                        }
+                        i++;
+                    }
+                    else if(i + 1 < s.length() && s.charAt(i + 1) != ')' && s.charAt(i + 1) != '+' && s.charAt(i + 1) != '*' && s.charAt(i + 1) != '|' && s.charAt(i + 1) != '[')
                         result.append('^');
+                }
+                else if(s.charAt(i) == '@'){
+                    result.append('@');
+                    if(i + 1 < s.length())
+                        result.append(s.charAt(i + 1));
+                    i++;
                 }
                 else if(parser.isTerminal(s.charAt(i)) || s.charAt(i) == '('){
                     result.append('^').append(s.charAt(i));
@@ -366,6 +399,15 @@ public class Main implements CommandLineRunner {
                 continue;
             }
             result.append(s.charAt(i));
+            if(s.charAt(i) == '@'){
+                if(i + 1 < s.length()) {
+                    result.append(s.charAt(i + 1));
+                    if(i + 2 < s.length() && (parser.isTerminal(s.charAt(i + 2)) || s.charAt(i + 2) == '(' ))
+                        result.append('^');
+                    i++;
+                    continue;
+                }
+            }
             if(parser.isTerminal(s.charAt(i)) && i + 1 < s.length() && (parser.isTerminal(s.charAt(i + 1)) || s.charAt(i + 1) == '(' ) ){
                 result.append('^');
             }

@@ -15,13 +15,16 @@ import ru.osipov.labs.lab2.grammars.Grammar;
 import java.util.*;
 
 public class FALexerGenerator {
+
+
     public CNFA buildNFA(Grammar G){
         Map<String, List<String>> rules = G.getLexicalRules();
+
         HashSet<Character> alpha = new HashSet<>();
         RegexRPNParser parser = new RegexRPNParser();
         Vertex vs = new Vertex("1");
-        Vertex nf = new Vertex("-1");
-        nf.setFinish(true);
+        //Vertex nf = new Vertex("-1");
+        //nf.setFinish(true);
         vs.setStart(true);
         int nfa_i = 2;
         Elem<Integer> idC = new Elem<>(1);
@@ -58,15 +61,10 @@ public class FALexerGenerator {
                     parser.setTerminals(p_i.toCharArray());
                     p_i = Main.addConcat(p_i,parser);
                     parser.setTerminals(p_i.toCharArray());
-                    //System.out.println("expr: "+p_i);
-                    //System.out.println("Conc: "+ p_i);
-                    //parser.setTerminals(p_i.toCharArray());
-                    //System.out.println("PT:"+ Arrays.toString(parser.getTerminals()));
+                    //System.out.println(p_i);
                     rpn = parser.GetInput(p_i);
-                    //System.out.println("Stack:"+rpn);
-                    //System.out.println("Parsed: "+rpn);
                 }
-                CNFA nfa = Main.buildNFA(rpn,parser,idC,Fs);
+                CNFA nfa = Main.buildNFA(rpn,parser,idC);
                 alpha.addAll(nfa.getAlpha());
                 nfa.getFinish().setValue(id);
                 //System.out.println(nfa.getFinish().isFinish());

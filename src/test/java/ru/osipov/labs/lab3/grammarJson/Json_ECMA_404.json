@@ -1,0 +1,38 @@
+{
+  "terms" : {
+    "id": "[A-Za-z_]([A-Za-z_0-9]+|empty)",
+    "num": "(@-|@+|empty)[0-9]+",
+    "binNum": "0b(0|1)+",
+    "octalNum": "0c[0-7]+",
+    "hexNum": "0x[0-9A-Fa-f]+",
+    "realNum": "(@-|@+|empty)[0-9]+.[0-9]+(((E|e|P|p)(-|empty)[0-9]+)|empty)",
+    "realBinNum": "0b(0|1)+.(0|1)+(((E|e|P|p)(-|empty)(0|1)+)|empty)",
+    "realOctalNum": "0c[0-7]+.[0-7]+(((E|e|P|p)(-|empty)[0-7]+)|empty)",
+    "realHexNum": "0x[0-9A-Fa-f]+.[0-9A-Fa-f]+(((H|h|P|p)(-|empty)[0-9A-Fa-f]+)|empty)",
+    "string": "\"(\u0082|@+|@(|@)|-|(\\\")|[A-Za-z0-9.,;~'&#@@?!%/:_ {},\\])+\"",
+    "empty": null,
+    "{": "{",
+    "}": "}",
+    "[": "[",
+    "]": "]",
+    ",": ",",
+    ":": ":",
+    "true": "true",
+    "false": "false",
+    "null": "null"
+  },
+  "nonTerms": ["J","ELEMS","ELEM","OBJECT","ARRAY","VAL","MEMBERS","MEMBER"],
+  "productions": [{"J": "ELEM"},{"ELEM": "VAL"},
+    {"ELEMS": ["ELEM",",","ELEMS"]},{"ELEMS": "ELEM"},
+    {"ARRAY": ["[","ELEMS","]"]},
+    {"VAL": "true"},{"VAL": "false"},{"VAL": "null"},
+    {"VAL": "string"},{"VAL": "num"},{"VAL": "realNum"},
+    {"VAL": "id"},{"VAL": "binNum"},{"VAL": "octalNum"},{"VAL": "hexNum"},
+    {"VAL": "realBinNum"},{"VAL": "realOctalNum"},{"VAL": "realHexNum"},
+    {"VAL": "OBJECT"},{"VAL": "ARRAY"},
+    {"OBJECT": ["{","MEMBERS","}"]},
+    {"MEMBERS": ["MEMBER", ",", "MEMBERS"]},{"MEMBERS": "MEMBER"},{"MEMBERS": null},
+    {"MEMBER": ["string",":","ELEM"]}
+  ],
+  "start": "J"
+}
