@@ -54,6 +54,11 @@ public class LLParserGenerator {
             f.add(t);
             res.put(t,f);
         }
+        for(String t : G.getKeywords()){//keywords are terminals so first(keyword) = first(t) = t.
+            HashSet<String> f = new HashSet<>();
+            f.add(t);
+            res.put(t,f);
+        }
         for(String n : NT){
             S.push(n);
         }

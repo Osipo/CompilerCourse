@@ -23,10 +23,10 @@ public class SimpleJsonParser {
 
     private LinkedStack<JsParserState> S1;
 
-    public SimpleJsonParser(){
+    public SimpleJsonParser(int bsize){
         this.state = JsParserState.START;
-        this.buf = new char[255];
-        this.bsize = 255;
+        this.buf = new char[bsize];
+        this.bsize = bsize;
         this.bufp = 0;
 
         this.EOL = 0;
@@ -35,6 +35,10 @@ public class SimpleJsonParser {
         this.S1 = new LinkedStack<>();
         this.escaped = false;
     }
+
+   public SimpleJsonParser(){
+        this(255);
+   }
 
 
     public JsonObject parse(String fileName) {
@@ -73,13 +77,17 @@ public class SimpleJsonParser {
             System.out.println("File is not available now.");
             return null;
         }
+        this.S1.clear();
+        this.col = 0;
+        this.line = 1;
+        this.clear();
         return obs.top();
     }
 
     private void changeState(JsParserState state, char c, InputStream f, LinkedStack<JsonObject> objects, LinkedStack<JsonArray> arrays, JsonString propName, JsonString arflag) throws IOException {
-        System.out.println("Current state: "+state+ " symbol -> "+c);
-        System.out.println("Stack: "+S1+"\n");
-        System.out.println("At: "+line+":"+col+"\n");
+//        System.out.println("Current state: "+state+ " symbol -> "+c);
+//        System.out.println("Stack: "+S1+"\n");
+//        System.out.println("At: "+line+":"+col+"\n");
         JsonObject top = objects.top();
         if(state == JsParserState.OPENROOT ){//|| state == JsParserState.OPENBRACE){
             if(c == '}' )//&& state == JsParserState.OPENROOT)
@@ -128,8 +136,10 @@ public class SimpleJsonParser {
                 top.Put(propName.getValue(),objects.top());
                 this.S1.push(JsParserState.OPENBRACE);
             }
-            else if(c == '\"')
+            else if(c == '\"') {
                 this.state = JsParserState.OPENQ;
+                ungetch(c);//save first "
+            }
             else if(Character.isDigit(c) || c == '-')
                 readNum(f,c,propName,top,null);
             else if(c != ',' && c != ':' && c != '}' && c != ']')//read id (feature extension)
@@ -156,6 +166,20 @@ public class SimpleJsonParser {
             else if(c == '\"') {
                 arflag.setVal("A");
                 this.state = JsParserState.OPENQ;
+                ungetch(c);//save first "
+            }
+
+            else if(c == ']'){
+                S1.pop();//end of element
+                S1.pop();//end of array.
+                arflag.setVal("");
+                arrays.pop();
+                if(S1.top() == JsParserState.ARRELEM)
+                    this.state = JsParserState.CLOSEQ;
+                else {
+                    S1.push(JsParserState.CLOSEARR);
+                    this.state = S1.top();
+                }
             }
             else if(Character.isDigit(c))
                 readNum(f,c,null,null,arrays.top());//read number [binary,octal,hex formats] and return CLOSEQ
@@ -166,26 +190,32 @@ public class SimpleJsonParser {
         }
 
         else if(state == JsParserState.OPENQ){
-            ungetch(c);
-            int l = 1;
+            //ungetch(c);//save first "
+            int l = 0;
             StringBuilder b = new StringBuilder();
-            while((c = (char)getFilech(f)) != '\"' || escaped){ungetch(c);l++;escaped = false;}
+            while((c = (char)getFilech(f)) != '\"' || escaped){
+                ungetch(c);l++;escaped = false;
+            }
+            //ungetch(c);//save last "
             for(int i = 0; i < buf.length && i < l; i++)
                 b.append(buf[i]);
             String val = b.toString();
-            //System.out.println(propName.getValue());
+            if(l == 0){
+                val = "\"\"";
+            }
+            //System.out.println(propName.getValue()+" : "+val);
             if(!arflag.getValue().equals("A"))
                 top.Put(propName.getValue(),new JsonString(val));
             else{
                 JsonArray array = arrays.top();
                 array.add(new JsonString(val));
             }
-            System.out.println(propName.getValue()+":"+val);
             b = null;
             clear();
             this.state = JsParserState.CLOSEQ;
         }
         else if(state == JsParserState.CLOSEQ){
+            //System.out.println(propName.getValue()+":"+top.getValue().get(propName.getValue()));
             if(c == ','  && S1.top() == JsParserState.ARRELEM){
                 S1.pop();
                 arflag.setVal("");
@@ -260,18 +290,23 @@ public class SimpleJsonParser {
         else if(state == JsParserState.CLOSEARR) {//closearr openbrace arrelem
             S1.pop();
             arflag.setVal("");
-            if (c == ',') {
+            if (c == ',') {//array was read as property value. scanning next " for propertyName
                 while ((c = (char) getch(f)) == ' ' || c == '\t' || c == '\n' || c == '\r') ;// skip spaces
                 if (c != '\"') {
                     err(c, "\"");
                 } else
                     this.state = JsParserState.OPENQP;
             }
-            else if(c == '}' && S1.top() == JsParserState.OPENBRACE){
+            //datasets: 125, 559.
+            else if(c == '}' && S1.top() == JsParserState.OPENBRACE){//OPENROOT!!
                 this.state = JsParserState.CLOSEBRACE;
-                this.S1.pop();
-                this.S1.push(JsParserState.CLOSEBRACE);
-                ungetch(c);
+                this.S1.pop();//close brace [,] openbrace
+                if(S1.top() == JsParserState.ARRELEM) {
+                    this.S1.push(JsParserState.CLOSEBRACE);
+                    ungetch(c);
+                }
+                else
+                    this.state = JsParserState.CLOSEQ;
             }
         }
         else if(state == JsParserState.CLOSEBRACE){

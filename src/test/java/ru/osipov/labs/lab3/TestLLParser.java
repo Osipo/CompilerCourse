@@ -154,11 +154,21 @@ public class TestLLParser {
         fi1 = fi1 + "input\\json_t_1.txt";
         String fi2 = new String(s);
         fi2 = fi2 + "input\\dataset1.json";
+        String fi3 = new String(s);
+        fi3 = fi3 + "input\\dataset2.json";
+        String fi4 = new String(s);
+        fi4 = fi4 + "input\\dataset3.json";
+        String fi5 = new String(s);
+        fi5 = fi5 + "input\\dataset4.json";
+        String fi6 = new String(s);
+        fi6 = fi6 + "input\\dataset5.json";
+        String fi7 = new String(s);
+        fi7 = fi7 + "input\\dataset6.json";
 
         p = p+"grammarJson\\Json_ECMA_404.json";//grammar description (CFG)
 
         //build parser based on automatic model.
-        SimpleJsonParser parser = new SimpleJsonParser();
+        SimpleJsonParser parser = new SimpleJsonParser(1000);
         JsonObject ob = parser.parse(p);
         assert ob != null;
         Grammar G = new Grammar(ob);
@@ -173,14 +183,15 @@ public class TestLLParser {
         FALexerGenerator lg = new FALexerGenerator();
         CNFA nfa = lg.buildNFA(G);
         DFA dfa = new DFA(nfa);
-        //dfa.deleteDeadState();
-        DFALexer lexer = new DFALexer(dfa);
+        DFALexer lexer = new DFALexer(dfa,1000);
+        lexer.setKeywords(G.getKeywords());
         //lexer.getImagefromStr(dir,"lexer_jsonG_E404");
 
         //build parser.
         LLParser sa = new LLParser(G,lexer);
 
 
+        //Test 1
         long current = System.currentTimeMillis();
         LinkedTree<Token> t = sa.parse(G,fi1);
         long m1 = (System.currentTimeMillis()) - current;
@@ -194,18 +205,91 @@ public class TestLLParser {
         System.out.println("Gen: "+m1);
         System.out.println("Recurse: "+m2+"\n");
 
+        //Test 2
         current = System.currentTimeMillis();
-        t = sa.parse(G,fi2);
+        t = sa.parse(G,fi4);
         m1 = (System.currentTimeMillis()) - current;
         assert t != null;
         current = System.currentTimeMillis();
-        ob2 = parser.parse(fi2);
+        ob2 = parser.parse(fi4);//for fi4 longest str is 596 symbols
         m2 = (System.currentTimeMillis() - current);
+        assert ob2 != null;
 
-
-        System.out.println("dataset1.json");
+        System.out.println("dataset3.json");
         System.out.println("Gen: "+m1);
         System.out.println("Recurse: "+m2);
 
+        //Test 3
+        current = System.currentTimeMillis();
+        t = sa.parse(G,fi5);
+        m1 = (System.currentTimeMillis()) - current;
+        assert t != null;
+        current = System.currentTimeMillis();
+        ob2 = parser.parse(fi5);
+        m2 = (System.currentTimeMillis() - current);
+        assert ob2 != null;
+
+        System.out.println("dataset4.json");
+        System.out.println("Gen: "+m1);
+        System.out.println("Recurse: "+m2);
+
+//        //Test 4
+//        current = System.currentTimeMillis();
+//        t = sa.parse(G,fi2);
+//        m1 = (System.currentTimeMillis()) - current;
+//        assert t != null;
+//        current = System.currentTimeMillis();
+//        ob2 = parser.parse(fi2);
+//        m2 = (System.currentTimeMillis() - current);
+//        assert ob2 != null;
+//
+//        System.out.println("dataset1.json");
+//        System.out.println("Gen: "+m1);
+//        System.out.println("Recurse: "+m2);
+//
+//        //Test 5
+//        current = System.currentTimeMillis();
+//        t = sa.parse(G,fi3);
+//        m1 = (System.currentTimeMillis()) - current;
+//        assert t != null;
+//
+//        current = System.currentTimeMillis();
+//        ob2 = parser.parse(fi3);
+//        m2 = (System.currentTimeMillis()) - current;
+//        assert ob2 != null;
+//
+//        System.out.println("dataset2.json");
+//        System.out.println("Gen: "+m1);
+//        System.out.println("Recurse: "+m2);
+
+// //       Test 6
+//        current = System.currentTimeMillis();
+//        t = sa.parse(G,fi6);
+//        m1 = (System.currentTimeMillis()) - current;
+//        assert t != null;
+//
+//        current = System.currentTimeMillis();
+//        ob2 = parser.parse(fi6);
+//        m2 = (System.currentTimeMillis()) - current;
+//        assert ob2 != null;
+//
+//        System.out.println("dataset5.json");
+//        System.out.println("Gen: "+m1);
+//        System.out.println("Recurse: "+m2);
+
+        //Test 7
+        current = System.currentTimeMillis();
+        t = sa.parse(G,fi7);
+        m1 = (System.currentTimeMillis()) - current;
+        assert t != null;
+
+        current = System.currentTimeMillis();
+        ob2 = parser.parse(fi7);
+        m2 = (System.currentTimeMillis()) - current;
+        assert ob2 != null;
+
+        System.out.println("dataset6.json");
+        System.out.println("Gen: "+m1);
+        System.out.println("Recurse: "+m2);
     }
 }

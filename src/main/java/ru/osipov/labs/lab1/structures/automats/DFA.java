@@ -214,7 +214,7 @@ public class DFA extends Graph {
             n = mapped.get(s.getName());
         }
         if(group.stream().anyMatch(Vertex::isStart)){
-            System.out.println(n);
+            //System.out.println(n);
             this.start = n;
             n.setStart(true);
         }

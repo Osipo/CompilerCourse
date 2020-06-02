@@ -65,6 +65,7 @@ public class LookAheadBufferedLexer implements LexerIO{
         else{
             col++;
             char c = (char)r.read();
+            //System.out.println((int)c);
             if(c == '\n'){
                 line++; col = 0;
             }

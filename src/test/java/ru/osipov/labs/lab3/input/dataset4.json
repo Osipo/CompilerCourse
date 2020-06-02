@@ -1,0 +1,350 @@
+{
+  "meta" : {
+    "view" : {
+      "id" : "rc3m-jvyy",
+      "name" : "Average Employee Benefit Cost Comparison",
+      "attribution" : "Office of Management and Enterprise Services (OMES) Human Capital Management (HCM) Division",
+      "attributionLink" : "http://OMES.OK.gov",
+      "averageRating" : 0,
+      "category" : "Finance and Administration",
+      "createdAt" : 1360607852,
+      "description" : "Breakdown of the employer benefits of the state’s package compared to those of the external labor market. The average cost is calculated based on the employers’ contribution in relation to the respective average state benchmark salary and the average market salary. For dental insurance, the 2012 Survey data not available.  2011 data has been escalated by 4.0% based on trend figures from the Sibson Consulting 2012 Health Plan Cost Trend Survey; for Basic Life Insurance & Disability Insurance, the data comes from the 2010/2011 Towers Watson Survey Report on Employee Benefits Policies & Practices; for sick leave accrual days, the data comes from the 2010/2011 Towers Watson Survey Report on Employee Benefits Policies & Practices; and for the market amount for defined benefit retirement plan, the data comes from the NASRA FY 2011 Public Fund Survey Report.",
+      "displayType" : "table",
+      "downloadCount" : 170,
+      "indexUpdatedAt" : 1414532589,
+      "licenseId" : "OPEN_DATABASE_LICENSE",
+      "newBackend" : false,
+      "numberOfComments" : 0,
+      "oid" : 2495953,
+      "publicationAppendEnabled" : false,
+      "publicationDate" : 1360608231,
+      "publicationGroup" : 671297,
+      "publicationStage" : "published",
+      "rowsUpdatedAt" : 1360608122,
+      "rowsUpdatedBy" : "3t9e-a4iw",
+      "tableId" : 671304,
+      "totalTimesRated" : 0,
+      "viewCount" : 267,
+      "viewLastModified" : 1360684117,
+      "viewType" : "tabular",
+      "columns" : [ {
+        "id" : -1,
+        "name" : "sid",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":sid",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "id",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":id",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "position",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":position",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "created_at",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":created_at",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "created_meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":created_meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "updated_at",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":updated_at",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "updated_meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":updated_meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : 44209596,
+        "name" : "Benefit",
+        "dataTypeName" : "text",
+        "fieldName" : "benefit",
+        "position" : 2,
+        "renderTypeName" : "text",
+        "tableColumnId" : 7767116,
+        "width" : 184,
+        "cachedContents" : {
+          "non_null" : 9,
+          "smallest" : "Annual Leave Accrual Days",
+          "null" : 0,
+          "largest" : "Workers’ Compensation & Unemployment Insurance",
+          "top" : [ {
+            "count" : 20,
+            "item" : "Health Insurance"
+          }, {
+            "count" : 19,
+            "item" : "Dental Insurance"
+          }, {
+            "count" : 18,
+            "item" : "Basic Life Insurance & Disability Insurance"
+          }, {
+            "count" : 17,
+            "item" : "Annual Leave Accrual Days"
+          }, {
+            "count" : 16,
+            "item" : "Sick Leave Accrual Days"
+          }, {
+            "count" : 15,
+            "item" : "Paid Holidays"
+          }, {
+            "count" : 14,
+            "item" : "Defined Benefit Retirement Plan (Employer contribution)"
+          }, {
+            "count" : 13,
+            "item" : "Social Security"
+          }, {
+            "count" : 12,
+            "item" : "Workers’ Compensation & Unemployment Insurance"
+          } ]
+        },
+        "format" : {
+        }
+      }, {
+        "id" : 44209597,
+        "name" : "State of Oklahoma Contribution",
+        "dataTypeName" : "money",
+        "fieldName" : "state_of_oklahoma_contribution",
+        "position" : 3,
+        "renderTypeName" : "money",
+        "tableColumnId" : 7767117,
+        "width" : 460,
+        "cachedContents" : {
+          "non_null" : 9,
+          "smallest" : "157.20",
+          "sum" : "22836.29",
+          "null" : 0,
+          "average" : "2537.365555555556",
+          "largest" : "7272.00",
+          "top" : [ {
+            "count" : 20,
+            "item" : "7272.00"
+          }, {
+            "count" : 19,
+            "item" : "261.48"
+          }, {
+            "count" : 18,
+            "item" : "157.20"
+          }, {
+            "count" : 17,
+            "item" : "2719.38"
+          }, {
+            "count" : 16,
+            "item" : "2039.54"
+          }, {
+            "count" : 15,
+            "item" : "1495.66"
+          }, {
+            "count" : 14,
+            "item" : "5833.08"
+          }, {
+            "count" : 13,
+            "item" : "2704.43"
+          }, {
+            "count" : 12,
+            "item" : "353.52"
+          } ]
+        },
+        "format" : {
+          "aggregate" : "sum",
+          "humane" : "false",
+          "currency" : "USD",
+          "align" : "right"
+        }
+      }, {
+        "id" : 44209598,
+        "name" : "Market Contribution",
+        "dataTypeName" : "money",
+        "fieldName" : "market_contribution",
+        "position" : 4,
+        "renderTypeName" : "money",
+        "tableColumnId" : 7767118,
+        "width" : 328,
+        "cachedContents" : {
+          "non_null" : 9,
+          "smallest" : "439.79",
+          "sum" : "23280.39",
+          "null" : 0,
+          "average" : "2586.71",
+          "largest" : "6192.24",
+          "top" : [ {
+            "count" : 20,
+            "item" : "5615.00"
+          }, {
+            "count" : 19,
+            "item" : "521.33"
+          }, {
+            "count" : 18,
+            "item" : "550.79"
+          }, {
+            "count" : 17,
+            "item" : "3044.70"
+          }, {
+            "count" : 16,
+            "item" : "2029.80"
+          }, {
+            "count" : 15,
+            "item" : "1522.35"
+          }, {
+            "count" : 14,
+            "item" : "6192.24"
+          }, {
+            "count" : 13,
+            "item" : "3364.39"
+          }, {
+            "count" : 12,
+            "item" : "439.79"
+          } ]
+        },
+        "format" : {
+          "aggregate" : "sum",
+          "humane" : "false",
+          "currency" : "USD",
+          "align" : "right"
+        }
+      }, {
+        "id" : 44209599,
+        "name" : "% to Market",
+        "dataTypeName" : "percent",
+        "fieldName" : "to_market",
+        "position" : 5,
+        "renderTypeName" : "percent",
+        "tableColumnId" : 7767119,
+        "width" : 232,
+        "cachedContents" : {
+          "non_null" : 9,
+          "smallest" : "-71.46",
+          "sum" : "-148.78",
+          "null" : 0,
+          "average" : "-16.53111111111111",
+          "largest" : "29.51",
+          "top" : [ {
+            "count" : 20,
+            "item" : "29.51"
+          }, {
+            "count" : 19,
+            "item" : "-49.84"
+          }, {
+            "count" : 18,
+            "item" : "-71.46"
+          }, {
+            "count" : 17,
+            "item" : "-10.68"
+          }, {
+            "count" : 16,
+            "item" : "0.48"
+          }, {
+            "count" : 15,
+            "item" : "-1.75"
+          }, {
+            "count" : 14,
+            "item" : "-5.80"
+          }, {
+            "count" : 13,
+            "item" : "-19.62"
+          } ]
+        },
+        "format" : {
+          "view" : "percent_text",
+          "align" : "right",
+          "noCommas" : "false"
+        }
+      } ],
+      "grants" : [ {
+        "inherited" : false,
+        "type" : "viewer",
+        "flags" : [ "public" ]
+      } ],
+      "license" : {
+        "name" : "Open Database License"
+      },
+      "metadata" : {
+        "renderTypeConfig" : {
+          "visible" : {
+            "table" : true
+          }
+        },
+        "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+      },
+      "owner" : {
+        "id" : "3t9e-a4iw",
+        "displayName" : "Office of Management and Enterprise Services",
+        "profileImageUrlLarge" : "/images/profile/2877/4960/white-and-dark-blue-seal-size-220_large.jpg",
+        "profileImageUrlMedium" : "/images/profile/2877/4960/white-and-dark-blue-seal-size-220_thumb.jpg",
+        "profileImageUrlSmall" : "/images/profile/2877/4960/white-and-dark-blue-seal-size-220_tiny.jpg",
+        "roleName" : "editor",
+        "screenName" : "Office of Management and Enterprise Services",
+        "rights" : [ "create_datasets", "view_domain", "create_pages", "view_goals", "view_dashboards" ]
+      },
+      "query" : {
+      },
+      "rights" : [ "read" ],
+      "tableAuthor" : {
+        "id" : "3t9e-a4iw",
+        "displayName" : "Office of Management and Enterprise Services",
+        "profileImageUrlLarge" : "/images/profile/2877/4960/white-and-dark-blue-seal-size-220_large.jpg",
+        "profileImageUrlMedium" : "/images/profile/2877/4960/white-and-dark-blue-seal-size-220_thumb.jpg",
+        "profileImageUrlSmall" : "/images/profile/2877/4960/white-and-dark-blue-seal-size-220_tiny.jpg",
+        "roleName" : "editor",
+        "screenName" : "Office of Management and Enterprise Services",
+        "rights" : [ "create_datasets", "view_domain", "create_pages", "view_goals", "view_dashboards" ]
+      },
+      "tags" : [ "employee", "benefit", "cost", "comparison", "average", "state of oklahoma", "market" ],
+      "flags" : [ "default" ]
+    }
+  },
+  "data" : [ [ 1, "A4FE97E5-97BD-4ABC-9CAD-A54481D4EF66", 1, 1360607854, "706310", 1360607854, "706310", "{\n}", "Health Insurance", "7272.00", "5615.00", "29.51" ]
+, [ 2, "3EA36A22-EFBE-443E-B6E4-046F47D0F7EF", 2, 1360607854, "706310", 1360607854, "706310", "{\n}", "Dental Insurance", "261.48", "521.33", "-49.84" ]
+, [ 3, "3351797D-D2D8-4FC4-9385-D93DD33CEB17", 3, 1360607854, "706310", 1360607854, "706310", "{\n}", "Basic Life Insurance & Disability Insurance", "157.20", "550.79", "-71.46" ]
+, [ 4, "8D28880A-0A9D-42A7-95DE-7A1DA9D3ED06", 4, 1360607854, "706310", 1360607854, "706310", "{\n}", "Annual Leave Accrual Days", "2719.38", "3044.70", "-10.68" ]
+, [ 5, "BC5BF85E-6E82-413D-BF8A-015711A773D7", 5, 1360607854, "706310", 1360607854, "706310", "{\n}", "Sick Leave Accrual Days", "2039.54", "2029.80", "0.48" ]
+, [ 6, "F8548A5E-6383-4920-A391-98BA8678A4DC", 6, 1360607854, "706310", 1360607854, "706310", "{\n}", "Paid Holidays", "1495.66", "1522.35", "-1.75" ]
+, [ 7, "696EA6A5-E54B-4356-86DE-223F40F0D28D", 7, 1360607854, "706310", 1360607854, "706310", "{\n}", "Defined Benefit Retirement Plan (Employer contribution)", "5833.08", "6192.24", "-5.80" ]
+, [ 8, "556312CB-03BF-45C4-9D69-A19FAB617902", 8, 1360607854, "706310", 1360607854, "706310", "{\n}", "Social Security", "2704.43", "3364.39", "-19.62" ]
+, [ 9, "72D9A039-359A-41E5-BDA7-8954EE0CA35E", 9, 1360607854, "706310", 1360607854, "706310", "{\n}", "Workers’ Compensation & Unemployment Insurance", "353.52", "439.79", "-19.62" ]
+ ]
+}

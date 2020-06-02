@@ -1,0 +1,415 @@
+{
+  "meta" : {
+    "view" : {
+      "id" : "8jzv-99pp",
+      "name" : "Ability To Speak English By Language",
+      "attribution" : "Office of Language Access",
+      "attributionLink" : "http://hawaii.gov/dlir",
+      "averageRating" : 0,
+      "category" : "Culture and Recreation",
+      "createdAt" : 1346895209,
+      "description" : "(Excluding those less than 5 years old or speak only English)\t\t\t\t\n\nHawaii’s Limited English Proficient (LEP) Population:\nA Demographic and Socio-Economic Profile",
+      "displayType" : "table",
+      "downloadCount" : 1953,
+      "hideFromCatalog" : false,
+      "hideFromDataJson" : false,
+      "indexUpdatedAt" : 1414704149,
+      "licenseId" : "CC_30_BY",
+      "newBackend" : true,
+      "numberOfComments" : 0,
+      "oid" : 1046845,
+      "provenance" : "official",
+      "publicationAppendEnabled" : false,
+      "publicationDate" : 1346895370,
+      "publicationGroup" : 419343,
+      "publicationStage" : "published",
+      "rowsUpdatedAt" : 1346895330,
+      "rowsUpdatedBy" : "a5cm-ukuw",
+      "tableId" : 419343,
+      "totalTimesRated" : 0,
+      "viewCount" : 652,
+      "viewLastModified" : 1346895370,
+      "viewType" : "tabular",
+      "approvals" : [ {
+        "reviewedAt" : 1346895370,
+        "reviewedAutomatically" : true,
+        "state" : "approved",
+        "submissionId" : 806041,
+        "submissionObject" : "public_audience_request",
+        "submissionOutcome" : "change_audience",
+        "submittedAt" : 1346895370,
+        "workflowId" : 2182,
+        "submissionDetails" : {
+          "permissionType" : "READ"
+        },
+        "submissionOutcomeApplication" : {
+          "failureCount" : 0,
+          "status" : "success"
+        },
+        "submitter" : {
+          "id" : "a5cm-ukuw",
+          "displayName" : "OIMT Open Data Coordinator"
+        }
+      } ],
+      "columns" : [ {
+        "id" : -1,
+        "name" : "sid",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":sid",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : { },
+        "flags" : [ "hidden" ]
+      }, {
+        "id" : -1,
+        "name" : "id",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":id",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : { },
+        "flags" : [ "hidden" ]
+      }, {
+        "id" : -1,
+        "name" : "position",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":position",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : { },
+        "flags" : [ "hidden" ]
+      }, {
+        "id" : -1,
+        "name" : "created_at",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":created_at",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : { },
+        "flags" : [ "hidden" ]
+      }, {
+        "id" : -1,
+        "name" : "created_meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":created_meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : { },
+        "flags" : [ "hidden" ]
+      }, {
+        "id" : -1,
+        "name" : "updated_at",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":updated_at",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : { },
+        "flags" : [ "hidden" ]
+      }, {
+        "id" : -1,
+        "name" : "updated_meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":updated_meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : { },
+        "flags" : [ "hidden" ]
+      }, {
+        "id" : -1,
+        "name" : "meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : { },
+        "flags" : [ "hidden" ]
+      }, {
+        "id" : 17168013,
+        "name" : "Language spoken at home",
+        "dataTypeName" : "text",
+        "fieldName" : "language_spoken_at_home",
+        "position" : 2,
+        "renderTypeName" : "text",
+        "tableColumnId" : 4049585,
+        "width" : 376,
+        "cachedContents" : {
+          "non_null" : 11,
+          "largest" : "Mandarin & Cantonese",
+          "null" : 0,
+          "top" : [ {
+            "item" : "1. Tagalog",
+            "count" : 20
+          }, {
+            "item" : "2. Ilokano",
+            "count" : 19
+          }, {
+            "item" : "3. Japanese",
+            "count" : 18
+          }, {
+            "item" : "4. Chinese, inc.",
+            "count" : 17
+          }, {
+            "item" : "Mandarin & Cantonese",
+            "count" : 16
+          }, {
+            "item" : "5. Korean",
+            "count" : 15
+          }, {
+            "item" : "6. Vietnamese",
+            "count" : 14
+          }, {
+            "item" : "7. Bisayan",
+            "count" : 13
+          }, {
+            "item" : "8. Other Pacific languages",
+            "count" : 12
+          }, {
+            "item" : "9. Samoan",
+            "count" : 11
+          }, {
+            "item" : "10. Spanish",
+            "count" : 10
+          } ],
+          "smallest" : "1. Tagalog"
+        },
+        "format" : { }
+      }, {
+        "id" : 17168014,
+        "name" : "Well",
+        "dataTypeName" : "number",
+        "fieldName" : "well",
+        "position" : 3,
+        "renderTypeName" : "number",
+        "tableColumnId" : 4049586,
+        "width" : 148,
+        "cachedContents" : {
+          "non_null" : 10,
+          "average" : "7358.3",
+          "largest" : "20272",
+          "null" : 1,
+          "top" : [ {
+            "item" : "20272",
+            "count" : 20
+          }, {
+            "item" : "13701",
+            "count" : 19
+          }, {
+            "item" : "12849",
+            "count" : 18
+          }, {
+            "item" : "8027",
+            "count" : 17
+          }, {
+            "item" : "6018",
+            "count" : 16
+          }, {
+            "item" : "1952",
+            "count" : 15
+          }, {
+            "item" : "1824",
+            "count" : 14
+          }, {
+            "item" : "4090",
+            "count" : 13
+          }, {
+            "item" : "3261",
+            "count" : 12
+          }, {
+            "item" : "1589",
+            "count" : 11
+          } ],
+          "smallest" : "1589",
+          "sum" : "73583"
+        },
+        "format" : {
+          "precisionStyle" : "standard",
+          "noCommas" : "false",
+          "align" : "right",
+          "aggregate" : "sum"
+        }
+      }, {
+        "id" : 17168015,
+        "name" : "Not Well",
+        "dataTypeName" : "number",
+        "fieldName" : "not_well",
+        "position" : 4,
+        "renderTypeName" : "number",
+        "tableColumnId" : 4049587,
+        "width" : 196,
+        "cachedContents" : {
+          "non_null" : 10,
+          "average" : "4714.1",
+          "largest" : "10911",
+          "null" : 1,
+          "top" : [ {
+            "item" : "7549",
+            "count" : 20
+          }, {
+            "item" : "10911",
+            "count" : 19
+          }, {
+            "item" : "9064",
+            "count" : 18
+          }, {
+            "item" : "6518",
+            "count" : 17
+          }, {
+            "item" : "4544",
+            "count" : 16
+          }, {
+            "item" : "2796",
+            "count" : 15
+          }, {
+            "item" : "2256",
+            "count" : 14
+          }, {
+            "item" : "1666",
+            "count" : 13
+          }, {
+            "item" : "280",
+            "count" : 12
+          }, {
+            "item" : "1557",
+            "count" : 11
+          } ],
+          "smallest" : "280",
+          "sum" : "47141"
+        },
+        "format" : {
+          "precisionStyle" : "standard",
+          "noCommas" : "false",
+          "align" : "right",
+          "aggregate" : "sum"
+        }
+      }, {
+        "id" : 17168016,
+        "name" : "Not at All",
+        "dataTypeName" : "number",
+        "fieldName" : "not_at_all",
+        "position" : 5,
+        "renderTypeName" : "number",
+        "tableColumnId" : 4049588,
+        "width" : 220,
+        "cachedContents" : {
+          "non_null" : 10,
+          "average" : "430.7",
+          "largest" : "1130",
+          "null" : 1,
+          "top" : [ {
+            "item" : "215",
+            "count" : 20
+          }, {
+            "item" : "400",
+            "count" : 19
+          }, {
+            "item" : "703",
+            "count" : 18
+          }, {
+            "item" : "1130",
+            "count" : 17
+          }, {
+            "item" : "413",
+            "count" : 16
+          }, {
+            "item" : "791",
+            "count" : 15
+          }, {
+            "item" : "255",
+            "count" : 14
+          }, {
+            "item" : "62",
+            "count" : 13
+          }, {
+            "item" : "221",
+            "count" : 12
+          }, {
+            "item" : "117",
+            "count" : 11
+          } ],
+          "smallest" : "62",
+          "sum" : "4307"
+        },
+        "format" : {
+          "precisionStyle" : "standard",
+          "noCommas" : "false",
+          "align" : "right",
+          "aggregate" : "sum"
+        }
+      } ],
+      "grants" : [ {
+        "inherited" : false,
+        "type" : "viewer",
+        "flags" : [ "public" ]
+      } ],
+      "license" : {
+        "name" : "Creative Commons Attribution 3.0 Unported",
+        "logoUrl" : "images/licenses/cc30by.png",
+        "termsLink" : "http://creativecommons.org/licenses/by/3.0/legalcode"
+      },
+      "metadata" : {
+        "custom_fields" : {
+          "Data Reference" : {
+            "Records Reporting System RSN" : "37313",
+            "Reference for Technical Information" : "",
+            "Frequency" : "",
+            "Date Updated" : "",
+            "Date Released" : "2007",
+            "Period of Coverage" : "",
+            "Unit of Analysis" : "",
+            "Data dictionary/variable list" : ""
+          },
+          "Hawaii Line of Business" : {
+            "Division name" : "Office of language Access",
+            "Line of Business" : "Employment Rights & Benefits",
+            "Division shortname, acronym" : "",
+            "Department Agency short name, acronym" : "DLIR",
+            "State of Hawaii Data Book Category" : "Labor Force, Employment, and Earnings",
+            "Department/Agency" : "Labor & Industrial Relations"
+          }
+        },
+        "availableDisplayTypes" : [ "table", "fatrow", "page" ],
+        "renderTypeConfig" : {
+          "visible" : {
+            "table" : true
+          }
+        }
+      },
+      "owner" : {
+        "id" : "a5cm-ukuw",
+        "displayName" : "OIMT Open Data Coordinator",
+        "profileImageUrlLarge" : "/api/users/a5cm-ukuw/profile_images/LARGE",
+        "profileImageUrlMedium" : "/api/users/a5cm-ukuw/profile_images/THUMB",
+        "profileImageUrlSmall" : "/api/users/a5cm-ukuw/profile_images/TINY",
+        "screenName" : "OIMT Open Data Coordinator",
+        "type" : "interactive",
+        "userSegment" : "site_member"
+      },
+      "query" : { },
+      "rights" : [ "read" ],
+      "tableAuthor" : {
+        "id" : "a5cm-ukuw",
+        "displayName" : "OIMT Open Data Coordinator",
+        "profileImageUrlLarge" : "/api/users/a5cm-ukuw/profile_images/LARGE",
+        "profileImageUrlMedium" : "/api/users/a5cm-ukuw/profile_images/THUMB",
+        "profileImageUrlSmall" : "/api/users/a5cm-ukuw/profile_images/TINY",
+        "screenName" : "OIMT Open Data Coordinator",
+        "type" : "interactive",
+        "userSegment" : "site_member"
+      },
+      "tags" : [ "language", "english" ],
+      "flags" : [ "default", "restorable", "restorePossibleForType" ]
+    }
+  },
+  "data" : [ [ "row-4qh4~4v7j_e82f", "00000000-0000-0000-7D9D-A94AB1F90414", 0, 1425775216, null, 1425775216, null, "{ }", "1. Tagalog", "20272", "7549", "215" ]
+, [ "row-hrza.wp7h~nwgf", "00000000-0000-0000-BD2D-4297DDB69CA4", 0, 1425775216, null, 1425775216, null, "{ }", "2. Ilokano", "13701", "10911", "400" ]
+, [ "row-ukc2_cvey_qtpw", "00000000-0000-0000-8E75-26BCE1E418C3", 0, 1425775216, null, 1425775216, null, "{ }", "3. Japanese", "12849", "9064", "703" ]
+, [ "row-4854_d5va-kecg", "00000000-0000-0000-C9E0-EFA332F4C3C2", 0, 1425775216, null, 1425775216, null, "{ }", "4. Chinese, inc.", "8027", "6518", "1130" ]
+, [ "row-bebz_qsmx-xaep", "00000000-0000-0000-0D6A-13CBC9F5799D", 0, 1425775216, null, 1425775216, null, "{ }", "Mandarin & Cantonese", null, null, null ]
+, [ "row-5eeh_enj9~nv2z", "00000000-0000-0000-97BA-F3F66057F1B2", 0, 1425775216, null, 1425775216, null, "{ }", "5. Korean", "6018", "4544", "413" ]
+, [ "row-v8r5-4s53~7dzh", "00000000-0000-0000-24A6-AA0969A4E96A", 0, 1425775216, null, 1425775216, null, "{ }", "6. Vietnamese", "1952", "2796", "791" ]
+, [ "row-6q4f~2zdd-cpzx", "00000000-0000-0000-2BC4-75A2828C146C", 0, 1425775216, null, 1425775216, null, "{ }", "7. Bisayan", "1824", "2256", "255" ]
+, [ "row-pxbe_9y6e~e8ie", "00000000-0000-0000-7195-098D1F1A609A", 0, 1425775216, null, 1425775216, null, "{ }", "8. Other Pacific languages", "4090", "1666", "62" ]
+, [ "row-4r6v-ikmz_avm7", "00000000-0000-0000-9885-C2336F4CFBD7", 0, 1425775216, null, 1425775216, null, "{ }", "9. Samoan", "3261", "280", "221" ]
+, [ "row-j4ez.24qh~x3e2", "00000000-0000-0000-427B-720EAD17A900", 0, 1425775216, null, 1425775216, null, "{ }", "10. Spanish", "1589", "1557", "117" ]
+ ]
+}

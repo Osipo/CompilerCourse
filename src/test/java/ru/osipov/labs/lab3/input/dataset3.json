@@ -1,0 +1,52 @@
+{
+  "links": [
+    {"href": "https://www.chapelhillopendata.org/api/v2/catalog/datasets/census-diversity", "rel": "self"},
+    {"href": "https://www.chapelhillopendata.org/api/v2/catalog/datasets", "rel": "datasets"},
+    {"href": "https://www.chapelhillopendata.org/api/v2/catalog/datasets/census-diversity/records", "rel": "records"},
+    {"href": "https://www.chapelhillopendata.org/api/v2/catalog/datasets/census-diversity/exports", "rel": "exports"},
+    {"href": "https://www.chapelhillopendata.org/api/v2/catalog/datasets/census-diversity/aggregates", "rel": "aggregate"},
+    {"href": "https://www.chapelhillopendata.org/api/v2/catalog/datasets/census-diversity/facets", "rel": "facets"},
+    {"href": "https://www.chapelhillopendata.org/api/v2/catalog/datasets/census-diversity/reuses", "rel": "reuses"}
+  ],
+  "dataset": {
+    "dataset_id": "census-diversity",
+    "dataset_uid": "da_hu9yf8",
+    "attachments": [],
+    "has_records": true,
+    "data_visible": true,
+    "fields": [
+      {"description": null, "label": "Latitude/Longitude", "type": "geo_point_2d", "name": "geo_point_2d", "annotations": {}},
+      {"description": null, "label": "District's Geographic Shape", "type": "geo_shape", "name": "geo_shape", "annotations": {}},
+      {"description": null, "label": "ID", "type": "text", "name": "id", "annotations": {"sortable": []}}, {"description": null, "label": "Name", "type": "text", "name": "name", "annotations": {"sortable": []}},
+      {"description": null, "label": "State Abbreviation", "type": "text", "name": "st_abbrev", "annotations": {"facet": [], "sortable": []}},
+      {"description": null, "label": "Land Area", "type": "double", "name": "landarea", "annotations": {}},
+      {"description": null, "label": "Current Population", "type": "double", "name": "totpop_cy", "annotations": {}},
+      {"description": null, "label": "Previous Population (Census Data)", "type": "double", "name": "totpop10", "annotations": {"facet": []}},
+      {"description": null, "label": "Diversity Index", "type": "double", "name": "divindx_cy", "annotations": {"facet": []}},
+      {"description": null, "label": "Caucasian Population", "type": "double", "name": "white_nh", "annotations": {"facet": []}},
+      {"description": null, "label": "African American Population", "type": "double", "name": "black_nh", "annotations": {"facet": []}},
+      {"description": null, "label": "American Indian Population", "type": "double", "name": "amerind_nh", "annotations": {"facet": []}},
+      {"description": null, "label": "Asian Population", "type": "double", "name": "asian_nh", "annotations": {"facet": []}},
+      {"description": null, "label": "Pacific Islander Population", "type": "double", "name": "pacific_nh", "annotations": {"facet": []}},
+      {"description": null, "label": "Other Population", "type": "double", "name": "othrace_nh", "annotations": {"facet": []}},
+      {"description": null, "label": "Hispanic Population", "type": "double", "name": "hisppop_cy", "annotations": {"facet": []}}
+    ],
+    "metas": {
+      "default": {
+        "records_count": 10,
+        "modified": "2016-05-13T13:27:38+00:00",
+        "source_domain_address": null,
+        "references": "http://www.arcgis.com/home/item.html?id=36c30e3d9f00443389a5fe3312fa5a8d",
+        "keyword": ["Diversity", "Census", "GIS", "Ethnicity", "Demographics"],
+        "source_domain_title": null,
+        "geographic_reference": null,
+        "timezone": null,
+        "title": "Diversity Index",
+        "parent_domain": null,
+        "theme": ["Services, Social"],
+        "modified_updates_on_data_change": null,
+        "metadata_processed": "2019-05-07T09:47:31+00:00",
+        "data_processed": "2018-05-01T19:24:26+00:00",
+        "territory": null,
+        "description": "<p>This map service summarizes racial and ethnic diversity in the United States in 2012.</p><p>The Diversity Index shows the likelihood that two persons chosen at random from the same area, belong to different race or ethnic groups. The index ranges from 0 (no diversity) to 100 (complete diversity). Diversity in the U.S. population is increasing. The diversity score for the entire United States in 2012 is 61.</p><p>The data shown is from Esri's <a href=\"http://www.esri.com/data/esri_data/demographic-overview/demographic\">2012 Updated Demographics</a>. The map adds increasing level of detail as you zoom in, from state, to county, to ZIP Code, to tract, to block group data. This map shows Esri's 2012 estimates using Census 2010 geographies.</p>",
+        "modified_updates_on_metadata_change": null, "shared_catalog": null, "source_domain": null, "attributions": ["ESRI"], "geographic_area_mode": null, "geographic_reference_auto": null, "geographic_area": null, "publisher": "US Census", "language": "en", "license": "Public Domain", "source_dataset": null, "metadata_languages": null, "oauth_scope": null, "federated": false, "license_url": null}, "semantic": {"rml_mapping": null, "classes": null, "properties": null}, "dcat": {"created": null, "issued": null, "temporal": null, "granularity": null, "publisher_type": null, "contact_email": null, "accrualperiodicity": null, "spatial": null, "contributor": null, "dataquality": null, "creator": null, "contact_name": null}}, "features": ["analyze", "geo"]}}
