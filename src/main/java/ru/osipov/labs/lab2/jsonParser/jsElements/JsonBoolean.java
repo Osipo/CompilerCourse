@@ -12,5 +12,4 @@ public class JsonBoolean extends JsonElement<Boolean> {
         return v;
     }
 
-
 }
