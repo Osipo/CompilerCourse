@@ -27,6 +27,7 @@
     "realNum": "[0-9]+.[0-9]+(((E|e)(-|empty)[0-9]+)|empty)",
     "empty": null
   },
+  "keywords": ["true","false"],
   "nonTerms": ["E","AE","T","F","PE","B","OP","OPLIST","P","IMPL","CONJ","DISJ","UE"],
   "productions": [{"P": "B"},{"B": ["{","OPLIST","}"]},
     {"OPLIST": ["OPLIST",";","OP"]},{"OPLIST": "OP"},
@@ -40,7 +41,7 @@
   ,{"T" : ["F"]}, {"T": ["T","*","F"]},{"T": ["T","/","F"]},{"T": ["T","%","F"]}
   ,{"F": ["UE"]},{"F": ["F","^","UE"]}
   ,{"UE": ["~","UE"]},{"UE": ["+","UE"]},{"UE": ["-","UE"]},{"UE": "PE"}
-  ,{"PE": "num"},{"PE": "id"},{"PE": "realNum"},{"PE": ["(","IMPL",")"]}
+  ,{"PE": "num"},{"PE": "id"},{"PE": "realNum"},{"PE": "true"},{"PE": "false"},{"PE": ["(","IMPL",")"]}
   ],
   "start": "P"
 }

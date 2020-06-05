@@ -102,6 +102,7 @@ public class Grammar {
             for(JsonElement e : kws){
                 if(e instanceof JsonString){
                     this.keywords.add(((JsonString) e).getValue());
+                    this.T.add(((JsonString) e).getValue());
                 }
                 else
                     throw new InvalidJsonGrammarException("Expected String value of reserved keyword.",null);
@@ -471,6 +472,7 @@ public class Grammar {
         }
         return res;
     }
+
 
     public boolean isOperatorGrammar(){
         Set<String> prs = this.P.keySet();

@@ -19,6 +19,7 @@ import ru.osipov.labs.lab3.parsers.LLParser;
 import ru.osipov.labs.lab3.parsers.generators.LLParserGenerator;
 import ru.osipov.labs.lab3.trees.LinkedTree;
 import guru.nidi.graphviz.engine.Graphviz;
+import ru.osipov.labs.lab4.parsers.ShiftReduceParser;
 
 import java.io.File;
 import java.util.*;
@@ -86,6 +87,15 @@ public class Lab4 implements CommandLineRunner {
                     System.out.println("Get spanning Grammar");
                     GS = G.getSpanningGrammar();
                     System.out.println(GS);
+                    Set<String> terms = G.getTerminals();
+                    System.out.println("1 CHECK");
+                    for(String t : terms){
+                        System.out.println(t);
+                    }
+                    System.out.println("2 CHECK");
+                    for(String t : terms){
+                        System.out.println(t);
+                    }
                 }
 
                 //build lexer.
@@ -96,7 +106,7 @@ public class Lab4 implements CommandLineRunner {
 
 
                 //build parser.
-                //LLParser syntaxP = new LLParser(G,lexer);
+                ShiftReduceParser syntaxP = new ShiftReduceParser(G,lexer);
             }
             catch (InvalidJsonGrammarException e){
                 System.out.println(e.getMessage());
