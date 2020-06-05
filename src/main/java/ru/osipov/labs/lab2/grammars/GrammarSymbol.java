@@ -42,4 +42,9 @@ public class GrammarSymbol {
             return false;
         }
     }
+
+    @Override
+    public int hashCode(){
+        return getVal().hashCode();
+    }
 }

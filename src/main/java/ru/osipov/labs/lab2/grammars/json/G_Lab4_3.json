@@ -27,22 +27,20 @@
     "realNum": "[0-9]+.[0-9]+(((E|e)(-|empty)[0-9]+)|empty)",
     "empty": null
   },
-  "nonTerms": ["E","AE","T","F","PE","RELOP","PLUSOP","B","MULLOP","OP","OPLIST","P","IMPL","CONJ","DISJ","UE"],
+  "nonTerms": ["E","AE","T","F","PE","B","OP","OPLIST","P","IMPL","CONJ","DISJ","UE"],
   "productions": [{"P": "B"},{"B": ["{","OPLIST","}"]},
     {"OPLIST": ["OPLIST",";","OP"]},{"OPLIST": "OP"},
     {"OP": ["id","=","IMPL"]},{"OP": "B"},
     {"IMPL": ["IMPL","->","DISJ"]},{"IMPL": "DISJ"},
     {"DISJ": ["DISJ","||","CONJ"]},{"DISJ": "CONJ"},
     {"CONJ": ["CONJ","&&","E"]},{"CONJ": "E"},
-    {"E" : ["AE","RELOP","AE"]},{"E": "AE"}
-  ,{"AE": ["T"]},{"AE": ["AE","PLUSOP","T"]}
-  ,{"T" : ["F"]}, {"T": ["T","MULLOP","F"]}
+    {"E" : ["AE","<","AE"]},{"E" : ["AE","<=","AE"]},{"E" : ["AE",">","AE"]}
+  ,{"E" : ["AE",">=","AE"]},{"E" : ["AE","==","AE"]},{"E" : ["AE","<>","AE"]},{"E": "AE"}
+  ,{"AE": ["T"]},{"AE": ["AE","+","T"]},{"AE": ["AE","-","T"]}
+  ,{"T" : ["F"]}, {"T": ["T","*","F"]},{"T": ["T","/","F"]},{"T": ["T","%","F"]}
   ,{"F": ["UE"]},{"F": ["F","^","UE"]}
-  ,{"UE": ["~","UE"]},{"UE": ["PLUSOP","UE"]},{"UE": "PE"}
+  ,{"UE": ["~","UE"]},{"UE": ["+","UE"]},{"UE": ["-","UE"]},{"UE": "PE"}
   ,{"PE": "num"},{"PE": "id"},{"PE": "realNum"},{"PE": ["(","IMPL",")"]}
-  ,{"PLUSOP": "+"},{"PLUSOP": "-"}
-  ,{"MULLOP": "*"},{"MULLOP": "/"},{"MULLOP": "%"}
-  ,{"RELOP": "<"},{"RELOP": "<="},{"RELOP": ">"},{"RELOP": ">="},{"RELOP": "=="},{"RELOP": "<>"}
   ],
   "start": "P"
 }

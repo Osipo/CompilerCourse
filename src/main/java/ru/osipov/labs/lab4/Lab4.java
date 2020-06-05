@@ -8,6 +8,7 @@ import ru.osipov.labs.lab1.structures.automats.CNFA;
 import ru.osipov.labs.lab1.structures.automats.DFA;
 import ru.osipov.labs.lab1.utils.RegexRPNParser;
 import ru.osipov.labs.lab2.grammars.Grammar;
+import ru.osipov.labs.lab2.grammars.GrammarSymbol;
 import ru.osipov.labs.lab2.grammars.json.InvalidJsonGrammarException;
 import ru.osipov.labs.lab2.jsonParser.SimpleJsonParser;
 import ru.osipov.labs.lab2.jsonParser.jsElements.JsonObject;
@@ -48,11 +49,44 @@ public class Lab4 implements CommandLineRunner {
             try {
                 G = new Grammar(ob);
                 System.out.println(G);
+                System.out.println("\n");
 
-                //Spanning Grammar
-                Grammar GS = G.getSpanningGrammar();
-                System.out.println("Spanning G");
-                System.out.println(GS);
+                Map<String,Set<GrammarSymbol>> Lmap = G.getLMap();
+                System.out.println("L(U) for each non-term U was computed.");
+                Map<String,Set<GrammarSymbol>> Rmap = G.getRMap();
+                System.out.println("R(U) for each non-term U was computed.\n");
+
+//                System.out.println("L(U)");
+//                for(String k: Lmap.keySet()){
+//                    System.out.println(k+": "+Lmap.get(k));
+//                }
+
+                Map<String,Set<String>> LTM = G.getLeftTermMap(Lmap);
+                System.out.println("\nComputed Lt(U) for each non-term U");
+                System.out.println("Lt(U)");
+                for(String k: LTM.keySet()){
+                    System.out.println(k+": "+LTM.get(k));
+                }
+
+                Map<String,Set<String>> RTM = G.getRightTermMap(Rmap);
+                System.out.println("\nComputed Rt(U) for each non-term U");
+                System.out.println("Rt(U)");
+                for(String k: RTM.keySet()){
+                    System.out.println(k+": "+RTM.get(k));
+                }
+
+//                System.out.println("\nR(U)");
+//                for(String k : Rmap.keySet()){
+//                    System.out.println(k+": "+Rmap.get(k));
+//                }
+                boolean opG = G.isOperatorGrammar();
+                System.out.println("Is Operator G: "+opG);
+                Grammar GS = null;
+                if(opG){
+                    System.out.println("Get spanning Grammar");
+                    GS = G.getSpanningGrammar();
+                    System.out.println(GS);
+                }
 
                 //build lexer.
                 FALexerGenerator lg = new FALexerGenerator();

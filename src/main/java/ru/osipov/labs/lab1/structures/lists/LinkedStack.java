@@ -1,4 +1,5 @@
 package ru.osipov.labs.lab1.structures.lists;
+import java.util.Collection;
 import java.util.Iterator;
 //LIFO
 public class LinkedStack<T> implements Iterable<T> {
@@ -47,6 +48,12 @@ public class LinkedStack<T> implements Iterable<T> {
 
     public void add(T item){
         push(item);
+    }
+
+    public void addAll(Collection<T> col){
+        for(T el: col){
+            push(el);
+        }
     }
 
     public boolean remove(T item){

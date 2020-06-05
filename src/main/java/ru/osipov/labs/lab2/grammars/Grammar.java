@@ -1,6 +1,7 @@
 package ru.osipov.labs.lab2.grammars;
 
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
+import ru.osipov.labs.lab1.structures.observable.ObservableHashSet;
 import ru.osipov.labs.lab1.utils.ColUtils;
 import ru.osipov.labs.lab2.grammars.json.InvalidJsonGrammarException;
 import ru.osipov.labs.lab2.jsonParser.jsElements.*;
@@ -21,6 +22,7 @@ public class Grammar {
     private String S;
     private String E;//terminal which means empty String.
     private Set<String> keywords;
+
 
     private Set<String> N_g;//Non-terminals which generates words.
     private Set<String> N_e;//Non-terminals which generates empty words.
@@ -321,6 +323,227 @@ public class Grammar {
     public Set<String> getKeywords(){
         return this.keywords;
     }
+
+    //Compute L(U) for U non-term
+    private Set<GrammarSymbol> getL_i(String header){
+        String h = header;
+        Set<GrammarSymbol> Ls = new HashSet<>();
+        LinkedStack<GrammarString> rules = new LinkedStack<>();
+        rules.addAll(P.get(h));
+        while(!rules.isEmpty()){
+            GrammarString rule = rules.top();
+            rules.pop();
+            GrammarSymbol si = rule.getSymbols().get(0);
+            if(!Ls.contains(si)){
+                Ls.add(si);
+                if(si.getType() == 'n' && ! si.getVal().equals(h)){//if it is a non-terminal and not equals to header.
+                    rules.addAll(P.get(si.getVal()));
+                    h = si.getVal();//new rule with alternatives for new symbol si
+                }
+            }
+        }
+        return Ls;
+    }
+
+    //Compute R(U) for U non-term
+    private Set<GrammarSymbol> getR_i(String header){
+        String h = header;
+        Set<GrammarSymbol> Rs = new HashSet<>();
+        LinkedStack<GrammarString> rules = new LinkedStack<>();
+        rules.addAll(P.get(h));
+        while(!rules.isEmpty()){
+            GrammarString rule = rules.top();
+            rules.pop();
+            GrammarSymbol si = rule.getSymbols().get(rule.getSymbols().size() - 1);
+            if(!Rs.contains(si)){
+                Rs.add(si);
+                if(si.getType() == 'n' && ! si.getVal().equals(h)){//if it is a non-terminal and not equals to header.
+                    rules.addAll(P.get(si.getVal()));
+                    h = si.getVal();//new rule with alternatives for new symbol si
+                }
+            }
+        }
+        return Rs;
+    }
+
+    public Map<String,Set<GrammarSymbol>> getLMap(){
+        Map<String,Set<GrammarSymbol>> L = new HashMap<>();
+        Set<String> NT = this.N;
+        for(String h: NT){
+            L.put(h,getL_i(h));
+        }
+        return L;
+    }
+
+    public Map<String,Set<GrammarSymbol>> getRMap(){
+        Map<String,Set<GrammarSymbol>> R = new HashMap<>();
+        Set<String> NT = this.N;
+        for(String h: NT){
+            R.put(h,getR_i(h));
+        }
+        return R;
+    }
+
+    //for each Non-term U compute Lt(U) based on L(U).
+    public Map<String,Set<String>> getLeftTermMap(Map<String,Set<GrammarSymbol>> L){
+        Map<String,Set<String>> res = new HashMap<>();
+        Set<String> NT = this.N;
+        LinkedStack<String> S = new LinkedStack<>();
+        for(String N: NT){
+            S.push(N);
+            res.put(N,new ObservableHashSet<String>());
+        }
+        while(!S.isEmpty()){
+            String p = S.top();
+            S.pop();
+            Set<GrammarString> bodies = this.P.get(p);
+            for(GrammarString str : bodies){
+                if(str.getSymbols().size() == 1){
+                    GrammarSymbol s = str.getSymbols().get(0);
+                    if(s.getType() != 't')
+                        continue;
+
+                    if(res.get(p).add(s.getVal())){
+                        for(GrammarSymbol sym : L.get(p)){
+                            if(sym.getType() == 'n' && ! sym.getVal().equals(p))
+                                ((ObservableHashSet<String>) res.get(sym.getVal())).attach((ObservableHashSet<String>) res.get(p));
+                        }
+                    }
+                }
+                else{
+                    GrammarSymbol s = str.getSymbols().get(0);
+                    if(s.getType() != 't')
+                        s = str.getSymbols().get(1);
+                    if(s.getType() != 't')
+                        continue;
+                    if(res.get(p).add(s.getVal())){
+                        for(GrammarSymbol sym : L.get(p)){
+                            if(sym.getType() == 'n' && ! sym.getVal().equals(p))
+                                ((ObservableHashSet<String>) res.get(sym.getVal())).attach((ObservableHashSet<String>) res.get(p));//Lt(p) inherits from p in L(p)
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    //for each Non-term U compute Lt(U) based on L(U).
+    public Map<String,Set<String>> getRightTermMap(Map<String,Set<GrammarSymbol>> R){
+        Map<String,Set<String>> res = new HashMap<>();
+        Set<String> NT = this.N;
+        LinkedStack<String> S = new LinkedStack<>();
+        for(String N: NT){
+            S.push(N);
+            res.put(N,new ObservableHashSet<String>());
+        }
+        while(!S.isEmpty()){
+            String p = S.top();
+            S.pop();
+            Set<GrammarString> bodies = this.P.get(p);
+            for(GrammarString str : bodies){
+                if(str.getSymbols().size() == 1){
+                    GrammarSymbol s = str.getSymbols().get(0);
+                    if(s.getType() != 't')
+                        continue;
+
+                    if(res.get(p).add(s.getVal())){
+                        for(GrammarSymbol sym : R.get(p)){
+                            if(sym.getType() == 'n' && ! sym.getVal().equals(p))
+                                ((ObservableHashSet<String>) res.get(sym.getVal())).attach((ObservableHashSet<String>) res.get(p));
+                        }
+                    }
+                }
+                else{
+                    GrammarSymbol s = str.getSymbols().get(str.getSymbols().size() - 1);
+                    if(s.getType() != 't')
+                        s = str.getSymbols().get(str.getSymbols().size() - 2);
+                    if(s.getType() != 't')
+                        continue;
+                    if(res.get(p).add(s.getVal())){
+                        for(GrammarSymbol sym : R.get(p)){
+                            if(sym.getType() == 'n' && ! sym.getVal().equals(p))
+                                ((ObservableHashSet<String>) res.get(sym.getVal())).attach((ObservableHashSet<String>) res.get(p));//Lt(p) inherits from p in L(p)
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    public boolean isOperatorGrammar(){
+        Set<String> prs = this.P.keySet();
+        if(N_e.size() > 0)//empty-rules does not exist in Operator-Grammar.
+            return false;
+        int i = 0;
+        for(String p: prs){
+            Set<GrammarString> rules = P.get(p);
+            for(GrammarString str : rules){
+                i = 0;
+                List<GrammarSymbol> syms = str.getSymbols();
+                for(GrammarSymbol s: syms){
+                    if(s.getType() == 'n'){
+                        i++;
+                        if(i == 2) {
+                            System.out.println("Two adjacent non-terms are detected.");
+                            System.out.println("Rule "+p+" -> "+str);
+                            return false;
+                        }
+                    }
+                    else
+                        i--;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    /*
+    private Set<String> getLt_i(String N, Map<String,Set<GrammarSymbol>> lmap){
+        Set<GrammarSymbol> L = lmap.get(N);//L(U) U == N.
+        Set<String> Lts = new HashSet<>();
+        LinkedStack<GrammarString> rules = new LinkedStack<>();
+        List<String> computed = new ArrayList<>();
+        computed.add(N);
+        rules.addAll(P.get(N));
+        String h = N;
+        while(!rules.isEmpty()){
+            GrammarString rule = rules.top();
+            rules.pop();
+            if(rule.getSymbols().size() == 1){
+                GrammarSymbol si = rule.getSymbols().get(0);
+                if(si.getType() == 'n')
+                    continue;
+                if(!Lts.contains(si.getVal())){
+                    Lts.add(si.getVal());
+                    for(GrammarSymbol sym : L){
+                        if(sym.getType() == 'n' && !computed.contains(sym.getVal())){
+                            computed.add(sym.getVal());
+                        }
+                    }
+                }
+            }
+            else{
+                GrammarSymbol si = rule.getSymbols().get(0);
+                if(si.getType() == 'n')
+                    si = rule.getSymbols().get(1);
+                if(si.getType() == 'n')
+                    continue;
+                if(!Lts.contains(si.getVal())){
+                    Lts.add(si.getVal());
+                    for(GrammarSymbol sym : L){
+                        if(sym.getType() == 'n' && !computed.contains(sym.getVal())){
+                            computed.add(sym.getVal());
+                        }
+                    }
+                }
+            }
+        }
+        return Lts;
+    }*/
+
 
     //Compute set of non-terminals which generates empty-strings
     private void computeN_e(){
@@ -1119,7 +1342,12 @@ public class Grammar {
         return new Grammar(this.T,this.N,newP,this.S,this.E,this.lex_rules,this.keywords);
     }
 
+    //Works only for Operator Grammar
     public Grammar getSpanningGrammar(){
+        if(!isOperatorGrammar()){
+            System.out.println("Error. Grammar is not operator Grammar!");
+            return null;
+        }
         Map<String,Set<GrammarString>> newP = new HashMap<>();
         Set<String> NN = new HashSet<>();
         String start = getStart();
