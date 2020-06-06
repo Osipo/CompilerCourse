@@ -27,7 +27,7 @@
     "realNum": "[0-9]+.[0-9]+(((E|e)(-|empty)[0-9]+)|empty)",
     "empty": null
   },
-  "keywords": ["true","false"],
+  "keywords": ["true","false","not"],
   "meta": {
     "operands": ["id","num","realNum","true","false"],
     "aliases": {
@@ -36,10 +36,10 @@
     }
   },
 
-  "nonTerms": ["E","AE","T","F","PE","B","OP","OPLIST","P","IMPL","CONJ","DISJ","UE"],
-  "productions": [{"P": "B"},{"B": ["{","OPLIST","}"]},
+  "nonTerms": ["E","AE","T","F","PE","OP","OPLIST","P","IMPL","CONJ","DISJ","UE"],
+  "productions": [{"P": ["{","OPLIST","}"] },
     {"OPLIST": ["OPLIST",";","OP"]},{"OPLIST": "OP"},
-    {"OP": ["id","=","IMPL"]},{"OP": "B"},
+    {"OP": ["id","=","IMPL"]},{"OP": ["{","OPLIST","}"]},
     {"IMPL": ["IMPL","->","DISJ"]},{"IMPL": "DISJ"},
     {"DISJ": ["DISJ","||","CONJ"]},{"DISJ": "CONJ"},
     {"CONJ": ["CONJ","&&","E"]},{"CONJ": "E"},
@@ -48,8 +48,9 @@
   ,{"AE": ["T"]},{"AE": ["AE","+","T"]},{"AE": ["AE","-","T"]}
   ,{"T" : ["F"]}, {"T": ["T","*","F"]},{"T": ["T","/","F"]},{"T": ["T","%","F"]}
   ,{"F": ["UE"]},{"F": ["F","^","UE"]}
-  ,{"UE": ["~","UE"]},{"UE": ["+","UE"]},{"UE": ["-","UE"]},{"UE": "PE"}
-  ,{"PE": "num"},{"PE": "id"},{"PE": "realNum"},{"PE": "true"},{"PE": "false"},{"PE": ["(","IMPL",")"]}
+  ,{"UE": ["~","UE"]},{"UE": ["up","UE"]},{"UE": ["um","UE"]},{"UE": "PE"}
+  ,{"PE": "num"},{"PE": "id"},{"PE": "realNum"},{"PE": "true"},{"PE": "false"},{"PE": ["(","IMPL",")"]},
+    {"PE": ["not","(","IMPL",")"]}
   ],
   "start": "P"
 }

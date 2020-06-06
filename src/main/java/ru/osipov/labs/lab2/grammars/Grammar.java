@@ -118,7 +118,7 @@ public class Grammar {
         //optional meta
         JsonElement M = jsonG.getElement("meta");
         if(M instanceof JsonObject){
-            JsonObject o = (JsonObject) T;
+            JsonObject o = (JsonObject) M;
             JsonElement opd = o.getElement("operands");
             if(opd instanceof JsonArray){
                 ArrayList<JsonElement> kws = ((JsonArray) opd).getElements();
@@ -132,7 +132,7 @@ public class Grammar {
             }
             JsonElement als = o.getElement("aliases");
             if(als instanceof JsonObject){
-                JsonObject al = (JsonObject) T;
+                JsonObject al = (JsonObject) als;
                 Set<String> termNames = al.getValue().keySet();
                 for(String t : termNames){
                     if(!this.T.contains(t) && !this.keywords.contains(t))

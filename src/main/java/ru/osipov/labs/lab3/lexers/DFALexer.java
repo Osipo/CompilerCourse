@@ -152,7 +152,7 @@ public class DFALexer extends DFA implements ILexer {
                     return prevTok;
                 }
                 else if(prevTok != null && operands.size() > 0){
-                    prevTok = new Token(aliases.get(s.getValue()), sb.toString(), 't');
+                    prevTok = new Token(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString(), 't');
                     return prevTok;
                 }
                 else {
@@ -180,7 +180,7 @@ public class DFALexer extends DFA implements ILexer {
                     return prevTok;
                 }
                 else if(prevTok != null && operands.size() > 0){
-                    prevTok = new Token(aliases.get(s.getValue()), sb.toString(), 't');
+                    prevTok = new Token(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString(), 't');
                     return prevTok;
                 }
                 else {

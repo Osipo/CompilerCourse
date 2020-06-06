@@ -1,5 +1,6 @@
 package ru.osipov.labs.lab4.parsers.generators;
 
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab2.grammars.GrammarString;
@@ -18,9 +19,10 @@ public class OPParserGenerator {
         Map<Integer,String> parents = new HashMap<>();
         Set<String> NT = G.getNonTerminals();
         int i = 1;
-        for(String N : NT) {
+        Set<String> P = G.getProductions().keySet();
+        for(String N : P) {
             for (GrammarString str : G.getProductions().get(N)) {
-                indices.put(str.toString(), i);
+                indices.put(str.toString().replaceAll("\\s+",""), i);
                 parents.put(i,N);
                 i++;
             }
@@ -48,6 +50,7 @@ public class OPParserGenerator {
         Set<String> t1 = Lt.get(G.getStart());//Lt(S)
         Set<String> t2 = Rt.get(G.getStart());//Rt(S)
 
+        System.out.println(G.getStart());
         int j = 0;
         for(String term : t1){
             j = idx.get(term);
@@ -59,12 +62,15 @@ public class OPParserGenerator {
             matrix[i][j] = '>';
         }
 
+        T.add("$");
         Set<String> P = G.getProductions().keySet();
 
             for (String h : P) {
                 Set<GrammarString> rules = G.getProductions().get(h);//get rules with header h.
                 for (GrammarString rule : rules) {
                     List<GrammarSymbol> l = rule.getSymbols();
+                    if(l.size() == 1)//pass rules like U -> U or U -> a, where U = non-term, a = term.
+                        continue;
                     for (int li = 0; li < l.size() - 2; li++) {//scanning body.
                         GrammarSymbol ai = l.get(li);
                         if(ai.getType() == 't'){

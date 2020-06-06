@@ -1,4 +1,5 @@
 package ru.osipov.labs.lab1.structures.lists;
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Iterator;
 //LIFO
@@ -129,13 +130,16 @@ public class LinkedStack<T> implements Iterable<T> {
     }
 
     @Override
+    @Nonnull
     public Iterator<T> iterator() {
-        return new Iter();
+        return new IterS();
     }
 
-    private class Iter implements Iterator<T>{
+
+    private class IterS implements Iterator<T>{
 
         ElementType<T> current = _head;
+
         @Override
         public boolean hasNext() {
             return current != null;
@@ -147,5 +151,6 @@ public class LinkedStack<T> implements Iterable<T> {
             current = current.getNext();
             return el;
         }
+
     }
 }
