@@ -2,6 +2,7 @@ package ru.osipov.labs.lab3.lexers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Set;
 
 public interface ILexer {
@@ -10,4 +11,8 @@ public interface ILexer {
     void reset();
     void setKeywords(Set<String> s);
     Set<String> getKeywords();
+    void setOperands(Set<String> ops);
+    Set<String> getOperands();
+    void setAliases(Map<String,String> aliases);
+    Map<String,String> getAliases();
 }

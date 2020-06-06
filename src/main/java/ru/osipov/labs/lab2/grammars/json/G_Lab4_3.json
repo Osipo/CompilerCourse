@@ -28,6 +28,14 @@
     "empty": null
   },
   "keywords": ["true","false"],
+  "meta": {
+    "operands": ["id","num","realNum","true","false"],
+    "aliases": {
+      "-": "um",
+      "+": "up"
+    }
+  },
+
   "nonTerms": ["E","AE","T","F","PE","B","OP","OPLIST","P","IMPL","CONJ","DISJ","UE"],
   "productions": [{"P": "B"},{"B": ["{","OPLIST","}"]},
     {"OPLIST": ["OPLIST",";","OP"]},{"OPLIST": "OP"},

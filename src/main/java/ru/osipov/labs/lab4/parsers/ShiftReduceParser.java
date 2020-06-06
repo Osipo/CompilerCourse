@@ -25,14 +25,31 @@ public class ShiftReduceParser {
         OPParserGenerator gen = new OPParserGenerator();
         this.rIdx = gen.getIndicesOfRules(G);
         this.lexer = lexer;
+        lexer.setKeywords(G.getKeywords());
+        lexer.setOperands(G.getOperands());
+        lexer.setAliases(G.getAliases());
         this.table = gen.operatorPresedence(G);
-        printTableRelations();
+        printTableRelations(G);
 
     }
 
-    private void printTableRelations(){
+    private void printTableRelations(Grammar G){
         System.out.println("Matrix was built.");
-        System.out.print("|");
+        System.out.print("\t\t");
+        System.out.print("| ");
+        for(String t: G.getTerminals()){
+            System.out.print(t+" | ");
+        }
+        System.out.println("$ |");
+        for(String rt: G.getTerminals()){
+            System.out.print("| "+rt);
+            for(String ct : G.getTerminals()){
+                int r = table.getMatrixIndices().get(rt);
+                int c = table.getMatrixIndices().get(ct);
+                System.out.print(" | "+table.getMatrix()[r][c]);
+            }
+            System.out.println(" |");
+        }
     }
 
     //Bottom-up parser:: shift-reduce.

@@ -33,6 +33,9 @@ public class LLParser {
         gen = new LLParserGenerator();
         this.table = gen.getTable(G);
         this.lexer = lexer;
+        lexer.setKeywords(G.getKeywords());
+        lexer.setOperands(G.getOperands());
+        lexer.setAliases(G.getAliases());
         this.T = G.getTerminals();
         this.N = G.getNonTerminals();
     }

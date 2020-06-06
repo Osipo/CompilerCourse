@@ -22,13 +22,15 @@ public class Grammar {
     private String S;
     private String E;//terminal which means empty String.
     private Set<String> keywords;
+    private Set<String> operands;
+    private Map<String,String> aliases;
 
 
     private Set<String> N_g;//Non-terminals which generates words.
     private Set<String> N_e;//Non-terminals which generates empty words.
     private Map<String, List<String>> lex_rules; //terminals with their patterns. (Lexical rules)
 
-    public Grammar(Set<String> T, Set<String> N, Map<String,Set<GrammarString>> P,String start, String em, Map<String,List<String>> lexs, Set<String> kws){
+    public Grammar(Set<String> T, Set<String> N, Map<String,Set<GrammarString>> P,String start, String em, Map<String,List<String>> lexs, Set<String> kws, Set<String> ops, Map<String,String> als){
         this.T = T;
         this.N = N;
         this.P = P;
@@ -36,12 +38,16 @@ public class Grammar {
         this.E = em;
         this.lex_rules = lexs;
         this.keywords = kws;
+        this.operands = ops;
+        this.aliases = als;
         computeN_g();
         computeN_e();
     }
 
     public Grammar(JsonObject jsonG){
         this.keywords = new HashSet<>();
+        this.operands = new HashSet<>();
+        this.aliases = new HashMap<>();
         JsonElement S = jsonG.getElement("start");
         if(S instanceof JsonString)
             this.S = ((JsonString) S).getValue();
@@ -106,6 +112,40 @@ public class Grammar {
                 }
                 else
                     throw new InvalidJsonGrammarException("Expected String value of reserved keyword.",null);
+            }
+        }
+
+        //optional meta
+        JsonElement M = jsonG.getElement("meta");
+        if(M instanceof JsonObject){
+            JsonObject o = (JsonObject) T;
+            JsonElement opd = o.getElement("operands");
+            if(opd instanceof JsonArray){
+                ArrayList<JsonElement> kws = ((JsonArray) opd).getElements();
+                for(JsonElement e : kws){
+                    if(e instanceof JsonString && (this.T.contains(((JsonString) e).getValue()) || this.keywords.contains(((JsonString) e).getValue()) ) ){
+                        this.operands.add(((JsonString) e).getValue());
+                    }
+                    else
+                        throw new InvalidJsonGrammarException("Expected String being contained in terms or keywords.",null);
+                }
+            }
+            JsonElement als = o.getElement("aliases");
+            if(als instanceof JsonObject){
+                JsonObject al = (JsonObject) T;
+                Set<String> termNames = al.getValue().keySet();
+                for(String t : termNames){
+                    if(!this.T.contains(t) && !this.keywords.contains(t))
+                        throw new InvalidJsonGrammarException("Expected String being contained in terms or keywords.",null);
+                    JsonElement el = al.getElement(t);
+                    if(el instanceof JsonString) {
+                        String val = ((JsonString) el).getValue();
+                        this.T.add(val);
+                        this.aliases.put(t,val);
+                    }
+                    else
+                        throw new InvalidJsonGrammarException("Expected String value.",null);
+                }
             }
         }
 
@@ -325,6 +365,10 @@ public class Grammar {
         return this.keywords;
     }
 
+    public Set<String> getOperands(){ return this.operands;}
+
+    public Map<String,String> getAliases(){ return this.aliases;}
+
     //Compute L(U) for U non-term
     private Set<GrammarSymbol> getL_i(String header){
         String h = header;
@@ -429,7 +473,7 @@ public class Grammar {
         return res;
     }
 
-    //for each Non-term U compute Lt(U) based on L(U).
+    //for each Non-term U compute Rt(U) based on R(U).
     public Map<String,Set<String>> getRightTermMap(Map<String,Set<GrammarSymbol>> R){
         Map<String,Set<String>> res = new HashMap<>();
         Set<String> NT = this.N;
@@ -740,7 +784,7 @@ public class Grammar {
             }
             NN.add(p);
         }
-        return new Grammar(this.T,NN,newP,this.S,this.E,this.lex_rules,this.keywords);
+        return new Grammar(this.T,NN,newP,this.S,this.E,this.lex_rules,this.keywords,this.operands,this.aliases);
     }
 
 
@@ -783,7 +827,7 @@ public class Grammar {
                 NN.add(p);
             }
         }
-        return new Grammar(this.T,NN,newP,newS,this.E,this.lex_rules,this.keywords);
+        return new Grammar(this.T,NN,newP,newS,this.E,this.lex_rules,this.keywords,this.operands,this.aliases);
     }
 
     //Get all subsets of rule which consists of combinations of N_e.
@@ -897,7 +941,7 @@ public class Grammar {
             }
             newP.put(np,nalts);
         }
-        return new Grammar(this.T,NN,newP,start,this.E,lex_rules,this.keywords);
+        return new Grammar(this.T,NN,newP,start,this.E,lex_rules,this.keywords,this.operands,this.aliases);
     }
 
     //Given production with name n.
@@ -968,7 +1012,7 @@ public class Grammar {
             }
             newP.put(prod,nalts);
         }
-        return new Grammar(T,NN,newP,start,this.E,lex_rules,this.keywords).deleteUselessSymbols();
+        return new Grammar(T,NN,newP,start,this.E,lex_rules,this.keywords,this.operands,this.aliases).deleteUselessSymbols();
     }
 
     public static Grammar getChomskyGrammar(Grammar G){
@@ -1028,7 +1072,7 @@ public class Grammar {
             newP.put(p,nalts);
             NN.add(p);
         }
-        return new Grammar(G.T,NN,newP,s,G.E,G.lex_rules,G.keywords);
+        return new Grammar(G.T,NN,newP,s,G.E,G.lex_rules,G.keywords,G.operands,G.aliases);
     }
 
     //ELIMINATE LEFT RECURSION. (all type)
@@ -1089,7 +1133,7 @@ public class Grammar {
             newP.put(Ai+"\'",lb1);
             NN.add(Ai+"\'");
         }
-        return new Grammar(G.T,NN,newP,G.getStart(),G.E,G.getLexicalRules(),G.keywords);
+        return new Grammar(G.T,NN,newP,G.getStart(),G.E,G.getLexicalRules(),G.keywords,G.operands,G.aliases);
     }
 
 
@@ -1213,7 +1257,7 @@ public class Grammar {
         Set<String> NT = new HashSet<>(V_i);
         NT.retainAll(T);
 
-        return new Grammar(NT,NN,newP,this.S,this.E,lex_rules,this.keywords);
+        return new Grammar(NT,NN,newP,this.S,this.E,lex_rules,this.keywords,this.operands,this.aliases);
     }
 
     //Algorithm 2.9
@@ -1242,7 +1286,7 @@ public class Grammar {
             if(nbodies.size() > 0)
                 newP.put(p,nbodies);
         }
-        Grammar NG = new Grammar(this.T,NN,newP,this.S,this.E,lex_rules,this.keywords);
+        Grammar NG = new Grammar(this.T,NN,newP,this.S,this.E,lex_rules,this.keywords,this.operands,this.aliases);
         return NG.deleteNonReachableSymbols();
     }
 
@@ -1341,7 +1385,7 @@ public class Grammar {
                 }
             }
         }
-        return new Grammar(this.T,this.N,newP,this.S,this.E,this.lex_rules,this.keywords);
+        return new Grammar(this.T,this.N,newP,this.S,this.E,this.lex_rules,this.keywords,this.operands,this.aliases);
     }
 
     //Works only for Operator Grammar
@@ -1369,7 +1413,7 @@ public class Grammar {
             }
         }
         newP.put(start,nrules);
-        return new Grammar(T,NN,newP,this.S,this.E,lex_rules,this.keywords);
+        return new Grammar(T,NN,newP,this.S,this.E,lex_rules,this.keywords,this.operands,this.aliases);
     }
 
     public Grammar deleteLeftFactor(){
@@ -1446,13 +1490,13 @@ public class Grammar {
             NT.add(this.E);
             NN.addAll(N);
           //return new Grammar(NT,NN,newP,this.S,this.E,lex_rules);
-            Grammar NG = new Grammar(NT,NN,newP,this.S,this.E,lex_rules,this.keywords);
+            Grammar NG = new Grammar(NT,NN,newP,this.S,this.E,lex_rules,this.keywords,this.operands,this.aliases);
             NG = NG.getGrammarWithoutEqualRules();
             //System.out.println(NG);
             return NG.getNonCycledGrammar().deleteUselessSymbols();
         }
         NN.addAll(N);
-        Grammar NG = new Grammar(T,NN,newP,this.S,this.E,lex_rules,this.keywords);
+        Grammar NG = new Grammar(T,NN,newP,this.S,this.E,lex_rules,this.keywords,this.operands,this.aliases);
         NG = NG.getGrammarWithoutEqualRules();
         //System.out.println(NG);
         return NG.getNonCycledGrammar().deleteUselessSymbols();

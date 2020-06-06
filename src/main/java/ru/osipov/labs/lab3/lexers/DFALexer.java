@@ -9,21 +9,25 @@ import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DFALexer extends DFA implements ILexer {
 
     private LexerIO io;
     private Set<String> keywords;
+    private Set<String> operands;
+    private Map<String,String> aliases;
+    private Token prevTok;
 
     public DFALexer(DFA dfa, LexerIO io){
         super(dfa,true);
         this.deleteDeadState();
         this.io = io;
         this.keywords = new HashSet<>();
+        this.operands = new HashSet<>();
+        this.aliases = new HashMap<>();
+        this.prevTok = null;
     }
 
     public DFALexer(NFA nfa, LexerIO io){
@@ -31,6 +35,9 @@ public class DFALexer extends DFA implements ILexer {
         this.deleteDeadState();
         this.io = io;
         this.keywords = new HashSet<>();
+        this.operands = new HashSet<>();
+        this.aliases = new HashMap<>();
+        this.prevTok = null;
     }
 
     public DFALexer(CNFA nfa){
@@ -41,6 +48,10 @@ public class DFALexer extends DFA implements ILexer {
         System.out.println("Patterns (F): "+this.getFinished().size());
         System.out.println("Start: "+this.getStart());
         this.io = new LookAheadBufferedLexer();
+        this.keywords = new HashSet<>();
+        this.operands = new HashSet<>();
+        this.aliases = new HashMap<>();
+        this.prevTok = null;
     }
 
 
@@ -52,6 +63,9 @@ public class DFALexer extends DFA implements ILexer {
         System.out.println("Start: "+this.getStart());
         this.io = new LookAheadBufferedLexer(bsize);
         this.keywords = new HashSet<>();
+        this.operands = new HashSet<>();
+        this.aliases = new HashMap<>();
+        this.prevTok = null;
     }
 
     public DFALexer(DFA dfa){
@@ -62,6 +76,9 @@ public class DFALexer extends DFA implements ILexer {
         System.out.println("Start: "+this.getStart());
         this.io = new LookAheadBufferedLexer();
         this.keywords = new HashSet<>();
+        this.operands = new HashSet<>();
+        this.aliases = new HashMap<>();
+        this.prevTok = null;
     }
 
     @Override
@@ -72,6 +89,26 @@ public class DFALexer extends DFA implements ILexer {
     @Override
     public Set<String> getKeywords(){
         return keywords;
+    }
+
+    @Override
+    public void setOperands(Set<String> operands) {
+        this.operands = operands;
+    }
+
+    @Override
+    public Set<String> getOperands() {
+        return operands;
+    }
+
+    @Override
+    public void setAliases(Map<String, String> aliases) {
+        this.aliases = aliases;
+    }
+
+    @Override
+    public Map<String, String> getAliases() {
+        return aliases;
     }
 
     @Override
@@ -96,17 +133,32 @@ public class DFALexer extends DFA implements ILexer {
                 //System.out.println("Lexeme at ("+io.getLine()+":"+io.getCol()+") :: "+sb.toString());
                 String err = sb.toString();
                 while(s == null || !s.isFinish()){
-                    if(sb.length() == 0)
-                        return new Token("Unrecognized ","Error at ("+io.getLine()+":"+io.getCol()+") :: Unrecognized token: "+err+"\n",'e');
+                    if(sb.length() == 0) {
+                        prevTok =  new Token("Unrecognized ", "Error at (" + io.getLine() + ":" + io.getCol() + ") :: Unrecognized token: " + err + "\n", 'e');
+                        return prevTok;
+                    }
                     cur = sb.charAt(sb.length() - 1);
                     sb.deleteCharAt(sb.length() - 1);
                     io.ungetch(cur);
                     s = states.top();
                     states.pop();
                 }
-                if(s.getValue().equals("id") && keywords.contains(sb.toString()))
-                    return new Token(sb.toString(),sb.toString(), 't');
-                return new Token(s.getValue(),sb.toString(),'t');
+                if(s.getValue().equals("id") && keywords.size() > 0 && keywords.contains(sb.toString())) {
+                    prevTok = new Token(sb.toString(), sb.toString(), 't');
+                    return prevTok;
+                }
+                else if(prevTok == null || (operands.size() > 0 && operands.contains(prevTok.getName())) ){
+                    prevTok =  new Token(s.getValue(), sb.toString(), 't');
+                    return prevTok;
+                }
+                else if(prevTok != null && operands.size() > 0){
+                    prevTok = new Token(aliases.get(s.getValue()), sb.toString(), 't');
+                    return prevTok;
+                }
+                else {
+                    prevTok =  new Token(s.getValue(), sb.toString(), 't');
+                    return prevTok;
+                }
             }
             else {
                 cur = (char)io.getch(f);
@@ -119,15 +171,32 @@ public class DFALexer extends DFA implements ILexer {
             if((int)cur == 65535)
                 sb.deleteCharAt(sb.length() - 1);//remove redundant read EOF ch.
             if(s.isFinish()) {
-                if(s.getValue().equals("id") && keywords.contains(sb.toString()))
-                    return new Token(sb.toString(),sb.toString(),'t');
-                return new Token(s.getValue(), sb.toString(), 't');
+                if(s.getValue().equals("id") && keywords.size() > 0 && keywords.contains(sb.toString())) {
+                    prevTok = new Token(sb.toString(), sb.toString(), 't');
+                    return prevTok;
+                }
+                else if(prevTok == null || (operands.size() > 0 && operands.contains(prevTok.getName())) ){
+                    prevTok =  new Token(s.getValue(), sb.toString(), 't');
+                    return prevTok;
+                }
+                else if(prevTok != null && operands.size() > 0){
+                    prevTok = new Token(aliases.get(s.getValue()), sb.toString(), 't');
+                    return prevTok;
+                }
+                else {
+                    prevTok =  new Token(s.getValue(), sb.toString(), 't');
+                    return prevTok;
+                }
             }
-            else
-                return new Token("Unrecognized","Error at ("+io.getLine()+":"+io.getCol()+") :: Unrecognized token: "+sb.toString()+"\n",'e');
+            else {
+                prevTok =  new Token("Unrecognized", "Error at (" + io.getLine() + ":" + io.getCol() + ") :: Unrecognized token: " + sb.toString() + "\n", 'e');
+                return prevTok;
+            }
         }
-        else
-            return new Token("$","$",'t');
+        else {
+            prevTok =  new Token("$", "$", 't');
+            return prevTok;
+        }
     }
 
     private Vertex moveTo(Vertex v, char c){
@@ -144,5 +213,6 @@ public class DFALexer extends DFA implements ILexer {
         io.setCol(0);
         io.setLine(1);
         io.clear();
+        this.prevTok = null;
     }
 }

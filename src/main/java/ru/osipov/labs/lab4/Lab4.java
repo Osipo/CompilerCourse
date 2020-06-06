@@ -106,7 +106,7 @@ public class Lab4 implements CommandLineRunner {
 
 
                 //build parser.
-                ShiftReduceParser syntaxP = new ShiftReduceParser(G,lexer);
+                //ShiftReduceParser syntaxP = new ShiftReduceParser(G,lexer);
             }
             catch (InvalidJsonGrammarException e){
                 System.out.println(e.getMessage());

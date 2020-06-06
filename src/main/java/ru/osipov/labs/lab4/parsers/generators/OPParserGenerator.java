@@ -61,7 +61,6 @@ public class OPParserGenerator {
 
         Set<String> P = G.getProductions().keySet();
 
-//        for(String term : T) {//for current term a.
             for (String h : P) {
                 Set<GrammarString> rules = G.getProductions().get(h);//get rules with header h.
                 for (GrammarString rule : rules) {
@@ -138,7 +137,6 @@ public class OPParserGenerator {
                     }
                 }
             }
-//      }
         return new OperatorPresedenceRelations(matrix,idx);
     }
 }
