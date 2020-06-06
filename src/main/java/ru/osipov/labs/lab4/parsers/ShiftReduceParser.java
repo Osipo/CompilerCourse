@@ -29,7 +29,7 @@ public class ShiftReduceParser {
         lexer.setAliases(G.getAliases());
         this.table = gen.operatorPresedence(G);
         this.rIdx = gen.getIndicesOfRules(G.getSpanningGrammar());
-        System.out.println("Parser was built.");
+        //System.out.println("Parser was built.");
         //printTableRelations(G);
 
     }
@@ -70,18 +70,19 @@ public class ShiftReduceParser {
             S.push(EOF);//Initial:: ($,tok). //Finish:: ($S,$).
             LinkedNode<Token> A = null;//current symbol on Stack.
             LinkedStack<Integer> rules = new LinkedStack<>();
+            int nidx = 1;
             while(true){
                 S_iter = S.iterator();//restart iterator.
                 //Get first term on the top of the stack.
                 A = S.top();
                 Token X = A.getValue();
-                System.out.println("S = "+S);
-                System.out.println("Input token: "+tok.getName());
+                //System.out.println("S = "+S);
+                //System.out.println("Input token: "+tok.getName());
                 while(X.getType() != 't' && S_iter.hasNext()){//If non-terms on the top of the stack => ignore them.
                     A = S_iter.next();
                     X = A.getValue();
                 }
-                System.out.println("On Stack: "+X.getName());
+                //System.out.println("On Stack: "+X.getName());
                 if(X.getName().equals("$") && tok.getName().equals("$")){
                     isParsed = true;
                     break;
@@ -102,10 +103,14 @@ public class ShiftReduceParser {
                     while(child_a.getValue().getType() != 't'){
                         S.pop();
                         child_a.setParent(parent);
+                        child_a.setIdx(nidx);
+                        nidx++;
                         parent.getChildren().add(child_a);
                         child_a = S.top();
                     }
                     child_a.setParent(parent);
+                    child_a.setIdx(nidx);
+                    nidx++;
                     S.pop();
                     parent.getChildren().add(child_a);
                     while(!S.isEmpty()){
@@ -113,6 +118,8 @@ public class ShiftReduceParser {
                         S.pop();
                         if(child_b.getValue().getType() == 'n'){//add non-terminal too
                             child_b.setParent(parent);
+                            child_b.setIdx(nidx);
+                            nidx++;
                             parent.getChildren().add(child_b);
                             continue;
                         }
@@ -121,6 +128,8 @@ public class ShiftReduceParser {
                             int c = table.getMatrixIndices().get(child_a.getValue().getName());
                             if(table.getMatrix()[r][c] == '='){//is base row.
                                 child_b.setParent(parent);
+                                child_b.setIdx(nidx);
+                                nidx++;
                                 parent.getChildren().add(child_b);
                                 child_a = child_b;
                             }
@@ -135,14 +144,13 @@ public class ShiftReduceParser {
                     for(int li = children.size() - 1; li >= 0; li--){
                         b.append(children.get(li).getValue().getName());
                     }
-                    System.out.println("Reduced: "+b.toString());
+                    //System.out.println("Reduced: "+b.toString());
                     Integer r_i = rIdx.getStates().get(b.toString());
                     rules.push(r_i);
                     String header = G.getStart();
-                    //System.out.println(header);
                     parent.setValue(new Token(header,header,'n'));
                     S.push(parent);
-                    System.out.println(S);
+                    //System.out.println(S);
                 }
                 else{//syntax error.
                     break;

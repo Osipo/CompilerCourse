@@ -443,7 +443,7 @@ public class Grammar {
             S.pop();
             Set<GrammarString> bodies = this.P.get(p);
             for(GrammarString str : bodies){
-                if(str.getSymbols().size() == 1){
+                if(str.getSymbols().size() == 1){//tz -> z any chain t - term.
                     GrammarSymbol s = str.getSymbols().get(0);
                     if(s.getType() != 't')
                         continue;
@@ -487,8 +487,8 @@ public class Grammar {
             S.pop();
             Set<GrammarString> bodies = this.P.get(p);
             for(GrammarString str : bodies){
-                if(str.getSymbols().size() == 1){
-                    GrammarSymbol s = str.getSymbols().get(0);
+                if(str.getSymbols().size() == 1){//Ctz ztC
+                    GrammarSymbol s = str.getSymbols().get(0);//zt where z - chain t - term.
                     if(s.getType() != 't')
                         continue;
 
@@ -498,7 +498,7 @@ public class Grammar {
                                 ((ObservableHashSet<String>) res.get(sym.getVal())).attach((ObservableHashSet<String>) res.get(p));
                         }
                     }
-                }
+                }// A -> U. U -> non-term. => skip.
                 else{
                     GrammarSymbol s = str.getSymbols().get(str.getSymbols().size() - 1);
                     if(s.getType() != 't')
@@ -508,7 +508,7 @@ public class Grammar {
                     if(res.get(p).add(s.getVal())){
                         for(GrammarSymbol sym : R.get(p)){
                             if(sym.getType() == 'n' && ! sym.getVal().equals(p))
-                                ((ObservableHashSet<String>) res.get(sym.getVal())).attach((ObservableHashSet<String>) res.get(p));//Lt(p) inherits from p in L(p)
+                                ((ObservableHashSet<String>) res.get(sym.getVal())).attach((ObservableHashSet<String>) res.get(p));//Rt(p) inherits from Rt(u) in R(u)
                         }
                     }
                 }
