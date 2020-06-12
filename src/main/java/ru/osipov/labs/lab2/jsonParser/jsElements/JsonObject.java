@@ -22,11 +22,18 @@ public class JsonObject extends JsonElement<StrLinkedHashMap<JsonElement>> {
     }
 
 
+    //get Element within object by property name.
+    public JsonElement getProperty(String pname){
+        return table.get(pname);
+    }
 
+    //get Element by path using path dot notation.
     public JsonElement getElement(String path){
         String[] p = path.split("\\.");
         StrLinkedHashMap<JsonElement> cnode = table;//ROOT.
         JsonElement n  = null;
+        if(p == null || p.length == 0)
+            return getProperty(path);
         for(String c : p){
             n = cnode.get(c);
             try {//is interior node

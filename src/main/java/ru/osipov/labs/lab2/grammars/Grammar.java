@@ -61,12 +61,6 @@ public class Grammar {
         this.operands = new HashSet<>();
         this.aliases = new HashMap<>();
         this.id = "id";
-        JsonElement S = jsonG.getElement("start");
-        if(S instanceof JsonString)
-            this.S = ((JsonString) S).getValue();
-        else
-            throw new InvalidJsonGrammarException("Expected start property with String value!",null);
-
         this.E = "";
         JsonElement T = jsonG.getElement("terms");
 
@@ -80,7 +74,9 @@ public class Grammar {
                 //System.out.println(t+": "+t.length());
                 List<String> l = new LinkedList<>();
                 this.T.add(t);
-                JsonElement el = o.getElement(t);
+                JsonElement el = o.getProperty(t);
+                if(el == null)
+                    System.out.println("not found");
                 if(el instanceof JsonNull) {
                     if(!this.E.equals(""))
                         throw new InvalidJsonGrammarException("Only one empty-terminal is allowed. Found two or more",null);
@@ -176,7 +172,7 @@ public class Grammar {
                 for(String t : termNames){
                     if(!this.T.contains(t) && !this.keywords.contains(t))
                         throw new InvalidJsonGrammarException("Expected String being contained in terms or keywords.",null);
-                    JsonElement el = al.getElement(t);
+                    JsonElement el = al.getProperty(t);
                     if(el instanceof JsonString) {
                         String val = ((JsonString) el).getValue();
                         this.T.add(val);
@@ -271,6 +267,12 @@ public class Grammar {
         }
         else
             throw new InvalidJsonGrammarException("productions is not a list!",null);
+
+        JsonElement S = jsonG.getElement("start");
+        if(S instanceof JsonString)
+            this.S = ((JsonString) S).getValue();
+        else
+            throw new InvalidJsonGrammarException("Expected start property with String value!",null);
         computeN_g();
         computeN_e();
     }

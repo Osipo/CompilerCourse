@@ -22,6 +22,7 @@
     "||" : "@|@|",
     "~" : "~",
     "->": "->",
+    ".": ".",
     "id": "[A-Za-z_]([A-Za-z_0-9]+|empty)",
     "num": "[0-9]+",
     "realNum": "[0-9]+.[0-9]+(((E|e)(-|empty)[0-9]+)|empty)",
@@ -36,7 +37,7 @@
     }
   },
   "nonTerms": ["E","AE","T","F","PE","OP","OPLIST","P","IMPL","CONJ","DISJ","UE"],
-  "productions": [{"P": ["{","OPLIST","}"] },
+  "productions": [{"P": ["{","OPLIST","}","."] },
     {"OPLIST": ["OPLIST",";","OP"]},{"OPLIST": "OP"},
     {"OP": ["id","=","IMPL"]},{"OP": ["{","OPLIST","}"]},
     {"IMPL": ["IMPL","->","DISJ"]},{"IMPL": "DISJ"},

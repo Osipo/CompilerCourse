@@ -166,7 +166,6 @@ public class ShiftReduceParser {
                     break;
                 }
             }
-            lexer.reset();//reset column and line counter.
             if(isParsed)
                 return new LinkedTree<Token>(S.top());
             else {
@@ -176,6 +175,7 @@ public class ShiftReduceParser {
                 else
                     System.out.println(tok);
             }
+            lexer.reset();//reset column and line counter.
             return null;
         }
         catch (FileNotFoundException e){

@@ -2,42 +2,37 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5cad473b-a1a8-424d-8493-cd1b0fd48c19" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/BinaryNRVisitor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/BinarySearchTree.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/LinkedBinaryNode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/SInfo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/STable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/StringContainerComparator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/Value.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/input/S_G_lab3_mod2.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/jarAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/jarAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/grammars/Grammar.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/grammars/Grammar.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/LinkedTree.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/LinkedTree.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/Node.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/Node.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/PositionalTree.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/PositionalTree.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/Tree.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/Tree.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab4/Lab4.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab4/Lab4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/tests/test/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/Grammar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/Grammar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/json/G_Lab4_3.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/json/G_Lab4_3.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/DFALexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/DFALexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/ILexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/ILexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/parsers/LLParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/parsers/LLParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/Node.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/PositionalTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/PositionalTree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/SemanticAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/PrintAction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/Tree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/Tree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/Lab4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/Lab4.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/Lexer.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/Lexer.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/S_G_lab4_mod.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/S_G_lab4_mod.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/Tree.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/Tree.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/parsers/ShiftReduceParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/parsers/ShiftReduceParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/parsers/generators/OPParserGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/parsers/generators/OPParserGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4Tree.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/LL_parser_test1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/LL_parser_test1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/OP_parser_test1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/OP_parser_test1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/TestOpParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/TestOpParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/grammarJson/G_Lab4_3.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/grammarJson/G_Lab4_3.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/input/S_G_lab3_mod.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/input/S_G_lab3_mod.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/lexer_Test1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab4/lexer_Test1.png" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -116,7 +111,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Lab4">
+  <component name="RunManager" selected="Gradle.TestOpParser.test1">
     <configuration name="Lab4" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ru.osipov.labs.lab4.Lab4" />
       <module name="CompilerCoursePr.main" />
@@ -149,6 +144,26 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="TestLLParser" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.lab3.TestLLParser&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":cleanTest" />
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="TestLLParser.test1" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -169,32 +184,12 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="TestLLParser.test2" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestLLParser.testJsonGrammar" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.lab3.TestLLParser.test2&quot;" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":cleanTest" />
-            <option value=":test" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="TestLLParser.test3" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.lab3.TestLLParser.test3&quot;" />
+        <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.lab3.TestLLParser.testJsonGrammar&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -232,18 +227,18 @@
     <list>
       <item itemvalue="Application.Lab4" />
       <item itemvalue="Gradle.Lab2" />
-      <item itemvalue="Gradle.TestLLParser.test2" />
-      <item itemvalue="Gradle.TestLLParser.test3" />
       <item itemvalue="Gradle.TestLLParser.test1" />
       <item itemvalue="Gradle.TestOpParser.test1" />
+      <item itemvalue="Gradle.TestLLParser.testJsonGrammar" />
+      <item itemvalue="Gradle.TestLLParser" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Lab4" />
         <item itemvalue="Gradle.TestOpParser.test1" />
+        <item itemvalue="Gradle.TestLLParser" />
+        <item itemvalue="Gradle.TestLLParser.testJsonGrammar" />
+        <item itemvalue="Application.Lab4" />
         <item itemvalue="Gradle.TestLLParser.test1" />
-        <item itemvalue="Gradle.TestLLParser.test2" />
-        <item itemvalue="Gradle.TestLLParser.test3" />
       </list>
     </recent_temporary>
   </component>
