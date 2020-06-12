@@ -34,6 +34,11 @@ public class OPParserGenerator {
         Set<String> T = G.getTerminals();
         int sz = T.size() + 1;
         char [][] matrix = new char [sz][sz];
+        for(int mi = 0; mi < sz; mi++){
+            for(int mj = 0; mj < sz; mj++){
+                matrix[mi][mj] = ' ';
+            }
+        }
         Map<String,Integer> idx = new HashMap<>();
         int i = 0;
         for(String term : T){
@@ -50,15 +55,18 @@ public class OPParserGenerator {
         Set<String> t1 = Lt.get(G.getStart());//Lt(S)
         Set<String> t2 = Rt.get(G.getStart());//Rt(S)
 
-        System.out.println(G.getStart());
         int j = 0;
         for(String term : t1){
             j = idx.get(term);
+            if(matrix[i][j] != ' ' && matrix[i][j] != '<')
+                System.out.println("1 Conflict detected! Input Grammar is not Operator Precedence Grammar!\t$ "+term+".\n Found: "+matrix[i][j]+" and <");
             matrix[i][j] = '<';
         }
         j = idx.get("$");
         for(String term : t2){
             i = idx.get(term);
+            if(matrix[i][j] != ' ' && matrix[i][j] != '>')
+                System.out.println("2 Conflict detected! Input Grammar is not Operator Precedence Grammar!\t"+term+" "+"$"+".\n Found: "+matrix[i][j]+" and >");
             matrix[i][j] = '>';
         }
 
@@ -80,17 +88,24 @@ public class OPParserGenerator {
                                 int idx1 = idx.get(ai.getVal());
                                 for(String c : Li){
                                     int idx2 = idx.get(c);
+                                    if(matrix[idx1][idx2] != ' ' && matrix[idx1][idx2] != '<')
+                                        System.out.println("3 Conflict detected! Input Grammar is not Operator Precedence Grammar!\t"+ai.getVal()+" "+c+".\n Found: "+matrix[idx1][idx2]+" and <");
                                     matrix[idx1][idx2] = '<';
                                 }
                                 bj = l.get(li + 2);
                                 if(bj.getType() == 't'){//located rule like aUb where a,b = terms, U = non-term.
                                     idx1 = idx.get(ai.getVal());//index a
                                     int idx2 = idx.get(bj.getVal());//index b
+
+                                    if(matrix[idx1][idx2] != ' ' && matrix[idx1][idx2] != '=')
+                                        System.out.println("4 Conflict detected! Input Grammar is not Operator Precedence Grammar!\t"+ai.getVal()+" "+bj.getVal()+".\n Found: "+matrix[idx1][idx2]+" and =");
                                     matrix[idx1][idx2] = '=';
                                     ai = l.get(li + 1);//return U
                                     Set<String> Ri = Rt.get(ai.getVal());//Rt(U)
                                     for(String c : Ri){//for rule like Ub
                                         idx1 = idx.get(c);
+                                        if(matrix[idx1][idx2] != ' ' && matrix[idx1][idx2] != '>')
+                                            System.out.println("5 Conflict detected! Input Grammar is not Operator Precedence Grammar!\t"+c+" "+bj.getVal()+".\nFound: "+matrix[idx1][idx2]+" and >");
                                         matrix[idx1][idx2] = '>';
                                     }
                                 }
@@ -98,6 +113,8 @@ public class OPParserGenerator {
                             else if(bj.getType() == 't'){//located rule ab.
                                 int idx1 = idx.get(ai.getVal());
                                 int idx2 = idx.get(bj.getVal());
+                                if(matrix[idx1][idx2] != ' ' && matrix[idx1][idx2] != '=')
+                                    System.out.println("6 Conflict detected! Input Grammar is not Operator Precedence Grammar!\t"+ai.getVal()+" "+bj.getVal()+".\nFound: "+matrix[idx1][idx2]+" and =");
                                 matrix[idx1][idx2] = '=';
                             }
                         }
@@ -110,6 +127,8 @@ public class OPParserGenerator {
                                 int idx1 = 0;
                                 for(String c : Ri){
                                     idx1 = idx.get(c);
+                                    if(matrix[idx1][idx2] != ' ' && matrix[idx1][idx2] != '>')
+                                        System.out.println("7 Conflict detected! Input Grammar is not Operator Precedence Grammar!\t"+c+" "+bj.getVal()+".\nFound: "+matrix[idx1][idx2]+" and >");
                                     matrix[idx1][idx2] = '>';
                                 }
                             }
@@ -121,6 +140,8 @@ public class OPParserGenerator {
                     if(a.getType() == 't' && b.getType() == 't'){
                         int idx1 = idx.get(a.getVal());
                         int idx2 = idx.get(b.getVal());
+                        if(matrix[idx1][idx2] != ' ' && matrix[idx1][idx2] != '=')
+                            System.out.println("8 Conflict detected! Input Grammar is not Operator Precedence Grammar!\t"+a.getVal()+" "+b.getVal()+".\nFound: "+matrix[idx1][idx2]+" and =");
                         matrix[idx1][idx2] = '=';
                     }
                     else if(a.getType() == 'n' && b.getType() == 't'){
@@ -129,6 +150,8 @@ public class OPParserGenerator {
                         int idx1 = 0;
                         for(String c : Ri){
                             idx1 = idx.get(c);
+                            if(matrix[idx1][idx2] != ' ' && matrix[idx1][idx2] != '>')
+                                System.out.println("9 Conflict detected! Input Grammar is not Operator Precedence Grammar!\t"+c+" "+b.getVal()+".\nFound: "+matrix[idx1][idx2]+" and >");
                             matrix[idx1][idx2] = '>';
                         }
                     }
@@ -138,11 +161,21 @@ public class OPParserGenerator {
                         int idx2 = 0;
                         for(String c : Li){
                             idx2 = idx.get(c);
+                            if(matrix[idx1][idx2] != ' ' && matrix[idx1][idx2] != '<')
+                                System.out.println("10 Conflict detected! Input Grammar is not Operator Precedence Grammar!\t"+a.getVal()+" "+c+".\nFound: "+matrix[idx1][idx2]+" and <");
                             matrix[idx1][idx2] = '<';
                         }
                     }
                 }
             }
         return new OperatorPresedenceRelations(matrix,idx);
+    }
+
+    private boolean hasConflict(char current, char nrel, String a, String b){
+        if(current != ' ' && current != nrel) {
+            System.out.println("Conflict detected! Input Grammar is not Operator Precedence Grammar!\t" + a + " " + b + ".\nFound: " + current + " and " + nrel);
+            return true;
+        }
+        return false;
     }
 }

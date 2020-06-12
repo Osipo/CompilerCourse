@@ -15,4 +15,8 @@ public interface ILexer {
     Set<String> getOperands();
     void setAliases(Map<String,String> aliases);
     Map<String,String> getAliases();
+    void setCommentLine(String comment);
+    void setMlCommentStart(String mlcS);
+    void setMlCommentEnd(String mlcE);
+    void setIdName(String id);
 }

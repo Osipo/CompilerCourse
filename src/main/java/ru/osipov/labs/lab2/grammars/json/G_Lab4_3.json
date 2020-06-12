@@ -22,6 +22,9 @@
     "||" : "@|@|",
     "~" : "~",
     "->": "->",
+    "#": "#",
+    "/*": "/@*",
+    "*/": "@*/",
     "id": "[A-Za-z_]([A-Za-z_0-9]+|empty)",
     "num": "[0-9]+",
     "realNum": "[0-9]+.[0-9]+(((E|e)(-|empty)[0-9]+)|empty)",
@@ -29,6 +32,10 @@
   },
   "keywords": ["true","false","not"],
   "meta": {
+    "mlCommentStart": "/*",
+    "mlCommentEnd": "*/",
+    "id": "id",
+    "commentLine": "#",
     "operands": ["id","num","realNum","true","false"],
     "aliases": {
       "-": "um",

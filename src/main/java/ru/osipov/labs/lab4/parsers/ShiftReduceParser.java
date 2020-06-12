@@ -27,6 +27,10 @@ public class ShiftReduceParser {
         lexer.setKeywords(G.getKeywords());
         lexer.setOperands(G.getOperands());
         lexer.setAliases(G.getAliases());
+        lexer.setCommentLine(G.getCommentLine());
+        lexer.setMlCommentStart(G.getMlCommentStart());
+        lexer.setMlCommentEnd(G.getMlCommentEnd());
+        lexer.setIdName(G.getIdName());
         this.table = gen.operatorPresedence(G);
         this.rIdx = gen.getIndicesOfRules(G.getSpanningGrammar());
         //System.out.println("Parser was built.");
@@ -67,6 +71,9 @@ public class ShiftReduceParser {
             Iterator<LinkedNode<Token>> S_iter = S.iterator();
 
             Token tok = lexer.recognize(f);//get token from the input.
+            while(tok == null){
+                tok = lexer.recognize(f);//skip comments.
+            }
             S.push(EOF);//Initial:: ($,tok). //Finish:: ($S,$).
             LinkedNode<Token> A = null;//current symbol on Stack.
             LinkedStack<Integer> rules = new LinkedStack<>();
@@ -95,6 +102,9 @@ public class ShiftReduceParser {
                     ci.setValue(tok);
                     S.push(ci);
                     tok = lexer.recognize(f);
+                    while(tok == null){//skip comments.
+                        tok = lexer.recognize(f);
+                    }
                 }
                 else if(rel == '>'){//reduce
                     //System.out.println("reduce");

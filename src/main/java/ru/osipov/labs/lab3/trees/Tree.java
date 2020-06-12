@@ -7,6 +7,7 @@ public interface Tree<T> {
     Node<T> root();
     T value(Node<T> node);
     void setVisitor(Visitor<T> visitor);
+    void visit(VisitorMode order, Action<Node<T>> act);
     int getCount();
     void clear();//FROM ICollection<T>
 }

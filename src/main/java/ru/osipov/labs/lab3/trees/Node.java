@@ -29,4 +29,22 @@ public class Node<T> {
     public String toString(){
         return value.toString();
     }
+
+    @Override
+    public boolean equals(Object b){
+        if(b == null)
+            return false;
+        try {
+            Node<T> n = (Node<T>) b;
+            return n.idx == idx;
+        }
+        catch (ClassCastException e){
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode(){
+        return new Integer(idx).hashCode();
+    }
 }

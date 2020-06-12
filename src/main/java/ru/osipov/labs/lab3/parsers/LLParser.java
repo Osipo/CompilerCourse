@@ -36,6 +36,10 @@ public class LLParser {
         lexer.setKeywords(G.getKeywords());
         lexer.setOperands(G.getOperands());
         lexer.setAliases(G.getAliases());
+        lexer.setCommentLine(G.getCommentLine());
+        lexer.setMlCommentStart(G.getMlCommentStart());
+        lexer.setMlCommentEnd(G.getMlCommentEnd());
+        lexer.setIdName(G.getIdName());
         this.T = G.getTerminals();
         this.N = G.getNonTerminals();
     }
@@ -99,14 +103,20 @@ public class LLParser {
             S.push(root);// Stack: S,$.
             LinkedNode<Token> X = S.top();
             Token tok = lexer.recognize(f);
+            while(tok == null){
+                tok = lexer.recognize(f);
+            }
             String t = tok.getName();
             String empty = G.getEmpty();
             int nidx = 1;
             while(!X.getValue().getName().equals("$")) {
-                if(X.getValue().getName().equals(t)){
+                if(X.getValue().getName().equals(t)){//S.Top() == X && X == t.
                     S.top().getValue().setLexem(tok.getLexem());
                     S.pop();
                     tok = lexer.recognize(f);
+                    while(tok == null){
+                        tok = lexer.recognize(f);
+                    }
                     t = tok.getName();
                     X = S.top();
                     continue;

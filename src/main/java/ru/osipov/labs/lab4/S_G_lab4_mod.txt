@@ -1,7 +1,9 @@
 {
+   # This is single line comment. (Will be ignored)
    id = id + id && 1 * id <> 25.2E-11 ^ i ;
    id = id ^ 25 ;
    {
      id = (25.34 <= 25 + id * id) || (a < b)
    }
+   # end of the program.
 }

@@ -20,6 +20,12 @@ public class DFALexer extends DFA implements ILexer {
     private Map<String,String> aliases;
     private Token prevTok;
 
+
+    private String commentStart;
+    private String mlcStart;
+    private String mlcEnd;
+    private String id;
+
     public DFALexer(DFA dfa, LexerIO io){
         super(dfa,true);
         this.deleteDeadState();
@@ -27,6 +33,10 @@ public class DFALexer extends DFA implements ILexer {
         this.keywords = new HashSet<>();
         this.operands = new HashSet<>();
         this.aliases = new HashMap<>();
+        this.commentStart = null;
+        this.mlcStart = null;
+        this.mlcEnd = null;
+        this.id = null;
         this.prevTok = null;
     }
 
@@ -38,6 +48,10 @@ public class DFALexer extends DFA implements ILexer {
         this.operands = new HashSet<>();
         this.aliases = new HashMap<>();
         this.prevTok = null;
+        this.commentStart = null;
+        this.mlcStart = null;
+        this.mlcEnd = null;
+        this.id = null;
     }
 
     public DFALexer(CNFA nfa){
@@ -52,6 +66,10 @@ public class DFALexer extends DFA implements ILexer {
         this.operands = new HashSet<>();
         this.aliases = new HashMap<>();
         this.prevTok = null;
+        this.commentStart = null;
+        this.mlcStart = null;
+        this.mlcEnd = null;
+        this.id = null;
     }
 
 
@@ -66,6 +84,10 @@ public class DFALexer extends DFA implements ILexer {
         this.operands = new HashSet<>();
         this.aliases = new HashMap<>();
         this.prevTok = null;
+        this.commentStart = null;
+        this.mlcStart = null;
+        this.mlcEnd = null;
+        this.id = null;
     }
 
     public DFALexer(DFA dfa){
@@ -79,6 +101,10 @@ public class DFALexer extends DFA implements ILexer {
         this.operands = new HashSet<>();
         this.aliases = new HashMap<>();
         this.prevTok = null;
+        this.commentStart = null;
+        this.mlcStart = null;
+        this.mlcEnd = null;
+        this.id = null;
     }
 
     @Override
@@ -109,6 +135,26 @@ public class DFALexer extends DFA implements ILexer {
     @Override
     public Map<String, String> getAliases() {
         return aliases;
+    }
+
+    @Override
+    public void setCommentLine(String s){
+        this.commentStart = s;
+    }
+
+    @Override
+    public void setMlCommentStart(String s){
+        this.mlcStart = s;
+    }
+
+    @Override
+    public void setMlCommentEnd(String s){
+        this.mlcEnd = s;
+    }
+
+    @Override
+    public void setIdName(String s){
+        this.id = id;
     }
 
     @Override
@@ -143,7 +189,36 @@ public class DFALexer extends DFA implements ILexer {
                     s = states.top();
                     states.pop();
                 }
-                if(s.getValue().equals("id") && keywords.size() > 0 && keywords.contains(sb.toString())) {
+                if(s.getValue().equals(this.commentStart)){//commentLine start.
+                    while(cur != '\n' && ((int)cur) != 65535){//check also EOF symbol
+                        cur = (char)io.getch(f);
+                    }
+                    return null;//return null for comments.
+                }
+                else if(s.getValue().equals(this.mlcStart)){
+                    int mls = 0; int mle = mlcEnd.length();
+                    boolean isp = false;
+                    while(cur != 65535){//cur != EOF
+                        cur = (char)io.getch(f);
+                        while(mlcEnd.charAt(mls) == cur && mls < mle){
+                            cur = (char)io.getch(f);
+                            isp = true;
+                            mls++;
+                        }
+                        if(mls == mle){
+                           return null;//mlComment found. return null
+                        }
+                        else {
+                            mls = 0;
+                            if(isp)
+                                io.ungetch(cur);
+                            isp = false;
+                        }
+                    }
+                    return new Token("$","$",'t');
+                }
+
+                if(s.getValue().equals(this.id) && keywords.size() > 0 && keywords.contains(sb.toString())) {
                     prevTok = new Token(sb.toString(), sb.toString(), 't');
                     return prevTok;
                 }
@@ -171,6 +246,34 @@ public class DFALexer extends DFA implements ILexer {
             if((int)cur == 65535)
                 sb.deleteCharAt(sb.length() - 1);//remove redundant read EOF ch.
             if(s.isFinish()) {
+                if(s.getValue().equals(this.commentStart)){//commentLine start.
+                    while(cur != '\n' && ((int)cur) != 65535){//check also EOF symbol
+                        cur = (char)io.getch(f);
+                    }
+                    return null;//return null for comments.
+                }
+                else if(s.getValue().equals(this.mlcStart)){
+                    int mls = 0; int mle = mlcEnd.length();
+                    boolean isp = false;
+                    while(cur != 65535){//cur != EOF
+                        cur = (char)io.getch(f);
+                        while(mlcEnd.charAt(mls) == cur && mls < mle){
+                            cur = (char)io.getch(f);
+                            isp = true;
+                            mls++;
+                        }
+                        if(mls == mle){
+                            return null;//mlComment found. return null
+                        }
+                        else {
+                            mls = 0;
+                            if(isp)
+                                io.ungetch(cur);
+                            isp = false;
+                        }
+                    }
+                    return new Token("$","$",'t');
+                }
                 if(s.getValue().equals("id") && keywords.size() > 0 && keywords.contains(sb.toString())) {
                     prevTok = new Token(sb.toString(), sb.toString(), 't');
                     return prevTok;
