@@ -35,6 +35,7 @@ import java.util.Map;
 public class TestOpParser {
     @Test
     public void test1() throws IOException {
+        System.out.println("test1");
         String p = System.getProperty("user.dir");
         System.out.println(p);
         p = p+"\\src\\test\\java\\ru\\osipov\\labs\\lab4\\";
@@ -73,7 +74,9 @@ public class TestOpParser {
         long m2 = (System.currentTimeMillis()) - current;
         System.out.println("S_G_lab3_mod.txt");
         System.out.println("LL (Top-down): "+m1);
+        System.out.println("Count of nodes: "+t.getCount());
         System.out.println("OP (Bottom-up): "+m2);
+        System.out.println("Count of nodes: "+t2.getCount());
 
         Graphviz.fromString(t.toDot("LL_parser_test1")).render(Format.PNG).toFile(new File(dir+"LL_parser_test1"));
         Graphviz.fromString(t2.toDot("OP_parser_test1")).render(Format.PNG).toFile(new File(dir+"OP_parser_test1"));
@@ -102,12 +105,12 @@ public class TestOpParser {
             FALexerGenerator lg = new FALexerGenerator();
             CNFA nfa = lg.buildNFA(G);
             DFALexer lexer = new DFALexer(new DFA(nfa));
-            lexer.getImagefromStr(dir,"lexer_Test1");
+            //lexer.getImagefromStr(dir,"lexer_Test2");
 
             LLParser sa1 = new LLParser(GL,lexer);
             ShiftReduceParser sa2 = new ShiftReduceParser(G,lexer);
 
-            //Test 1.
+
             long current = System.currentTimeMillis();
             LinkedTree<Token> t = sa1.parse(GL,s);
             assert t != null;
@@ -119,9 +122,60 @@ public class TestOpParser {
             long m2 = (System.currentTimeMillis()) - current;
             System.out.println("S_G_lab3_mod2.txt");
             System.out.println("LL (Top-down): "+m1);
+            System.out.println("Count of nodes: "+t.getCount());
             System.out.println("OP (Bottom-up): "+m2);
+            System.out.println("Count of nodes: "+t2.getCount());
 
-            Graphviz.fromString(t.toDot("LL_parser_test1")).render(Format.PNG).toFile(new File(dir+"LL_parser_test2"));
-            Graphviz.fromString(t2.toDot("OP_parser_test1")).render(Format.PNG).toFile(new File(dir+"OP_parser_test2"));
+            Graphviz.fromString(t.toDot("LL_parser_test2")).render(Format.PNG).toFile(new File(dir+"LL_parser_test2"));
+            Graphviz.fromString(t2.toDot("OP_parser_test2")).render(Format.PNG).toFile(new File(dir+"OP_parser_test2"));
+    }
+
+
+    @Test
+    public void test3() throws IOException {
+        String p = System.getProperty("user.dir");
+        System.out.println(p);
+        p = p+"\\src\\test\\java\\ru\\osipov\\labs\\lab4\\";
+        String dir = System.getProperty("user.dir") +"\\src\\test\\java\\ru\\osipov\\labs\\lab4\\";
+        String s = System.getProperty("user.dir")+"\\src\\test\\java\\ru\\osipov\\labs\\lab4\\";
+        s = s + "input\\G_2_27_I.txt";
+        p = p+"grammarJson\\G_2_27.json";
+        SimpleJsonParser parser = new SimpleJsonParser();
+        JsonObject ob = parser.parse(p);
+        assert ob != null;
+        Grammar G = new Grammar(ob);
+        System.out.println("Source");
+        System.out.println(G);
+        Grammar GL = Grammar.deleteLeftRecursion(G);
+        GL = GL.deleteLeftFactor();
+        assert GL != null;
+
+
+        FALexerGenerator lg = new FALexerGenerator();
+        CNFA nfa = lg.buildNFA(G);
+        DFALexer lexer = new DFALexer(new DFA(nfa));
+        lexer.getImagefromStr(dir,"lexer_Test3");
+
+        LLParser sa1 = new LLParser(GL,lexer);
+        ShiftReduceParser sa2 = new ShiftReduceParser(G,lexer);
+
+
+        long current = System.currentTimeMillis();
+        LinkedTree<Token> t = sa1.parse(GL,s);
+        assert t != null;
+        long m1 = (System.currentTimeMillis()) - current;
+
+        current = System.currentTimeMillis();
+        LinkedTree<Token> t2 = sa2.parse(G,s);
+        assert t2 != null;
+        long m2 = (System.currentTimeMillis()) - current;
+        System.out.println("G_2_27_I.txt");
+        System.out.println("LL (Top-down): "+m1);
+        System.out.println("Count of nodes: "+t.getCount());
+        System.out.println("OP (Bottom-up): "+m2);
+        System.out.println("Count of nodes: "+t2.getCount());
+
+        Graphviz.fromString(t.toDot("LL_parser_test3")).render(Format.PNG).toFile(new File(dir+"LL_parser_test3"));
+        Graphviz.fromString(t2.toDot("OP_parser_test3")).render(Format.PNG).toFile(new File(dir+"OP_parser_test3"));
     }
 }

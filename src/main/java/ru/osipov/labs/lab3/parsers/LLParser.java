@@ -152,9 +152,10 @@ public class LLParser {
                 }
                 X = S.top();
             }
-            lexer.reset();//reset column and line counter.
-            if(isParsed)
+            if(isParsed) {
+                lexer.reset();//reset column and line counter.
                 return new LinkedTree<Token>(root);
+            }
             else {
                 if(tok.getType() != 'e') {
                     System.out.println(lexer.generateError(S.top().getValue().getName(),tok.getLexem()));
@@ -162,6 +163,7 @@ public class LLParser {
                 else
                     System.out.println(tok);
             }
+            lexer.reset();//reset column and line counter.
             return null;//if syntax error return null.
         }
         catch (FileNotFoundException e){

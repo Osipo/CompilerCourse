@@ -166,8 +166,10 @@ public class ShiftReduceParser {
                     break;
                 }
             }
-            if(isParsed)
+            if(isParsed) {
+                lexer.reset();//reset column and line counter.
                 return new LinkedTree<Token>(S.top());
+            }
             else {
                 if(tok.getType() != 'e') {
                     System.out.println(lexer.generateError(S.top().getValue().getName(),tok.getLexem()));
