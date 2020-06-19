@@ -154,7 +154,7 @@ public class DFALexer extends DFA implements ILexer {
 
     @Override
     public void setIdName(String s){
-        this.id = id;
+        this.id = s;
     }
 
     @Override
@@ -200,7 +200,7 @@ public class DFALexer extends DFA implements ILexer {
                     boolean isp = false;
                     while(cur != 65535){//cur != EOF
                         cur = (char)io.getch(f);
-                        while(mlcEnd.charAt(mls) == cur && mls < mle){
+                        while(mls < mle && mlcEnd.charAt(mls) == cur ){
                             cur = (char)io.getch(f);
                             isp = true;
                             mls++;
@@ -217,7 +217,6 @@ public class DFALexer extends DFA implements ILexer {
                     }
                     return new Token("$","$",'t');
                 }
-
                 if(s.getValue().equals(this.id) && keywords.size() > 0 && keywords.contains(sb.toString())) {
                     prevTok = new Token(sb.toString(), sb.toString(), 't');
                     return prevTok;
@@ -303,7 +302,7 @@ public class DFALexer extends DFA implements ILexer {
     }
 
     private Vertex moveTo(Vertex v, char c){
-        List<Pair<Vertex,Character>> k = tranTable.keySet().stream().filter(x -> x.getV1().equals(v) && x.getV2() == c).collect(Collectors.toList());
+        List<Pair<Vertex,Character>> k = tranTable.keySet().stream().filter(x -> x.getV1().equals(v) && (x.getV2() == c || x.getV2() == (char)0)).collect(Collectors.toList());
         return k.size() > 0 ? tranTable.get(k.get(0)) : null;
     }
 

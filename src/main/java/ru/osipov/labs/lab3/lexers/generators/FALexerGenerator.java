@@ -55,14 +55,16 @@ public class FALexerGenerator {
                     continue;
                 }
                 else {
+                    //replace empty and any with one-character symbols.
                     String p_i = new String(pattern.toCharArray());
-                    p_i = p_i.replaceAll(G.getEmpty(),(char)1+"");
+                    p_i = p_i.replaceAll(G.getEmpty(),(char)1+"");//special symbol for empty-character.
+                    p_i = p_i.replaceAll("any",(char)0+"");//another special symbol for any character.
                     //System.out.println("Pattern: " +p_i);
                     parser.setTerminals(p_i.toCharArray());
-                    p_i = Main.addConcat(p_i,parser);
+                    p_i = Main.addConcat(p_i,parser);//convert classes [A-Z] to (A|..|Z) expressions
                     parser.setTerminals(p_i.toCharArray());
                     //System.out.println(p_i);
-                    rpn = parser.GetInput(p_i);
+                    rpn = parser.GetInput(p_i);//convert regex to postfix.
                 }
                 CNFA nfa = Main.buildNFA(rpn,parser,idC);
                 alpha.addAll(nfa.getAlpha());
@@ -85,9 +87,9 @@ public class FALexerGenerator {
 //        System.out.println(comboNFA.getNodes());
 //        System.out.println(comboNFA.getStart());
 //        System.out.println(comboNFA.getFinished());
-        alpha.remove((char)1);
+        alpha.remove((char)1);//empty-character is not part of the alpha.
         System.out.println("Alpha: "+alpha);
-        comboNFA.setAlpha(alpha);
+        comboNFA.setAlpha(alpha);//alpha will include zero-character code (char)0 for any-character symbol.
         System.out.println("States of NFA: "+comboNFA.getCountOfStates());
         return comboNFA;
     }

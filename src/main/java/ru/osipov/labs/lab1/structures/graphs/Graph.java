@@ -55,7 +55,11 @@ public class Graph {
         for(Edge e : edges){
             String a = e.getSource().getName();
             String b = e.getTarget().getName();
-            String l = ((int)e.getTag()) == 1 ? "empty" : e.getTag() == '\"' ? "\\\"" : e.getTag()+"";
+            String l;
+            if((int)e.getTag() == 0)
+                l = "any";
+            else
+                l = ((int)e.getTag()) == 1 ? "empty" : e.getTag() == '\"' ? "\\\"" : e.getTag()+"";
             if(e.getTag() == '\\')
                 l = "\\\\";
             sb.append(a).append(" -> ").append(b);

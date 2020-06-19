@@ -1,0 +1,15 @@
+# This is the class definition.
+# The root of the program.
+class Program {
+    char a, b, c;
+    Program po ; # recursive definition.
+
+    /*
+    define method chr without any parameters
+    which returns expression with type char
+    */
+    def char chr(){
+        a = 'q';
+        return a;
+    }
+}

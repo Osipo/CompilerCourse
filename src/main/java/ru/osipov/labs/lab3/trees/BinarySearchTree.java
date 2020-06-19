@@ -118,6 +118,29 @@ public class BinarySearchTree<T> implements Tree<T> {
         return false;
     }
 
+    private T __GetElem(T item,LinkedBinaryNode<T> node){
+        if(_count == 0){
+            return null;
+        }
+        while(node != null){
+            if(_comp.compare(item,node.getValue()) == 0 || node.getValue().equals(item)){
+                return node.getValue();
+            }
+            else if(_comp.compare(item,node.getValue()) < 0){
+                node = node.getLeft();
+            }
+            else {
+                node = node.getRight();
+            }
+        }
+        return null;
+    }
+
+
+    public T get(T item){
+        return __GetElem(item, _r);
+    }
+
     public boolean contains(T item){
         return __Member(item,_r);//BEGIN WITH ROOT
     }

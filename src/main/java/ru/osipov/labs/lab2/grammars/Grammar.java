@@ -221,7 +221,7 @@ public class Grammar {
                                 String X = ((JsonString) symbol).getValue();
                                 GrammarSymbol entity;
                                 //System.out.println(X+" : "+X.length());
-                                if(this.T.contains(X) || this.keywords.contains(X))
+                                if(this.T.contains(X))
                                     entity = new GrammarSymbol('t',X);
                                 else if(this.N.contains(X)) {
                                     entity = new GrammarSymbol('n', X);
@@ -1361,10 +1361,11 @@ public class Grammar {
     }
 
     public boolean hasCycles(){
-        Set<String> C = getAllChainedNonTerms();
-        for(String r : C){
-            if(compute_allGeneratedN(r,true).contains(r))
+        for(String r : this.N){
+            if(compute_allGeneratedN(r,true).contains(r)){
+                System.out.println(r);
                 return true;
+            }
         }
         return false;
     }

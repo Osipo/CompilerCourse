@@ -132,6 +132,7 @@ public class LLParser {
                 }
                 GrammarString prod = table.get(new Pair<String,String>(X.getValue().getName(),t));
                 if(prod == null) {
+                    System.out.println("No production!!");
                     isParsed = false;
                     break;
                 }

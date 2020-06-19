@@ -12,6 +12,10 @@ public class STable {
     private final int HASH_MIN;
     private final int HASH_MAX;
 
+    public STable(){
+        this(0,65535 * 2);
+    }
+
     public STable(int hmin, int hmax){
         this.HASH_MIN = hmin;
         this.HASH_MAX = hmax;
@@ -50,6 +54,15 @@ public class STable {
         else{
             rec.add(new SInfo(s));
         }
+    }
+
+    public SInfo get(String s){
+        SInfo it = new SInfo(s);//for type negotiation. (Only str are compared)
+        int h = hash(s);
+        BinarySearchTree<SInfo> rec = table.get(h);
+        if(rec == null)
+            return null;//no record in hashTable.
+        return rec.get(it);//returns SInfo from tree. (not from variable it!).
     }
 
     private int hash(String s){
