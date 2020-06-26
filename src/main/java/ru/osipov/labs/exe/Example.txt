@@ -11,5 +11,11 @@ class Program {
     def char chr(){
         a = 'q';
         return a;
+    };
+
+    # Define method calc with two parameters
+    def int calc(int a, long b){
+        a = b + 4;
+        return a * b;
     }
 }

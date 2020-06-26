@@ -44,6 +44,18 @@ public class STable {
         System.out.println("Table was initiated with "+table.size()+" elements.");
     }
 
+    public void add(SInfo entry){
+        int h = hash(entry.getValue());
+        BinarySearchTree<SInfo> rec = table.get(h);
+        if(rec == null){
+            rec = new BinarySearchTree<SInfo>(new StringContainerComparator<SInfo>());
+            rec.add(entry);
+        }
+        else{
+            rec.add(entry);
+        }
+    }
+
     public void add(String s){
         int h = hash(s);
         BinarySearchTree<SInfo> rec = table.get(h);
@@ -57,7 +69,7 @@ public class STable {
     }
 
     public SInfo get(String s){
-        SInfo it = new SInfo(s);//for type negotiation. (Only str are compared)
+        SInfo it = new SInfo(s);//for type negotiation. (Only str in SInfo are compared)
         int h = hash(s);
         BinarySearchTree<SInfo> rec = table.get(h);
         if(rec == null)

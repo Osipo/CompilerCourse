@@ -74,6 +74,7 @@ public class Exe implements CommandLineRunner {
 
                 if(tree != null){
                     System.out.println("Parsed successful.");
+                    //System.out.println(tree.getChildren(tree.root()).get(0).getValue());
                     Graphviz.fromString(tree.toDot("ptree")).render(Format.PNG).toFile(new File(dir+"\\Tree"));
                 }
                 else{

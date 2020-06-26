@@ -146,7 +146,7 @@ public class LLParser {
                         node.setValue(new Token(symbols.get(i).getVal(),null,symbols.get(i).getType()));
                         node.setIdx(nidx);
                         node.setParent(X);
-                        X.getChildren().add(node);
+                        X.getChildren().add(node);//ON STACK: Xn..X_1 BUT ON TREE: Xn...X1 => X1...Xn
                         if(!node.getValue().getName().equals(empty))
                             S.push(node);
                     }

@@ -1,5 +1,8 @@
 package ru.osipov.labs.lab3.lexers;
 
+import java.io.StringWriter;
+import java.io.Writer;
+
 public class Token {
     private String name;
     private String lexem;
@@ -9,6 +12,12 @@ public class Token {
         this.type = type;
         this.name = name;
         this.lexem = lexem;
+    }
+
+    public Token(Token t){
+        this.name = t.getName();
+        this.lexem = t.getLexem();
+        this.type = t.getType();
     }
 
     public void setType(char type) {
@@ -33,6 +42,10 @@ public class Token {
 
     public String getName() {
         return name;
+    }
+
+    public StringWriter getContent(){
+        return null;
     }
 
     @Override
