@@ -15,7 +15,8 @@ class Program {
 
     # Define method calc with two parameters
     def int calc(int a, long b){
-        a = b + 4;
+        b = 5 - ( - b) ;
+        a = ( b + 4 ) * 5 ^ 2;
         return a * b;
     }
 }
