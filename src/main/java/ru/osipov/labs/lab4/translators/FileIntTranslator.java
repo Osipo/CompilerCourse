@@ -16,11 +16,13 @@ public abstract class FileIntTranslator<T extends PositionalTree<R>,R extends To
 
     protected LinkedStack<Env> env;
     protected String idName;
+    protected String eName;
     protected Charset codePage;
     protected Map<String,Integer> t_widths;
 
     public FileIntTranslator(Grammar G){
         this.idName = G.getIdName();
+        this.eName = G.getEmpty();
         this.env = new LinkedStack<>();
         this.env.push(new Env(null));
         this.codePage = StandardCharsets.UTF_16;

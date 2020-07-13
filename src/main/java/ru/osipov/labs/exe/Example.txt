@@ -1,7 +1,7 @@
 # This is the class definition.
 # The root of the program.
 class Program {
-    char a, b, c;
+    char a, b, c ;
     Program po ; # recursive definition.
 
     /*
@@ -11,7 +11,7 @@ class Program {
     def char chr(){
         a = 'q';
         return a;
-    };
+    }
 
     # Define method calc with two parameters
     def int calc(int a, long b){

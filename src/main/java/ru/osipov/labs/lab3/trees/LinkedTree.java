@@ -1,6 +1,5 @@
 package ru.osipov.labs.lab3.trees;
 
-import ru.osipov.labs.lab1.structures.lists.LinkedList;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 
 import java.util.ArrayList;
@@ -92,7 +91,6 @@ public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
         return new LinkedTree<T>(ln);
     }
 
-    @Override
     public void visit(VisitorMode order, Action<Node<T>> act){
         switch(order){
             case PRE:
@@ -103,6 +101,9 @@ public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
                 break;
             case IN:
                 _visitor.inOrder(this,act);
+                break;
+            case NONE:
+                act.perform(_r);//NONE => perform action on the root.
                 break;
             default:
                 break;
@@ -147,7 +148,7 @@ public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
         LinkedNode<T> parent = np.getParent();
         List<LinkedNode<T>> c = parent.getChildren();
         int i = 0;//own implementation of LinkedList.
-        while(!c.get(i).equals(np)){
+        while(i < c.size() && !c.get(i).equals(np)){
             i++;
         }//or zero.
         if(i >= c.size() - 1)//last element or more.

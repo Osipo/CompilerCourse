@@ -13,7 +13,7 @@ public class NRVisitor<T> implements Visitor<T> {
             act = (n) -> System.out.print(tree.value(n).toString()+" ");
         }
 
-        ArrStack<Node<T>> STACK = new ArrStack<>(tree.getCount());
+        ArrStack<Node<T>> STACK = new ArrStack<>(tree.getCount() * 2);
 
         while(true){
             if(m != null){

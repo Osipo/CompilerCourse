@@ -1,7 +1,5 @@
 package ru.osipov.labs.lab1.structures.lists;
 
-import org.omg.CORBA.Object;
-
 public class ArrStack<T> {
     private int _top;//pointer to the top of the stack.
     private int _count;//count

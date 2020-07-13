@@ -15,14 +15,11 @@ import ru.osipov.labs.lab3.lexers.DFALexer;
 import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.lexers.generators.FALexerGenerator;
 import ru.osipov.labs.lab3.parsers.LLParser;
-import ru.osipov.labs.lab3.parsers.generators.LLParserGenerator;
-import ru.osipov.labs.lab3.trees.LinkedTree;
-import ru.osipov.labs.lab4.parsers.ShiftReduceParser;
+import ru.osipov.labs.lab3.trees.*;
+import ru.osipov.labs.lab4.semantics.MakeAstTree;
+import ru.osipov.labs.lab4.semantics.ReverseChildren;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class Exe implements CommandLineRunner {
     public static void main(String[] args){
@@ -53,29 +50,39 @@ public class Exe implements CommandLineRunner {
                 System.out.println("Has cycles: "+G.hasCycles());
                 System.out.println("\n");
                 System.out.println("Delete left recursion");
-                G = Grammar.deleteLeftRecursion(G);
-                System.out.println(G);
+                Grammar G1 = Grammar.deleteLeftRecursion(G);
+                System.out.println(G1);
                 System.out.println("\n");
                 System.out.println("Delete preffixes");
-                G = G.deleteLeftFactor();
-                System.out.println(G);
+                G1 = G1.deleteLeftFactor();
+                System.out.println(G1);
 
 
                 //build lexer.
                 FALexerGenerator lg = new FALexerGenerator();
-                CNFA nfa = lg.buildNFA(G);
+                CNFA nfa = lg.buildNFA(G1);
                 DFALexer lexer = new DFALexer(new DFA(nfa));
                 lexer.getImagefromStr(sc.substring(0,sc.lastIndexOf('\\') + 1),"Lexer");
 
                 //build parser.
-                LLParser sa = new LLParser(G,lexer);
+                LLParser sa = new LLParser(G1,lexer);
 
-                LinkedTree<Token> tree = sa.parse(G,sc);
+                LinkedTree<Token> tree = sa.parse(G1,sc);
 
                 if(tree != null){
                     System.out.println("Parsed successful.");
                     //System.out.println(tree.getChildren(tree.root()).get(0).getValue());
                     Graphviz.fromString(tree.toDot("ptree")).render(Format.PNG).toFile(new File(dir+"\\Tree"));
+
+                    MakeAstTree semAct = new MakeAstTree(G.getOperands(),G.getOperators(),G.getEmpty());
+                    ReverseChildren<Token> rAct = new ReverseChildren<>();
+
+                    tree.visit(VisitorMode.PRE,rAct);
+                    System.out.println("Reversed children from stack of LL");
+                    Graphviz.fromString(tree.toDot("ptreeR")).render(Format.PNG).toFile(new File(dir+"\\ReversedTree"));
+
+                    //semAct.perform(tree);
+                    //Graphviz.fromString(tree.toDot("ptree2")).render(Format.PNG).toFile(new File(dir+"\\OpTree"));
                 }
                 else{
                     System.out.println("Syntax errors detected!");

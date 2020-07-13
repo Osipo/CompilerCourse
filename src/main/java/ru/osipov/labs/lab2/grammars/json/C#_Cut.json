@@ -38,7 +38,8 @@
     "mlCommentEnd": "*/",
     "id": "id",
     "commentLine": "#",
-    "operands": ["id","num","realNum","true","false"],
+    "operands": ["id","num","realNum","true","false","ch"],
+    "operators": ["<","<=",">",">=","==","<>","=","+","-","*","/","%","^","->","&&","||","if","while","class","def","return"],
     "aliases": {
       "-": "um",
       "+": "up"
@@ -49,9 +50,9 @@
   ],
   "productions": [{"S": ["class","id","{","CB","}"]},
     {"CB": "SL"},{"CB": "empty"},
-    {"SL": ["SL",";","L"]},{"SL": "L"},
-    {"L": "DL"},{"L": "MD"},{"DL": ["T","D"]},
-    {"D": ["id",",","D"]},{"D": "id"},{"T": "int"},{"T": "long"},{"T": "float"},{"T": "double"},{"T": "char"},
+    {"SL": ["SL","L"]},{"SL": "L"},
+    {"L": "DL"},{"L": "MD"},{"DL": ["T","D",";"]},
+    {"D": ["D",",","id"]},{"D": "id"},{"T": "int"},{"T": "long"},{"T": "float"},{"T": "double"},{"T": "char"},
     {"T": "bool"},{"T": "void"},{"T": "id"},
     {"MD": ["def","T","id","H"]},{"H": ["(","FP",")"]},{"H": ["(","FP",")","MB"]},
     {"MB": ["{","OPLIST","RE"]},{"RE": ["return","EXP",";","}"]},

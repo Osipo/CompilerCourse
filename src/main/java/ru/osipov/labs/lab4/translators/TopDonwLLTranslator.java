@@ -146,6 +146,10 @@ public class TopDonwLLTranslator extends FileIntTranslator<LinkedTree<Token>,Tok
                     arg.setValue(annotated);
                 }
             }
+            else if(arg.getChildren().size() == 1 && arg.getChildren().get(0).getValue().getLexem().equals(eName)){
+                TokenAttrs anno = (TokenAttrs)arg.getValue();
+                anno.getAttrs().put("synh",anno.getAttrs().get("inh"));
+            }
         }
 
         //POST ORDER
@@ -161,9 +165,6 @@ public class TopDonwLLTranslator extends FileIntTranslator<LinkedTree<Token>,Tok
                 wr.write(wr1.toString());
                 wr.write("\n");
                 wr.write(wr2.toString());
-            }
-            else if(arg.getValue().getName().equals("(")){
-
             }
             //UE -> ( B_15 )
             else if(arg.getValue().getName().equals("UE_23") && arg.getChildren().size() == 3){
