@@ -16,7 +16,9 @@ import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.lexers.generators.FALexerGenerator;
 import ru.osipov.labs.lab3.parsers.LLParser;
 import ru.osipov.labs.lab3.trees.*;
+import ru.osipov.labs.lab4.semantics.BreakChainNode;
 import ru.osipov.labs.lab4.semantics.MakeAstTree;
+import ru.osipov.labs.lab4.semantics.RemoveEmptyNodes;
 import ru.osipov.labs.lab4.semantics.ReverseChildren;
 
 import java.io.File;
@@ -71,18 +73,32 @@ public class Exe implements CommandLineRunner {
 
                 if(tree != null){
                     System.out.println("Parsed successful.");
-                    //System.out.println(tree.getChildren(tree.root()).get(0).getValue());
                     Graphviz.fromString(tree.toDot("ptree")).render(Format.PNG).toFile(new File(dir+"\\Tree"));
 
-                    MakeAstTree semAct = new MakeAstTree(G.getOperands(),G.getOperators(),G.getEmpty());
-                    ReverseChildren<Token> rAct = new ReverseChildren<>();
+                    System.out.println("Tree nodes: "+tree.getCount());
 
-                    tree.visit(VisitorMode.PRE,rAct);
+                    MakeAstTree semAct = new MakeAstTree(G.getOperands(),G.getOperators(),G.getEmpty());
+
+                    //Sem Action 1: Normalize from Stack of LL-analyzer. (In case of LL Grammar)
+                    ReverseChildren<Token> semAct1 = new ReverseChildren<>();
+                    tree.visit(VisitorMode.PRE,semAct1);
                     System.out.println("Reversed children from stack of LL");
+                    System.out.println("CHECK:: Visited: "+semAct1.getC());
                     Graphviz.fromString(tree.toDot("ptreeR")).render(Format.PNG).toFile(new File(dir+"\\ReversedTree"));
 
-                    //semAct.perform(tree);
-                    //Graphviz.fromString(tree.toDot("ptree2")).render(Format.PNG).toFile(new File(dir+"\\OpTree"));
+                    //Sem Action 2: Delete Nodes with empty Node (Rules A -> e)
+                    RemoveEmptyNodes semAct2 = new RemoveEmptyNodes(G);
+                    tree.visit(VisitorMode.PRE,semAct2);
+                    System.out.println("Empty nodes are removed.");
+                    System.out.println("Visited: "+semAct2.getC());
+                    Graphviz.fromString(tree.toDot("ptreeE")).render(Format.PNG).toFile(new File(dir+"\\NonETree"));
+
+                    //Sem Action 3: Delete chain Nodes (Rules like A -> B, B -> C).
+                    BreakChainNode semAct3 = new BreakChainNode();
+                    tree.visit(VisitorMode.POST,semAct3);
+                    System.out.println("Chain was deleted");
+                    System.out.println("Visited: "+semAct3.getC());
+                    Graphviz.fromString(tree.toDot("ptreeZ")).render(Format.PNG).toFile(new File(dir+"\\ZippedTree"));
                 }
                 else{
                     System.out.println("Syntax errors detected!");

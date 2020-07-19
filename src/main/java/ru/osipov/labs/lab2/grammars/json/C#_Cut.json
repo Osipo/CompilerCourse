@@ -24,10 +24,10 @@
     "#": "#",
     ",": ",",
     "/*": "/@*",
-    "id": "[A-Za-z_]([A-Za-z_0-9]+|empty)",
+    "id": "[A-Za-z@_]([A-Za-z@_0-9]+|empty)",
     "num": "[0-9]+",
     "realNum": "[0-9]+.[0-9]+(((E|e)(-|empty)[0-9]+)|empty)",
-    "ch": "\'any\'",
+    "ch": "\'_\'",
     "empty": null
   },
   "keywords": ["class","true","false","if","else","while",
