@@ -82,7 +82,7 @@ public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
     @Override
     public List<Node<T>> getChildren(Node<T> n){
         LinkedNode<T> c = (LinkedNode<T>) n;
-        return new ArrayList<>(c.getChildren());
+        return c.getChildren() == null ? new ArrayList<>() : new ArrayList<>(c.getChildren());
     }
 
     @Override
@@ -92,18 +92,27 @@ public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
     }
 
     public void visit(VisitorMode order, Action<Node<T>> act){
+        Node<Integer> nc = new Node<>(0);//Some actions MAY MODIFY count of TREE_NODES.
         switch(order){
             case PRE:
                 _visitor.preOrder(this,act);
+                __ComputeC(nc);
+                _count = nc.getValue();
                 break;
             case POST:
                 _visitor.postOrder(this,act);
+                __ComputeC(nc);
+                _count = nc.getValue();
                 break;
             case IN:
                 _visitor.inOrder(this,act);
+                __ComputeC(nc);
+                _count = nc.getValue();
                 break;
             case NONE:
                 act.perform(_r);//NONE => perform action on the root.
+                __ComputeC(nc);
+                _count = nc.getValue();
                 break;
             default:
                 break;

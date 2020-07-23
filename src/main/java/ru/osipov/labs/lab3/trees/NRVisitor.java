@@ -5,6 +5,21 @@ import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 
 public class NRVisitor<T> implements Visitor<T> {
 
+    protected boolean noCount;
+
+    public NRVisitor(){
+        this.noCount = true;
+    }
+
+    public void setNoCount(boolean f){
+        this.noCount = f;
+    }
+
+    public boolean isNoCount(){
+        return noCount;
+    }
+
+    //MAY PRODUCE ERRORS WHEN TREE IS BEING MODIFIED. (MUTABLE)
     @Override
     public void preOrder(Tree<T> tree, Action<Node<T>> act){
         Node<T> m = tree.root();//ROOT(T)
@@ -14,15 +29,20 @@ public class NRVisitor<T> implements Visitor<T> {
         }
 
         ArrStack<Node<T>> STACK = new ArrStack<>(tree.getCount() * 2);
+        long c  = 0;
 
         while(true){
             if(m != null){
+                if(!noCount)
+                    c++;
                 act.perform(m);//LABEL(node,TREE)
                 STACK.push(m);
                 m = tree.leftMostChild(m);//LEFTMOST_CHILD(node,TREE)
             }
             else{
                 if(STACK.isEmpty()){
+                    if(!noCount)
+                        System.out.println("Visited: "+c);
                     return;
                 }
                 m = tree.rightSibling(STACK.top());//RIGHT_SIBLING(TOP(S),TREE) where TOP(S) is node
@@ -41,15 +61,19 @@ public class NRVisitor<T> implements Visitor<T> {
 
         ArrStack<Node<T>> STACK = new ArrStack<>(t.getCount());
         ArrStack<Node<T>> STACK2 = new ArrStack<>(t.getCount());
-
+        long c  = 0;
 
         while(true){
             if(m != null){
+                if(!noCount)
+                    c++;
                 STACK.push(m);
                 m = t.leftMostChild(m);//LEFTMOST_CHILD(node,TREE) while current != null current = current.leftson
             }
             else{
                 if(STACK.isEmpty()){
+                    if(!noCount)
+                        System.out.println("Visited: "+c);
                     return;
                 }
                 //Node<T> c = STACK.Top();
@@ -80,7 +104,7 @@ public class NRVisitor<T> implements Visitor<T> {
         }
 
         ArrStack<Node<T>> STACK = new ArrStack<>(tree.getCount());
-
+        long c  = 0;
         while(true){
             if(m != null){
                 //act.perform(m);//LABEL(node,TREE)
@@ -89,9 +113,13 @@ public class NRVisitor<T> implements Visitor<T> {
             }
             else{
                 if(STACK.isEmpty()){
+                    if(!noCount)
+                        System.out.println("Visited: "+c);
                     return;
                 }
                 act.perform(STACK.top());
+                if(!noCount)
+                    c++;
                 m = tree.rightSibling(STACK.top());//RIGHT_SIBLING(TOP(S),TREE) where TOP(S) is node
                 STACK.pop();//POP(S)
             }

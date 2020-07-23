@@ -1,7 +1,10 @@
 package ru.osipov.labs.lab3.trees;
 
+import java.util.List;
+
 public interface Tree<T> {
     Node<T> parent(Node<T> node);
+    List<Node<T>> getChildren(Node<T> n);
     Node<T> leftMostChild(Node<T> node);
     Node<T> rightSibling(Node<T> node);
     Node<T> root();

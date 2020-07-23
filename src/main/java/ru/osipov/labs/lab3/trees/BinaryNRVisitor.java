@@ -13,7 +13,7 @@ public class BinaryNRVisitor<T> extends NRVisitor<T> implements Visitor<T> {
         }
 
         ArrStack<Node<T>> STACK = new ArrStack<>(tree.getCount() + 1);
-
+        long c = 0;
         while(true){
             if(m1 != null){
                 STACK.push(m1);
@@ -21,9 +21,13 @@ public class BinaryNRVisitor<T> extends NRVisitor<T> implements Visitor<T> {
             }
             else{
                 if(STACK.isEmpty()){
+                    if(!noCount)
+                        System.out.println("Visited: "+c);
                     return;
                 }
                 act.perform(STACK.top());//LABEL(node1) on TREE1 AND TREE2
+                if(!noCount)
+                    c++;
                 Node<T> c1 = STACK.top();
                 STACK.pop();
                 m1 =  ((LinkedBinaryNode<T>) c1).getRight();

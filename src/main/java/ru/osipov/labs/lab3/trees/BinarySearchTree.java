@@ -250,13 +250,15 @@ public class BinarySearchTree<T> implements Tree<T> {
     }
 
 
-    private List<Node<T>> getChildren(Node<T> n){
+    public List<Node<T>> getChildren(Node<T> n){
         if(n == null)
             return null;
         LinkedBinaryNode<T> np = (LinkedBinaryNode<T>) n;
         List<Node<T>> l = new LinkedList<>();
-        l.add(np.getLeft());
-        l.add(np.getRight());
+        if(np.getLeft() != null)
+            l.add(np.getLeft());
+        if(np.getRight() != null)
+            l.add(np.getRight());
         return l;
     }
 

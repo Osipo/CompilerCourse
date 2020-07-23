@@ -9,19 +9,12 @@ import ru.osipov.labs.lab3.lexers.Token;
 public class RemoveEmptyNodes  implements Action<Node<Token>> {
 
     private String empty;
-
-    private int c = 0;
     public RemoveEmptyNodes(Grammar G){
         this.empty = G.getEmpty();
     }
 
-    public int getC(){
-        return c;
-    }
-
     @Override
     public void perform(Node<Token> arg) {
-        c++;
         LinkedNode<Token> t = (LinkedNode<Token>)arg;
         if(t.getChildren().size() == 1 && t.getChildren().get(0).getValue().getName().equals(empty)){
             LinkedNode<Token> p = t.getParent();
