@@ -24,11 +24,11 @@ public class SequentialNRVisitor<T> extends NRVisitor<T> implements Visitor<T> {
                 co++;
             m = STACK.top();
             STACK.pop();
-            act.perform(m);
             List<Node<T>> ch = tree.getChildren(m);
             for(Node<T> c : ch){
                 STACK.push(c);
             }
+            act.perform(m);
         }
         if(!noCount)
             System.out.println("Visited: "+co);

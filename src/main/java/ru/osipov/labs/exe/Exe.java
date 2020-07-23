@@ -16,10 +16,7 @@ import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.lexers.generators.FALexerGenerator;
 import ru.osipov.labs.lab3.parsers.LLParser;
 import ru.osipov.labs.lab3.trees.*;
-import ru.osipov.labs.lab4.semantics.BreakChainNode;
-import ru.osipov.labs.lab4.semantics.MakeAstTree;
-import ru.osipov.labs.lab4.semantics.RemoveEmptyNodes;
-import ru.osipov.labs.lab4.semantics.ReverseChildren;
+import ru.osipov.labs.lab4.semantics.*;
 
 import java.io.File;
 
@@ -77,8 +74,6 @@ public class Exe implements CommandLineRunner {
 
                     System.out.println("Tree nodes: "+tree.getCount());
 
-                    MakeAstTree semAct = new MakeAstTree(G.getOperands(),G.getOperators(),G.getEmpty());
-
                     tree.setVisitor(new SequentialNRVisitor<Token>());
 
 //                    //Sem Action 1: Normalize from Stack of LL-analyzer. (In case of LL Grammar)
@@ -97,8 +92,21 @@ public class Exe implements CommandLineRunner {
                     //Sem Action 3: Delete chain Nodes (Rules like A -> B, B -> C).
                     BreakChainNode semAct3 = new BreakChainNode();
                     tree.visit(VisitorMode.PRE,semAct3);
-                    System.out.println("Chain was deleted");//181 nodes for Example.exe are remained.
+                    System.out.println("Chain was deleted");
                     Graphviz.fromString(tree.toDot("ptreeZ")).render(Format.PNG).toFile(new File(dir+"\\ZippedTree"));
+
+                    //Sem Action 4: Delete Nodes created by left-recursion. (They are now useless).
+                    BreakTailNode semAct4 = new BreakTailNode();
+                    tree.visit(VisitorMode.PRE,semAct4);
+                    System.out.println("Tail was deleted");
+                    Graphviz.fromString(tree.toDot("ptreeZT")).render(Format.PNG).toFile(new File(dir+"\\UntailedTree"));
+
+
+                    //Sem Action 5: Delete Non-Terminal Nodes. (Save only operators and operands).
+                    MakeAstTree semAct5 = new MakeAstTree(G.getOperands(),G.getOperators());
+                    tree.visit(VisitorMode.PRE,semAct5);
+                    System.out.println("ASTree was created.");
+                    Graphviz.fromString(tree.toDot("ASTree")).render(Format.PNG).toFile(new File(dir+"\\ASTree"));
                     System.out.println("Tree nodes after processing: "+tree.getCount());
                 }
                 else{
