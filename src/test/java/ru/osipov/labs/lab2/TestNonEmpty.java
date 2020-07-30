@@ -11,10 +11,13 @@ import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab2.jsonParser.SimpleJsonParser;
 import ru.osipov.labs.lab2.jsonParser.jsElements.JsonObject;
 
+import java.util.regex.Pattern;
+
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes= TestNonEmpty.class)
 public class TestNonEmpty {
+
     @Test
     public void test1(){
         String p = System.getProperty("user.dir");

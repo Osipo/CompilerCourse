@@ -220,7 +220,8 @@ public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
             } else {
                 hs.add(n);
                 String name = n.getIdx()+"";
-                sb.append(name).append(" [label=\"").append(n.getValue().toString()).append("\"];");
+                String val = n.getValue().toString().replace("\"","\\\"");
+                sb.append(name).append(" [label=\"").append(val).append("\"];");
                 List<Node<T>> children = getChildren(n);
                 for(int c = children.size() - 1; c >= 0; c--){
                     STACK.push(children.get(c));

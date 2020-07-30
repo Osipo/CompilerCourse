@@ -38,8 +38,8 @@
     "mlCommentEnd": "*/",
     "id": "id",
     "commentLine": "#",
-    "operands": ["id","num","realNum","true","false","ch"],
-    "operators": ["<","<=",">",">=","==","<>","=","+","-","*","/","%","^","->","&&","||","if","while","class","def","return"],
+    "operands": ["id","num","realNum","true","false","ch","UE"],
+    "operators": ["<","<=",">",">=","==","<>","=","+","-","*","/","%","^","->","&&","||","if","while","class","def","return","um","up","if","while","D"],
     "aliases": {
       "-": "um",
       "+": "up"

@@ -17,6 +17,9 @@ class Program {
     def int calc(int a, long b){
         b = 5 - ( - b) ;
         a = ( b + 4 ) * 5 ^ 2;
+        if(a > b)
+            while ( a <= b) a = a + 1;
+
         return a * b;
     }
 }

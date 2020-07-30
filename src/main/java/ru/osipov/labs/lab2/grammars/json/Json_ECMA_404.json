@@ -1,6 +1,6 @@
 {
   "terms" : {
-    "id": "[A-Za-z_]([A-Za-z_0-9]+|empty)",
+    "id": "[A-Za-z@_]([A-Za-z@_0-9]+|empty)",
     "num": "[0-9]+",
     "binNum": "0b(0|1)+",
     "octalNum": "0c[0-7]+",

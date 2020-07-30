@@ -76,12 +76,11 @@ public class Exe implements CommandLineRunner {
 
                     tree.setVisitor(new SequentialNRVisitor<Token>());
 
-//                    //Sem Action 1: Normalize from Stack of LL-analyzer. (In case of LL Grammar)
-//                    ReverseChildren<Token> semAct1 = new ReverseChildren<>();
-//                    tree.visit(VisitorMode.PRE,semAct1);
-//                    System.out.println("Reversed children from stack of LL");
-//                    System.out.println("CHECK:: Visited: "+semAct1.getC());
-//                    Graphviz.fromString(tree.toDot("ptreeR")).render(Format.PNG).toFile(new File(dir+"\\ReversedTree"));
+                    //Sem Action 1: Normalize from Stack of LL-analyzer. (In case of LL Grammar)
+                    ReverseChildren<Token> semAct1 = new ReverseChildren<>();
+                    tree.visit(VisitorMode.PRE,semAct1);
+                    System.out.println("Reversed children from stack of LL");
+                    Graphviz.fromString(tree.toDot("ptreeR")).render(Format.PNG).toFile(new File(dir+"\\ReversedTree"));
 
                     //Sem Action 2: Delete Nodes with empty Node (Rules A -> e)
                     RemoveEmptyNodes semAct2 = new RemoveEmptyNodes(G);
@@ -102,8 +101,10 @@ public class Exe implements CommandLineRunner {
                     Graphviz.fromString(tree.toDot("ptreeZT")).render(Format.PNG).toFile(new File(dir+"\\UntailedTree"));
 
 
+
                     //Sem Action 5: Delete Non-Terminal Nodes. (Save only operators and operands).
-                    MakeAstTree semAct5 = new MakeAstTree(G.getOperands(),G.getOperators());
+                    MakeAstTree semAct5 = new MakeAstTree(G);
+                    //ast1.translate(tree);
                     tree.visit(VisitorMode.PRE,semAct5);
                     System.out.println("ASTree was created.");
                     Graphviz.fromString(tree.toDot("ASTree")).render(Format.PNG).toFile(new File(dir+"\\ASTree"));

@@ -128,6 +128,22 @@ public class Grammar {
             }
         }
 
+        //nonTerms
+        JsonElement N = jsonG.getElement("nonTerms");
+        if(N instanceof JsonArray){
+            this.N = new HashSet<>();
+            ArrayList<JsonElement> nterms = ((JsonArray) N).getElements();
+            for(JsonElement e : nterms){
+                if(e instanceof JsonString) {
+                    this.N.add(((JsonString) e).getValue());
+                }
+                else
+                    throw new InvalidJsonGrammarException("Expected String name of non-terminals.",null);
+            }
+        }
+        else
+            throw new InvalidJsonGrammarException("Expected nonTerms property with list of String names of non-terminals",null);
+
         //optional meta
         JsonElement M = jsonG.getElement("meta");
         if(M instanceof JsonObject){
@@ -136,11 +152,11 @@ public class Grammar {
             if(opd instanceof JsonArray){
                 ArrayList<JsonElement> kws = ((JsonArray) opd).getElements();
                 for(JsonElement e : kws){
-                    if(e instanceof JsonString && (this.T.contains(((JsonString) e).getValue()) || this.keywords.contains(((JsonString) e).getValue()) ) ){
+                    if(e instanceof JsonString && (this.T.contains(((JsonString) e).getValue()) || this.keywords.contains(((JsonString) e).getValue()) || this.N.contains(((JsonString) e).getValue())) ){
                         this.operands.add(((JsonString) e).getValue());
                     }
                     else
-                        throw new InvalidJsonGrammarException("Expected String being contained in terms or keywords.",null);
+                        throw new InvalidJsonGrammarException("Expected String being contained in terms or keywords or nonTerms. Property \'.meta.operands\'",null);
                 }
             }
 
@@ -148,11 +164,11 @@ public class Grammar {
             if(ops instanceof JsonArray){
                 ArrayList<JsonElement> oprs = ((JsonArray) ops).getElements();
                 for(JsonElement e : oprs){
-                    if(e instanceof JsonString && (this.T.contains(((JsonString) e).getValue()) || this.keywords.contains(((JsonString) e).getValue()) ) ){
+                    if(e instanceof JsonString){ //&& (this.T.contains(((JsonString) e).getValue()) || this.keywords.contains(((JsonString) e).getValue()) || this.N.contains(((JsonString) e).getValue())) ){
                         this.operators.add(((JsonString) e).getValue());
                     }
                     else
-                        throw new InvalidJsonGrammarException("Expected String being contained in temrs or keywords. Property \'operators\'",null);
+                        throw new InvalidJsonGrammarException("Expected String being contained in temrs or keywords. Property \'.meta.operators\'",null);
                 }
             }
 
@@ -201,21 +217,6 @@ public class Grammar {
                 }
             }
         }
-
-        JsonElement N = jsonG.getElement("nonTerms");
-        if(N instanceof JsonArray){
-            this.N = new HashSet<>();
-            ArrayList<JsonElement> nterms = ((JsonArray) N).getElements();
-            for(JsonElement e : nterms){
-                if(e instanceof JsonString) {
-                    this.N.add(((JsonString) e).getValue());
-                }
-                else
-                    throw new InvalidJsonGrammarException("Expected String name of non-terminals.",null);
-            }
-        }
-        else
-            throw new InvalidJsonGrammarException("Expected nonTerms property with list of String names of non-terminals",null);
 
         JsonElement P = jsonG.getElement("productions");
         if(P instanceof JsonArray){
@@ -1193,7 +1194,7 @@ public class Grammar {
                 List<GrammarSymbol> symbols = str.getSymbols();
                 if(symbols.size() > 1 && symbols.get(0).getVal().equals(Ai)){//immediate recursion.
                     GrammarString g = new GrammarString(new ArrayList<>(str.getSymbols().subList(1,symbols.size())));//do not add first symbol.
-                    g.addSymbol(new GrammarSymbol('n',Ai+"\'"));//add new symbol.
+                    g.addSymbol(new GrammarSymbol('n',Ai+"\'"));//Add new symbol. QUOTATIONS ARE USED FOR PROCESSING ('')
                     lb1.add(g);//add new sequence alpha A' for A -> A alpha. => A -> alpha A'
                     lb1.add(new GrammarString(new ArrayList<>(str.getSymbols().subList(1,symbols.size()))));//add alpha sequence => A -> alpha A' | alpha
                     flag = true;
@@ -1545,7 +1546,7 @@ public class Grammar {
                 }
                 GrammarString prefRule = new GrammarString(new ArrayList<>(preffix.getSymbols()));
                 int id = newRidxs.get(ph);
-                String nName = ph+"\'"+id;
+                String nName = ph+"\'"+id;//REPLACE ' => "
                 prefRule.addSymbol(new GrammarSymbol('n',nName));
                 nonPref.add(prefRule);
 
@@ -1636,16 +1637,16 @@ public class Grammar {
         while(flag && i < minL){
             ca = 1;
             current = new GrammarString(rules.get(0).getSymbols().subList(0,i+1));
-            for(int j = 1; j < rules.size();j++){
+            for(int j = 1; j < rules.size();j++){//get another production
                 GrammarString c = new GrammarString(rules.get(j).getSymbols().subList(0,i+1));
                 if(c.equals(current)){
-                    ca++;
+                    ca++;//found common production with non-empty preffix.
                 }
             }
-            if(ca > 1)
-                preffix = current;
+            if(ca > 1)//one or more production has same preffix with current.
+                preffix = current;//save current scanned part of the first production to preffix
             else
-                flag = false;
+                flag = false;//there are no any production with common preffix.
             i++;
         }
         return preffix;
