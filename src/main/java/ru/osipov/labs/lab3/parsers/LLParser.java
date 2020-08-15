@@ -1,13 +1,10 @@
 package ru.osipov.labs.lab3.parsers;
 
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
-import ru.osipov.labs.lab1.structures.automats.DFA;
 import ru.osipov.labs.lab1.structures.graphs.Pair;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab2.grammars.GrammarString;
 import ru.osipov.labs.lab2.grammars.GrammarSymbol;
-import ru.osipov.labs.lab3.lexers.DFALexer;
 import ru.osipov.labs.lab3.lexers.ILexer;
 import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.parsers.generators.LLParserGenerator;
@@ -15,33 +12,24 @@ import ru.osipov.labs.lab3.trees.LinkedNode;
 import ru.osipov.labs.lab3.trees.LinkedTree;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 
-public class LLParser {
-    private LLParserGenerator gen;
+public class LLParser extends Parser{
     private Map<Pair<String,String>, GrammarString> table;
-    private ILexer lexer;
     private Set<String> T;
     private Set<String> N;
+    private String start;
 
 
     public LLParser(Grammar G, ILexer lexer){
-        gen = new LLParserGenerator();
-        this.table = gen.getTable(G);
-        this.lexer = lexer;
-        lexer.setKeywords(G.getKeywords());
-        lexer.setOperands(G.getOperands());
-        lexer.setAliases(G.getAliases());
-        lexer.setCommentLine(G.getCommentLine());
-        lexer.setMlCommentStart(G.getMlCommentStart());
-        lexer.setMlCommentEnd(G.getMlCommentEnd());
-        lexer.setIdName(G.getIdName());
+        super(G,lexer);
+        this.table = new LLParserGenerator().getTable(G);
         this.T = G.getTerminals();
         this.N = G.getNonTerminals();
+        this.start = G.getStart();
     }
 
     //TODO: make full table with empty cells (error records)
@@ -87,17 +75,16 @@ public class LLParser {
     }
 
     //Algorithm 4.20 with lexer module.
-    public LinkedTree<Token> parse(Grammar G, String fname){
+    public LinkedTree<Token> parse(String fname){
         FileInputStream f;
         boolean isParsed = true;
         try {
             f = new FileInputStream(new File(fname).getAbsolutePath());
-            InputStreamReader ch = new InputStreamReader(f);
             LinkedStack<LinkedNode<Token>> S = new LinkedStack<>();
             LinkedNode<Token> root = new LinkedNode<>();
             LinkedNode<Token> EOF = new LinkedNode<>();
             EOF.setValue(new Token("$","$",'t'));
-            root.setValue(new Token(G.getStart(),G.getStart(),'n'));
+            root.setValue(new Token(start,start,'n'));
             root.setIdx(1);
             S.push(EOF);
             S.push(root);// Stack: S,$.
@@ -107,10 +94,9 @@ public class LLParser {
                 tok = lexer.recognize(f);
             }
             String t = tok.getName();
-            String empty = G.getEmpty();
-            int nidx = 1;
+            int nidx = 1;//counter of elements (tree nodes)
             while(!X.getValue().getName().equals("$")) {
-                if(X.getValue().getName().equals(t)){//S.Top() == X && X == t.
+                if(X.getValue().getName().equals(t)){//S.Top() == X && X == t
                     S.top().getValue().setLexem(tok.getLexem());
                     S.pop();
                     tok = lexer.recognize(f);
@@ -126,7 +112,7 @@ public class LLParser {
                     isParsed = false;
                     break;
                 }
-                else if(G.getTerminals().contains(X.getValue().getName())) {
+                else if(this.T.contains(X.getValue().getName())) {
                     isParsed = false;
                     break;
                 }
@@ -146,8 +132,8 @@ public class LLParser {
                         node.setValue(new Token(symbols.get(i).getVal(),null,symbols.get(i).getType()));
                         node.setIdx(nidx);
                         node.setParent(X);
-                        X.getChildren().add(node);//ON STACK: Xn..X_1 BUT ON TREE: Xn...X1 => X1...Xn
-                        if(!node.getValue().getName().equals(empty))
+                        X.getChildren().add(node);//ON STACK: Xn..X_1 => X_1..Xn BUT ON TREE: Xn..X_1
+                        if(!node.getValue().getName().equals(empty))//skip empty rules.
                             S.push(node);
                     }
                 }
@@ -168,9 +154,11 @@ public class LLParser {
             return null;//if syntax error return null.
         }
         catch (FileNotFoundException e){
+            lexer.reset();
             System.out.println("File not found. Specify file to read");
             return null;
         } catch (IOException e) {
+            lexer.reset();
             System.out.println("File is not available now.");
             return null;
         }

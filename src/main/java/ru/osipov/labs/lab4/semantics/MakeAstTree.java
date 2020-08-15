@@ -1,12 +1,10 @@
 package ru.osipov.labs.lab4.semantics;
 
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.trees.*;
 
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 //From LL-tree.
 public class MakeAstTree implements Action<Node<Token>> {
@@ -33,8 +31,8 @@ public class MakeAstTree implements Action<Node<Token>> {
                c.setParent(null);
                i = -1;
            }
-           //nonTerm is operand => nonTerm is group of operands. (list)
-           else if(c.getValue().getType() != 't' && operands.contains(c.getValue().getName().split("_")[0])){
+           //remove nonTerm if it is useless. And up to 1 level its children.
+           else if(c.getValue().getType() != 't'  && operands.contains(c.getValue().getName().split("_")[0])){
                current.getChildren().remove(c);
                c.setParent(null);
                i = -1;

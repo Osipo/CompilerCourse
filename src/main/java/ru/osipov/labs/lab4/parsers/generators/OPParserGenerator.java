@@ -1,6 +1,5 @@
 package ru.osipov.labs.lab4.parsers.generators;
 
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab2.grammars.GrammarString;

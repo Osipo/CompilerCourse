@@ -26,6 +26,7 @@ public class Main implements CommandLineRunner {
         Scanner in = new Scanner(System.in);
         System.out.println("Input regex: ");
         String expr = in.nextLine();
+        expr = expr.replaceAll("!","q");//nail. op '!" is not supported for method buildNFA with 2 parameters.
         //String expr = "(ab|cd)*abb";
         //String expr2 = "(a|b)*[c-t]+";
         System.out.println("Expr: "+expr);
@@ -60,6 +61,7 @@ public class Main implements CommandLineRunner {
         System.out.println("Input str to recognize: ");
         String i = in.nextLine();
 
+        i = i.replaceAll("!","q");//nail. op '!' is not supported by buildNFA method with 2 parameters.
         System.out.println("Recognize nfa: "+nfa.Recognize(i));
         System.out.println("Recognize dfa: "+dfa.Recognize(i));
         System.out.println("Recognize minDfa: "+minDfa.Recognize(i));
@@ -107,6 +109,7 @@ public class Main implements CommandLineRunner {
 
 
     //Algorithm: Mac Naughton-Yamada-Tompson (Мак-Нотона, Ямады, Томпсона)
+    //DO NOT USE THIS METHOD FOR BUILDING A COMPLEMENT OF NFA. (Complement operation i.e. NOT(L)).
     public static NFA buildNFA(LinkedStack<Character> expr, RegexRPNParser parser){
         LinkedStack<NFA> result = new LinkedStack<>();
         HashSet<Character> alpha = new HashSet<>();
@@ -206,6 +209,29 @@ public class Main implements CommandLineRunner {
             if(parser.isUnaryOp(tok)){
                 CNFA g = result.top();
                 result.pop();
+                if(tok == '!'){//COMPLEMENT
+                    //Reverse F and F - N states.
+                    for(Vertex v: g.getNodes()){
+                        if(g.getFinished().contains(v))
+                            v.setFinish(false);
+                        else
+                            v.setFinish(true);
+                    }
+                    for(Vertex v : g.getNodes()){
+                        if(v.isFinish()) {//ADD Edge with label 'any character'
+                            g.getFinished().add(v);
+                            Edge e = new Edge(v,g.getStart(),(char)0);
+                        }
+                        else
+                            g.getFinished().remove(v);
+                    }
+                    pos++;
+                    if(g.getStart().isFinish()) {
+                        Edge sl = new Edge(g.getStart(), g.getStart(), (char) 0);
+                    }
+                    result.push(g);
+                    continue;
+                }
                 for(Vertex v: g.getNodes()){//nullify finish
                     v.setFinish(false);
                 }

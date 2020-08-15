@@ -4,6 +4,7 @@ import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab3.lexers.ILexer;
 import ru.osipov.labs.lab3.lexers.Token;
+import ru.osipov.labs.lab3.parsers.Parser;
 import ru.osipov.labs.lab3.trees.LinkedNode;
 import ru.osipov.labs.lab3.trees.LinkedTree;
 import ru.osipov.labs.lab4.parsers.generators.OPParserGenerator;
@@ -16,21 +17,13 @@ import java.util.List;
 
 //Bottom-up parser with shift-reduce.
 //Works with Operator Grammars
-public class ShiftReduceParser {
+public class ShiftReduceParser extends Parser {
     private OperatorPresedenceRelations table;
     private ReduceIndexer rIdx;
-    private ILexer lexer;
 
     public ShiftReduceParser(Grammar G, ILexer lexer){
+        super(G,lexer);
         OPParserGenerator gen = new OPParserGenerator();
-        this.lexer = lexer;
-        lexer.setKeywords(G.getKeywords());
-        lexer.setOperands(G.getOperands());
-        lexer.setAliases(G.getAliases());
-        lexer.setCommentLine(G.getCommentLine());
-        lexer.setMlCommentStart(G.getMlCommentStart());
-        lexer.setMlCommentEnd(G.getMlCommentEnd());
-        lexer.setIdName(G.getIdName());
         this.table = gen.operatorPresedence(G);
         this.rIdx = gen.getIndicesOfRules(G.getSpanningGrammar());
         //System.out.println("Parser was built.");
@@ -181,9 +174,11 @@ public class ShiftReduceParser {
             return null;
         }
         catch (FileNotFoundException e){
+            lexer.reset();
             System.out.println("File not found. Specify file to read");
             return null;
         } catch (IOException e) {
+            lexer.reset();
             System.out.println("File is not available now.");
             return null;
         }

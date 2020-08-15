@@ -5,6 +5,7 @@ import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.lexers.TokenAttrs;
 import ru.osipov.labs.lab3.trees.*;
 import ru.osipov.labs.lab4.semantics.Entry;
+import ru.osipov.labs.lab4.semantics.EntryCategory;
 import ru.osipov.labs.lab4.semantics.Env;
 import ru.osipov.labs.lab4.semantics.SInfo;
 
@@ -19,7 +20,7 @@ public class TopDonwLLTranslator extends FileIntTranslator<LinkedTree<Token>,Tok
 
     private StringWriter currentDInh;
     private StringWriter currentFInh;
-    private String currentCat;//Current scope: global, class, field, method, formal, local.
+    private EntryCategory currentCat;//Current scope: global, class, field, method, formal, local.
     private LinkedTree<Token> tree;
     private int cBlock = 0;
     private int mode = 0;
@@ -76,8 +77,8 @@ public class TopDonwLLTranslator extends FileIntTranslator<LinkedTree<Token>,Tok
             else if (arg.getValue().getName().equals(idName) && arg.getParent().getValue().getName().equals("L_4")) {
                 String mid = arg.getValue().getLexem();
                 SInfo entry = new SInfo(mid);//id of the method.
-                entry.setEntry(new Entry(currentDInh.toString(), "method"));//type and scope
-                currentCat = "method";
+                entry.setEntry(new Entry(currentDInh.toString(), EntryCategory.METHOD));//type and scope
+                currentCat = EntryCategory.METHOD;
                 Env pst = env.top();
                 pst.addEntry(entry);
                 Env nst = new Env(pst);//goto new block.
@@ -108,7 +109,7 @@ public class TopDonwLLTranslator extends FileIntTranslator<LinkedTree<Token>,Tok
                 String id = arg.getChildren().get(1).getValue().getLexem();
                 Env st = env.top();
                 SInfo entry = new SInfo(id);
-                entry.setEntry(new Entry(type, "formal", t_widths.getOrDefault(type, 0)));
+                entry.setEntry(new Entry(type, EntryCategory.VAR, t_widths.getOrDefault(type, 0)));
                 st.addEntry(entry);
                 currentFInh.write("formal " + type + ":" + id + "; ");
             } else if (arg.getValue().getName().equals("H_9'1")) {

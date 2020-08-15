@@ -99,7 +99,6 @@ public class DFA extends Graph {
         LinkedStack<Set<Vertex>> ST = new LinkedStack<>();
         HashSet<Vertex> s0 = new HashSet<>();
         s0.add(nfa.getStart());
-
         ST.push(NFA.e_closure(s0));//e-closure(s0) where s0 - start state.
         this.start = new Vertex();//label for e-closure(s0)
         this.start.setStart(true);

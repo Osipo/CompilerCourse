@@ -1,17 +1,17 @@
 package ru.osipov.labs.lab4.semantics;
 
 public class Entry {
-    private int mem;
-    private String type;
-    private String cat;
+    protected int mem;
+    protected String type;
+    protected EntryCategory cat;
 
-    public Entry(String type, String cat, int mem){
+    public Entry(String type, EntryCategory cat, int mem){
         this.mem = mem;
         this.cat = cat;
         this.type = type;
     }
 
-    public Entry(String type, String cat){
+    public Entry(String type, EntryCategory cat){
         this(type,cat,0);
     }
 
@@ -19,7 +19,7 @@ public class Entry {
         this.type = type;
     }
 
-    public void setCat(String cat) {
+    public void setCat(EntryCategory cat) {
         this.cat = cat;
     }
 
@@ -31,11 +31,16 @@ public class Entry {
         return mem;
     }
 
-    public String getCat() {
+    public EntryCategory getCat() {
         return cat;
     }
 
     public String getType() {
         return type;
+    }
+
+    @Override
+    public String toString(){
+        return "{ type = "+type+", memory = "+mem+", category = "+cat.toString() + " }";
     }
 }

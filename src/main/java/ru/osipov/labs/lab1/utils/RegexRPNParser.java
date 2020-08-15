@@ -24,7 +24,7 @@ public class RegexRPNParser {
     public void setTerminals(char[] t){
         this.terminals = new char[t.length];
         for(int i = 0; i < t.length; i++){
-            if(t[i] != '+' && t[i] != '*' && t[i] != '|' && t[i] != '(' && t[i] != ')' && t[i] != '^' && t[i] != '[' && t[i] != ']')
+            if(t[i] != '+' && t[i] != '*' && t[i] != '|' && t[i] != '(' && t[i] != ')' && t[i] != '^' && t[i] != '[' && t[i] != ']' && t[i] != '!')
                 this.terminals[i] = t[i];
         }
     }
@@ -55,12 +55,11 @@ public class RegexRPNParser {
         }
     }
 
-    public void setNonOperatorsPosition(List<Integer> pos){
-
-    }
-
     public boolean isUnaryOp(Character c){
-        return c == '*' || c == '+';
+        return c == '*' || c == '+' || c == '!';
+    }
+    public boolean isF(Character c){
+        return c == '!';
     }
 
     /*Priority of operator.*/
@@ -89,6 +88,10 @@ public class RegexRPNParser {
                     ops.pop();
                 }
                 ops.pop();
+                if(!ops.isEmpty() && isF(ops.top())){
+                    rpn.push(ops.top());
+                    ops.pop();
+                }
             }
             else if(tok == '@'){
                 rpn.push(tok);
@@ -103,6 +106,9 @@ public class RegexRPNParser {
                     rpn.push(ops.top());
                     ops.pop();
                 }
+                ops.push(tok);
+            }
+            else if(isF(tok)){
                 ops.push(tok);
             }
             else if(!isOperator(tok) && !isTerminal(tok)) {

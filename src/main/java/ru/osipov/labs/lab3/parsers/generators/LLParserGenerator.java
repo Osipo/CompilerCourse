@@ -28,6 +28,8 @@ public class LLParserGenerator {
                         Pair<String, String> rec = new Pair<>();
                         rec.setV1(p);
                         rec.setV2(f);
+                        if(table.get(rec) != null)
+                            System.out.println("Error (not LL)!");
                         table.put(rec,b);// new GrammarString(new ArrayList<>(b.getSymbols())));
                     }
                 }

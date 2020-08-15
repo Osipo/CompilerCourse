@@ -85,7 +85,7 @@ public class Lab3 implements CommandLineRunner {
             LLParser syntaxP = new LLParser(G,lexer);
 
             System.out.println("Get Tree of G");
-            LinkedTree<Token> tree = syntaxP.parse(G,sc);
+            LinkedTree<Token> tree = syntaxP.parse(sc);
             System.out.println("--------");
             if(tree != null) {
                 System.out.println(tree);

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Start-Class: ru.osipov.labs.lab2.Main
+Main-Class: org.springframework.boot.loader.JarLauncher
+Start-Class: ru.osipov.labs.exe.App
+Spring-Boot-Version: 2.1.7.RELEASE
 Spring-Boot-Classes: BOOT-INF/classes/
 Spring-Boot-Lib: BOOT-INF/lib/
-Spring-Boot-Version: 2.1.7.RELEASE
-Main-Class: org.springframework.boot.loader.JarLauncher
 

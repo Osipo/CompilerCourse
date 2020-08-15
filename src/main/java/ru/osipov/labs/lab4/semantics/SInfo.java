@@ -1,7 +1,7 @@
 package ru.osipov.labs.lab4.semantics;
 
 public class SInfo implements Value<String> {
-    private String sName;
+    private String sName;//idName
     private Entry entry;
 
     public SInfo(String name){
@@ -22,4 +22,13 @@ public class SInfo implements Value<String> {
 
     @Override
     public String getValue(){return sName;}
+
+    @Override
+    public String toString(){
+        StringBuilder b = new StringBuilder();
+        b.append(sName).append(": ");
+        if(entry != null)
+            b.append(entry.toString());
+        return b.toString();
+    }
 }

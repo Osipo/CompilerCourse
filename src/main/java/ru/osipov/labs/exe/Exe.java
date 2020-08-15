@@ -16,6 +16,7 @@ import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.lexers.generators.FALexerGenerator;
 import ru.osipov.labs.lab3.parsers.LLParser;
 import ru.osipov.labs.lab3.trees.*;
+import ru.osipov.labs.lab4.parsers.ShiftReduceParser;
 import ru.osipov.labs.lab4.semantics.*;
 
 import java.io.File;
@@ -30,6 +31,8 @@ public class Exe implements CommandLineRunner {
         RegexRPNParser rpn = new RegexRPNParser();
         String p = System.getProperty("user.dir");
         System.out.println("Current working dir: "+p);
+
+        //for IDE
         String sc = System.getProperty("user.dir")+"\\src\\main\\java\\ru\\osipov\\labs\\exe";
         String dir = System.getProperty("user.dir")+"\\src\\main\\java\\ru\\osipov\\labs\\exe";
 
@@ -65,15 +68,17 @@ public class Exe implements CommandLineRunner {
 
                 //build parser.
                 LLParser sa = new LLParser(G1,lexer);
+                //sa.toFile(dir+"\\PTable.txt");
 
-                LinkedTree<Token> tree = sa.parse(G1,sc);
+                LinkedTree<Token> tree = sa.parse(sc);
 
                 if(tree != null){
                     System.out.println("Parsed successful.");
                     Graphviz.fromString(tree.toDot("ptree")).render(Format.PNG).toFile(new File(dir+"\\Tree"));
 
                     System.out.println("Tree nodes: "+tree.getCount());
-
+                    //Print all id entries.
+                    sa.printTable();
                     tree.setVisitor(new SequentialNRVisitor<Token>());
 
                     //Sem Action 1: Normalize from Stack of LL-analyzer. (In case of LL Grammar)

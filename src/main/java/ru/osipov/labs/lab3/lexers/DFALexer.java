@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-
 public class DFALexer extends DFA implements ILexer {
 
     private LexerIO io;
@@ -301,9 +300,14 @@ public class DFALexer extends DFA implements ILexer {
         }
     }
 
+
+    //Try move on from current character c
+    //IF NOT => Try move on from any character (search edge with any label (char) 0)
+    //IF NOT => return null.
     private Vertex moveTo(Vertex v, char c){
-        List<Pair<Vertex,Character>> k = tranTable.keySet().stream().filter(x -> x.getV1().equals(v) && (x.getV2() == c || x.getV2() == (char)0)).collect(Collectors.toList());
-        return k.size() > 0 ? tranTable.get(k.get(0)) : null;
+        List<Pair<Vertex,Character>> k = tranTable.keySet().stream().filter(x -> x.getV1().equals(v) && x.getV2() == c ).collect(Collectors.toList());
+        List<Pair<Vertex,Character>> k2 = tranTable.keySet().stream().filter(x -> x.getV1().equals(v) && x.getV2() == (char)0).collect(Collectors.toList());
+        return k.size() > 0 ? tranTable.get(k.get(0)) : k2.size() > 0 ? tranTable.get(k2.get(0)) : null;
     }
 
     public Token generateError(String s1, String s2){

@@ -1,6 +1,8 @@
 package ru.osipov.labs.lab4.semantics;
 
 import ru.osipov.labs.lab3.trees.BinarySearchTree;
+import ru.osipov.labs.lab3.trees.PrintlnAction;
+import ru.osipov.labs.lab3.trees.VisitorMode;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,12 +21,7 @@ public class STable {
     public STable(int hmin, int hmax){
         this.HASH_MIN = hmin;
         this.HASH_MAX = hmax;
-        int l = hmax - hmin + 1;
-        this.table = new ArrayList<>(l);
-        for(int i = 0; i < l; i++){
-            table.add(null);
-        }
-        System.out.println("Table was initiated with "+table.size()+" elements.");
+        init();
     }
 
     public void clear(){
@@ -39,9 +36,9 @@ public class STable {
         int l = HASH_MAX - HASH_MIN + 1;
         this.table = new ArrayList<>(l);
         for(int i = 0; i < l; i++){
-            table.add(null);
+            this.table.add(null);
         }
-        System.out.println("Table was initiated with "+table.size()+" elements.");
+        System.out.println("Table was initiated with "+table.size()+" null elements.");
     }
 
     public void add(SInfo entry){
@@ -50,6 +47,7 @@ public class STable {
         if(rec == null){
             rec = new BinarySearchTree<SInfo>(new StringContainerComparator<SInfo>());
             rec.add(entry);
+            this.table.set(h,rec);
         }
         else{
             rec.add(entry);
@@ -65,6 +63,13 @@ public class STable {
         }
         else{
             rec.add(new SInfo(s));
+        }
+    }
+
+    public void printTable(){
+        for(BinarySearchTree<SInfo> t : table){
+            if(t != null)
+                t.visit(VisitorMode.IN,new PrintlnAction<SInfo>());
         }
     }
 

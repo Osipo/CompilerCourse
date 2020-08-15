@@ -57,7 +57,7 @@ public class TestLLParser {
         assert lexer.getFinished().size() == 5;
         lexer.getImagefromStr(dir,"lexer_Test1");
         LLParser sa = new LLParser(G,lexer);
-        LinkedTree<Token> t = sa.parse(G,s);
+        LinkedTree<Token> t = sa.parse(s);
         assert t != null;
         System.out.println(t.toString());
         String e = "{E_1{E_1'1{E_1'1{e}}{T_2{T_2'1{e}}{F_3{a}}}{+}}{T_2{T_2'1{T_2'1{e}}{F_3{a}}{*}}{F_3{)}{E_1{E_1'1{E_1'1{e}}{T_2{T_2'1{e}}{F_3{a}}}{+}}{T_2{T_2'1{e}}{F_3{a}}}}{(}}}}";
@@ -89,7 +89,7 @@ public class TestLLParser {
         assert lexer.getFinished().size() == 16;
         lexer.getImagefromStr(dir,"lexer_Test2");
         LLParser sa = new LLParser(G,lexer);
-        LinkedTree<Token> t = sa.parse(G,s);
+        LinkedTree<Token> t = sa.parse(s);
         assert t != null;
         System.out.println(t.toString());
         String e = "{E_1{AE_2{AE_2'2{AE_2'2{e}}{T_4{T_4'1{e}}{F_6{F_6'1{e}}{PE_8{num}}}}{PLUSOP_5{-}}}{T_4{T_4'1{e}}{F_6{F_6'1{F_6'1{e}}{PE_8{id}}{^}}{PE_8{num}}}}}{RELOP_3{==}}{AE_2{AE_2'2{AE_2'2{e}}{T_4{T_4'1{T_4'1{e}}{F_6{F_6'1{e}}{PE_8{id}}}{MULLOP_7{*}}}{F_6{F_6'1{e}}{PE_8{id}}}}{PLUSOP_5{+}}}{T_4{T_4'1{e}}{F_6{F_6'1{e}}{PE_8{id}}}}}}";
@@ -125,7 +125,7 @@ public class TestLLParser {
         assert lexer.getFinished().size() == 22;
         lexer.getImagefromStr(dir,"lexer_Test3");
         LLParser sa = new LLParser(G,lexer);
-        LinkedTree<Token> t = sa.parse(G,s);
+        LinkedTree<Token> t = sa.parse(s);
         assert t != null;
         System.out.println(t.toString());
         String e = "{P_1{}}{OPLIST_3{OPLIST_3'1{OPLIST_3'1{OPLIST_3'1{empty}}{OP_4{}}{OPLIST_3{OPLIST_3'1{empty}}{OP_4{E_5{E_5'1" +
@@ -193,7 +193,7 @@ public class TestLLParser {
 
         //Test 1
         long current = System.currentTimeMillis();
-        LinkedTree<Token> t = sa.parse(G,fi1);
+        LinkedTree<Token> t = sa.parse(fi1);
         long m1 = (System.currentTimeMillis()) - current;
         assert t != null;
 
@@ -207,7 +207,7 @@ public class TestLLParser {
 
         //Test 2
         current = System.currentTimeMillis();
-        t = sa.parse(G,fi4);
+        t = sa.parse(fi4);
         m1 = (System.currentTimeMillis()) - current;
         assert t != null;
         current = System.currentTimeMillis();
@@ -221,7 +221,7 @@ public class TestLLParser {
 
         //Test 3
         current = System.currentTimeMillis();
-        t = sa.parse(G,fi5);
+        t = sa.parse(fi5);
         m1 = (System.currentTimeMillis()) - current;
         assert t != null;
         current = System.currentTimeMillis();
@@ -279,7 +279,7 @@ public class TestLLParser {
 
         //Test 7
         current = System.currentTimeMillis();
-        t = sa.parse(G,fi7);
+        t = sa.parse(fi7);
         m1 = (System.currentTimeMillis()) - current;
         assert t != null;
 

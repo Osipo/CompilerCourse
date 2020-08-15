@@ -1,4 +1,5 @@
 package ru.osipov.labs.lab2;
+import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
@@ -14,7 +15,9 @@ import java.util.*;
 @SpringBootConfiguration
 public class Main implements CommandLineRunner {
     public static void main(String[] args){
-        SpringApplication.run(Main.class,args);
+        SpringApplication app = new SpringApplication(Main.class);
+        app.setBannerMode(Banner.Mode.OFF);
+        app.run(args);
     }
 
     @Override

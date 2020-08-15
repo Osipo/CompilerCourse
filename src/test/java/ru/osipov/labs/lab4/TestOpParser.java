@@ -64,7 +64,7 @@ public class TestOpParser {
 
         //Test 1.
         long current = System.currentTimeMillis();
-        LinkedTree<Token> t = sa1.parse(GL,s);
+        LinkedTree<Token> t = sa1.parse(s);
         assert t != null;
         long m1 = (System.currentTimeMillis()) - current;
 
@@ -112,7 +112,7 @@ public class TestOpParser {
 
 
             long current = System.currentTimeMillis();
-            LinkedTree<Token> t = sa1.parse(GL,s);
+            LinkedTree<Token> t = sa1.parse(s);
             assert t != null;
             long m1 = (System.currentTimeMillis()) - current;
 
@@ -161,7 +161,7 @@ public class TestOpParser {
 
 
         long current = System.currentTimeMillis();
-        LinkedTree<Token> t = sa1.parse(GL,s);
+        LinkedTree<Token> t = sa1.parse(s);
         assert t != null;
         long m1 = (System.currentTimeMillis()) - current;
 
