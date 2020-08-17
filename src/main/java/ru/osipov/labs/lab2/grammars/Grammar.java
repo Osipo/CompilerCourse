@@ -483,6 +483,10 @@ public class Grammar {
 
     public Map<String,String> getAliases(){ return this.meta.getAliases();}
 
+    public Set<String> getScopeCategories(){
+        return this.meta.getScopeCategories();
+    }
+
     public String getCommentLine(){
         return this.meta.getCommentLine();
     }

@@ -76,6 +76,8 @@ public class STable {
     public SInfo get(String s){
         SInfo it = new SInfo(s);//for type negotiation. (Only str in SInfo are compared)
         int h = hash(s);
+//        System.out.println("Hash: "+h);
+//        System.out.println("Str: "+s);
         BinarySearchTree<SInfo> rec = table.get(h);
         if(rec == null)
             return null;//no record in hashTable.
@@ -83,7 +85,8 @@ public class STable {
     }
 
     private int hash(String s){
-        int l = (s.length() + 1) / 2;
+
+        int l = (s.length() ) / 2;
         int result = ((int)s.charAt(0) + (int)s.charAt(l) - HASH_MIN) % (HASH_MAX - HASH_MIN + 1) + HASH_MIN;
         if(result < HASH_MIN)
             result = HASH_MIN;

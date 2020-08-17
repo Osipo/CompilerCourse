@@ -100,6 +100,8 @@ public class LLParser extends Parser{
                 if(X.getValue().getName().equals(t)){//S.Top() == X && X == t
                     S.top().getValue().setLexem(tok.getLexem());
                     S.pop();
+                    if(!tok.getLexem().equals("$") && !checkScope(tok))
+                        break;
                     tok = lexer.recognize(f);
                     while(tok == null){
                         tok = lexer.recognize(f);
@@ -150,7 +152,7 @@ public class LLParser extends Parser{
                     System.out.println("type with name "+tok.getLexem()+" is not defined!");
                 }
                 if(tok.getType() != 'e') {
-                    System.out.println(lexer.generateError(S.top().getValue().getName(),tok.getLexem()));
+                    System.out.println(lexer.generateError(S.top().getValue().getName(),tok.getName()));
                 }
                 else
                     System.out.println(tok);
