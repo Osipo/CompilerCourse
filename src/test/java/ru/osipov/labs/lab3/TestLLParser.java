@@ -92,8 +92,9 @@ public class TestLLParser {
         LinkedTree<Token> t = sa.parse(s);
         assert t != null;
         System.out.println(t.toString());
-        String e = "{E_1{AE_2{AE_2'2{AE_2'2{e}}{T_4{T_4'1{e}}{F_6{F_6'1{e}}{PE_8{num}}}}{PLUSOP_5{-}}}{T_4{T_4'1{e}}{F_6{F_6'1{F_6'1{e}}{PE_8{id}}{^}}{PE_8{num}}}}}{RELOP_3{==}}{AE_2{AE_2'2{AE_2'2{e}}{T_4{T_4'1{T_4'1{e}}{F_6{F_6'1{e}}{PE_8{id}}}{MULLOP_7{*}}}{F_6{F_6'1{e}}{PE_8{id}}}}{PLUSOP_5{+}}}{T_4{T_4'1{e}}{F_6{F_6'1{e}}{PE_8{id}}}}}}";
-        assert e.equals(t.toString());
+        String e2 ="{E_1{AE_2{AE_2'1{AE_2'1{e}}{T_4{T_4'1{e}}{F_6{F_6''1{e}}{PE_8{num}}}}{PLUSOP_5{-}}}{T_4{T_4'1{e}}{F_6{F_6''1{F_6''1{e}}{PE_8{id}}{^}}{PE_8{num}}}}}{RELOP_3{==}}{AE_2{AE_2'1{AE_2'1{e}}{T_4{T_4'1{T_4'1{e}}{F_6{F_6''1{e}}{PE_8{id}}}{MULLOP_7{*}}}{F_6{F_6''1{e}}{PE_8{id}}}}{PLUSOP_5{+}}}{T_4{T_4'1{e}}{F_6{F_6''1{e}}{PE_8{id}}}}}}";
+        //String e = "{E_1{AE_2{AE_2'2{AE_2'2{e}}{T_4{T_4'1{e}}{F_6{F_6'1{e}}{PE_8{num}}}}{PLUSOP_5{-}}}{T_4{T_4'1{e}}{F_6{F_6'1{F_6'1{e}}{PE_8{id}}{^}}{PE_8{num}}}}}{RELOP_3{==}}{AE_2{AE_2'2{AE_2'2{e}}{T_4{T_4'1{T_4'1{e}}{F_6{F_6'1{e}}{PE_8{id}}}{MULLOP_7{*}}}{F_6{F_6'1{e}}{PE_8{id}}}}{PLUSOP_5{+}}}{T_4{T_4'1{e}}{F_6{F_6'1{e}}{PE_8{id}}}}}}";
+        assert e2.equals(t.toString());
         Graphviz.fromString(t.toDot("parser_test2")).render(Format.PNG).toFile(new File(dir+"parser_Test2"));
     }
 

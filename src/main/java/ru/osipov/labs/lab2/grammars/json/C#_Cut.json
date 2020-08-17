@@ -38,6 +38,8 @@
     "mlCommentEnd": "*/",
     "id": "id",
     "commentLine": "#",
+    "scopeStart": "{",
+    "scopeEnd": "}",
     "operands": ["id","num","realNum","true","false","ch","UE","D"],
     "operators": ["<","<=",">",">=","==","<>","=","+","-","*","/","%","^","->","&&","||","if","while","class","def","return","um","up","DL","FP","F","OPLIST","H"],
     "aliases": {
@@ -52,7 +54,8 @@
       {"name": "char","size": 2},
       {"name": "bool","size": 1},
       {"name": "void","size": 0}
-    ]
+    ],
+    "scopeTypes": ["CLASS","METHOD","BLOCK","GLOBAL"]
   },
   "nonTerms": ["S","SL","L","DL","D","MD","MB","T","H","FL","F","OPLIST","OP","R","P","B",
   "DISJ","CONJ","E","AE","RELOP","TE","FA","UE","PE","RE","EXP","CB","FP"

@@ -5,7 +5,12 @@ public class SInfo implements Value<String> {
     private Entry entry;
 
     public SInfo(String name){
+        this(name,null);
+    }
+
+    public SInfo(String name, Entry e){
         this.sName = name;
+        this.entry = e;
     }
 
     public void setName(String s){

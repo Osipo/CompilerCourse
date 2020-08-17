@@ -56,7 +56,8 @@ public class FALexerGenerator {
                 else {
                     //replace empty and any with one-character symbols.
                     String p_i = new String(pattern.toCharArray());
-                    p_i = p_i.replaceAll(G.getEmpty(),(char)1+"");//special symbol for empty-character.
+                    if(G.getEmpty() != null)
+                        p_i = p_i.replaceAll(G.getEmpty(),(char)1+"");//special symbol for empty-character.
                     p_i = p_i.replaceAll("(?<!@)_",(char)0+"");//another special symbol for any character.
                     p_i = p_i.replaceAll("@_","_");
 

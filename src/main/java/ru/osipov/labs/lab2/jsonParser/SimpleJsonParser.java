@@ -1,15 +1,16 @@
 package ru.osipov.labs.lab2.jsonParser;
 
-import ru.osipov.labs.lab2.jsonParser.jsElements.*;
-import ru.osipov.labs.lab1.structures.lists.*;
 import ru.osipov.labs.lab1.structures.graphs.Pair;
-
+import ru.osipov.labs.lab2.jsonParser.jsElements.*;
+import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;
 
-//THIS UNIT HAS ONLY Json_Parser functions yet.
-//TODO: Parse specific JSON file to produce List of tiles.
+//PARSE JSON Documents.
+//NOTE: Only rooted Json Document (i.e. JsonText in JsonDocument bounded without object
+// (File with single string: "something" or with single literal (true, 12.5) IS NOT VALID)
+// (VALID File is JSON Object with its properties)
 public class SimpleJsonParser {
     private JsParserState state;
     private char[] buf;
@@ -41,7 +42,88 @@ public class SimpleJsonParser {
    }
 
 
-    public JsonObject parse(String fileName) {
+   public JsonObject parseStream(InputStream in){
+        LinkedStack<JsonObject> obs = new LinkedStack<>();
+        obs.push(new JsonObject());
+        LinkedStack<JsonArray> arrays = new LinkedStack<>();
+        try {
+            int c = in.read();
+            if((char)c == '{') {
+                state = JsParserState.OPENROOT;
+                this.S1.push(state);
+                col++;
+            }
+            else
+                err((char)c,"{");//root not found!
+            JsonString pname = new JsonString("");
+            JsonString pflag = new JsonString("");
+            while(state != JsParserState.CLOSEROOT && state != JsParserState.ERR && !S1.isEmpty()){//read characters until last '}' or error is found.
+                char cur;
+                while((cur = (char)getch(in)) == ' ' || cur == '\t' || cur == '\n' || cur == '\r');
+                changeState(state,cur,in,obs,arrays,pname,pflag);
+            }
+            in.close();
+            if(state == JsParserState.ERR)
+                return null;
+        } catch (IOException e) {
+            System.out.println("Stream is not available now!");
+            return null;
+        } catch (JsonParseException e){
+            System.out.println("Cannot parse to Json Document!");
+            return null;
+        }
+        this.S1.clear();
+        this.col = 0;
+        this.line = 1;
+        this.clear();
+        return obs.top();
+   }
+
+   public JsonObject parse(File fl){
+       LinkedStack<JsonObject> obs = new LinkedStack<>();
+       obs.push(new JsonObject());
+       //FileInputStream f = null;
+       LinkedStack<JsonArray> arrays = new LinkedStack<>();
+       try (FileInputStream f  = new FileInputStream(fl);
+            InputStreamReader ch = new InputStreamReader(f);
+       ){
+           int c = f.read();
+           if((char)c == '{') {
+               state = JsParserState.OPENROOT;
+               this.S1.push(state);
+               col++;
+           }
+           else
+               err((char)c,"{");//root not found!
+           JsonString pname = new JsonString("");
+           JsonString pflag = new JsonString("");
+           while(state != JsParserState.CLOSEROOT && state != JsParserState.ERR && !S1.isEmpty()){//read characters until last '}' or error is found.
+               char cur;
+               while((cur = (char)getch(f)) == ' ' || cur == '\t' || cur == '\n' || cur == '\r');
+               changeState(state,cur,f,obs,arrays,pname,pflag);
+           }
+           ch.close();
+           f.close();
+           if(state == JsParserState.ERR)
+               return null;
+       }catch (FileNotFoundException e){
+           System.out.println("File not found. Specify file to read");
+           return null;
+       } catch (IOException e) {
+           System.out.println("File is not available now.");
+           return null;
+       } catch (JsonParseException e){
+           System.out.println("Cannot parse to Json Document!");
+           return null;
+       }
+       this.S1.clear();
+       this.col = 0;
+       this.line = 1;
+       this.clear();
+       return obs.top();
+   }
+
+   public JsonObject parse(String fileName) {
         LinkedStack<JsonObject> obs = new LinkedStack<>();
         obs.push(new JsonObject());
         //FileInputStream f = null;
@@ -61,9 +143,7 @@ public class SimpleJsonParser {
             JsonString pflag = new JsonString("");
             while(state != JsParserState.CLOSEROOT && state != JsParserState.ERR && !S1.isEmpty()){//read characters until last '}' or error is found.
                 char cur;
-                while((cur = (char)getch(f)) == ' ' || cur == '\t' || cur == '\n' || cur == '\r'){
-
-                }
+                while((cur = (char)getch(f)) == ' ' || cur == '\t' || cur == '\n' || cur == '\r');
                 changeState(state,cur,f,obs,arrays,pname,pflag);
             }
             ch.close();
@@ -76,6 +156,9 @@ public class SimpleJsonParser {
         } catch (IOException e) {
             System.out.println("File is not available now.");
             return null;
+        } catch (JsonParseException e){
+            System.out.println("Cannot parse to Json Document!");
+            return null;
         }
         this.S1.clear();
         this.col = 0;
@@ -84,7 +167,7 @@ public class SimpleJsonParser {
         return obs.top();
     }
 
-    private void changeState(JsParserState state, char c, InputStream f, LinkedStack<JsonObject> objects, LinkedStack<JsonArray> arrays, JsonString propName, JsonString arflag) throws IOException {
+    private void changeState(JsParserState state, char c, InputStream f, LinkedStack<JsonObject> objects, LinkedStack<JsonArray> arrays, JsonString propName, JsonString arflag) throws IOException, JsonParseException {
 //        System.out.println("Current state: "+state+ " symbol -> "+c);
 //        System.out.println("Stack: "+S1+"\n");
 //        System.out.println("At: "+line+":"+col+"\n");
@@ -204,9 +287,12 @@ public class SimpleJsonParser {
                 val = "\"\"";
             }
             //System.out.println(propName.getValue()+" : "+val);
-            if(!arflag.getValue().equals("A"))
-                top.Put(propName.getValue(),new JsonString(val));
-            else{
+            if(!arflag.getValue().equals("A")) {//If we are within in object.
+                if(top.getValue().containsKey(propName.getValue()))
+                    throw new JsonParseException("Property name \""+propName.getValue()+"\" is already defined in current scope (object)! ",null);
+                top.Put(propName.getValue(), new JsonString(val));
+            }
+            else{//we are withing in array.
                 JsonArray array = arrays.top();
                 array.add(new JsonString(val));
             }

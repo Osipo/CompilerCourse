@@ -77,7 +77,6 @@ public class LLParser extends Parser{
     //Algorithm 4.20 with lexer module.
     public LinkedTree<Token> parse(String fname){
         FileInputStream f;
-        boolean isParsed = true;
         try {
             f = new FileInputStream(new File(fname).getAbsolutePath());
             LinkedStack<LinkedNode<Token>> S = new LinkedStack<>();
@@ -94,8 +93,10 @@ public class LLParser extends Parser{
                 tok = lexer.recognize(f);
             }
             String t = tok.getName();
+
+            isParsed = true;
             int nidx = 1;//counter of elements (tree nodes)
-            while(!X.getValue().getName().equals("$")) {
+            while(!X.getValue().getName().equals("$") && isParsed) {
                 if(X.getValue().getName().equals(t)){//S.Top() == X && X == t
                     S.top().getValue().setLexem(tok.getLexem());
                     S.pop();
@@ -141,9 +142,13 @@ public class LLParser extends Parser{
             }
             if(isParsed) {
                 lexer.reset();//reset column and line counter.
+                //isParsed = false;
                 return new LinkedTree<Token>(root);
             }
             else {
+                if(typeNotFound){
+                    System.out.println("type with name "+tok.getLexem()+" is not defined!");
+                }
                 if(tok.getType() != 'e') {
                     System.out.println(lexer.generateError(S.top().getValue().getName(),tok.getLexem()));
                 }

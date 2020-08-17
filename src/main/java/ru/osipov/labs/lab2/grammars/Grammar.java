@@ -8,12 +8,8 @@ import ru.osipov.labs.lab2.grammars.json.InvalidJsonGrammarException;
 import ru.osipov.labs.lab2.jsonParser.jsElements.*;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.Arrays.asList;
-import static java.util.Arrays.parallelSetAll;
 
 //Context-Free-Grammar
 public class Grammar {
@@ -22,53 +18,30 @@ public class Grammar {
     private Map<String,Set<GrammarString>> P;//left part of production is Non-terminal. (because it is only Context-Free-Grammar)
     private String S;
     private String E;//terminal which means empty String.
-    private Set<String> keywords;
-    private Set<String> operands;
-    private Set<String> operators;
-    private Map<String,String> aliases;
-
+    private Map<String, List<String>> lex_rules; //terminals with their patterns. (Lexical rules)
+    private GrammarMetaInfo meta;//meta data of grammar.
 
     private Set<String> N_g;//Non-terminals which generates words.
     private Set<String> N_e;//Non-terminals which generates empty words.
-    private Map<String, List<String>> lex_rules; //terminals with their patterns. (Lexical rules)
 
-    //Comments
-    private String commentLine;
-    private String mlStart;
-    private String mlEnd;
+    private boolean isMod = false;//flag for getGrammarWithoutEqualRules procedure.
 
-    //For semantic actions. (Symbolic table)
-    private String id;
-
-    private Set<Pair<String,Integer>> types;
-
-    public Grammar(Set<String> T, Set<String> N, Map<String,Set<GrammarString>> P,String start, String em, Map<String,List<String>> lexs, Set<String> kws, Set<String> ops, Map<String,String> als,String commentLine, String mlStart, String mlEnd,String id, Set<String> operators, Set<Pair<String,Integer>> types){
+    public Grammar(Set<String> T, Set<String> N, Map<String,Set<GrammarString>> P,String start, String em, Map<String,List<String>> lexs, GrammarMetaInfo meta){
         this.T = T;
         this.N = N;
         this.P = P;
         this.S = start;
         this.E = em;
         this.lex_rules = lexs;
-        this.keywords = kws;
-        this.operands = ops;
-        this.aliases = als;
-        this.commentLine = commentLine;
-        this.mlStart = mlStart;
-        this.mlEnd = mlEnd;
-        this.id = id;
-        this.operators = operators;
-        this.types = types;
+        this.meta = meta;
         computeN_g();
         computeN_e();
     }
 
     public Grammar(JsonObject jsonG){
-        this.keywords = new HashSet<>();
-        this.operands = new HashSet<>();
-        this.operators = new HashSet<>();
-        this.aliases = new HashMap<>();
-        this.id = "id";
-        this.E = "";
+        this.E = null;
+        this.meta = new GrammarMetaInfo();
+        this.meta.setId("id");
         JsonElement T = jsonG.getElement("terms");
 
         if(T instanceof JsonObject){
@@ -85,15 +58,15 @@ public class Grammar {
                 if(el == null)
                     System.out.println("not found");
                 if(el instanceof JsonNull) {
-                    if(!this.E.equals(""))
+                    if(this.E != null)
                         throw new InvalidJsonGrammarException("Only one empty-terminal is allowed. Found two or more",null);
                     this.E = t;
                     //l.add("");
                 }
                 else if(el instanceof JsonString) {
                     String val = ((JsonString) el).getValue();
-                    if(val.equals(this.E)){//value is empty string.
-                        if(this.E.equals(""))
+                    if(val.equals("")){//value is empty string.
+                        if(this.E == null)//OR NULL.
                             this.E = t;
                         else
                             throw new InvalidJsonGrammarException("Only one empty-terminal is allowed. Found two or more.",null);
@@ -116,20 +89,22 @@ public class Grammar {
             }
         }
         else
-            throw new InvalidJsonGrammarException("Expected terms property with value of the JsonObject with names of terminals and their values (list of String patterns)!\n\t terms : {term_i : string | null | [string_i...] , ... n} ",null);
+            throw new InvalidJsonGrammarException("Expected \"terms\" property with value of the JsonObject with names of terminals and their values (list of String patterns)!\n\t terms : {term_i : string | null | [string_i...] , ... n} ",null);
 
         //optional keywords.
         JsonElement K = jsonG.getElement("keywords");
         if(K instanceof JsonArray){
+            Set<String> keywords = new HashSet<>();
             ArrayList<JsonElement> kws = ((JsonArray) K).getElements();
             for(JsonElement e : kws){
                 if(e instanceof JsonString){
-                    this.keywords.add(((JsonString) e).getValue());
-                    this.T.add(((JsonString) e).getValue());
+                    keywords.add(((JsonString) e).getValue());
+                    this.T.add(((JsonString) e).getValue());//keywords are terms.
                 }
                 else
-                    throw new InvalidJsonGrammarException("Expected String value of reserved keyword.",null);
+                    throw new InvalidJsonGrammarException("Expected String value of reserved keyword in array \"keywords\"!",null);
             }
+            this.meta.setKeywords(keywords);
         }
 
         //nonTerms
@@ -146,7 +121,7 @@ public class Grammar {
             }
         }
         else
-            throw new InvalidJsonGrammarException("Expected nonTerms property with list of String names of non-terminals",null);
+            throw new InvalidJsonGrammarException("Expected \"nonTerms\" property with list of String names of non-terminals",null);
 
         //optional meta
         JsonElement M = jsonG.getElement("meta");
@@ -154,53 +129,61 @@ public class Grammar {
             JsonObject o = (JsonObject) M;
             JsonElement opd = o.getElement("operands");
             if(opd instanceof JsonArray){
+                Set<String> operands = new HashSet<>();
                 ArrayList<JsonElement> kws = ((JsonArray) opd).getElements();
                 for(JsonElement e : kws){
-                    if(e instanceof JsonString && (this.T.contains(((JsonString) e).getValue()) || this.keywords.contains(((JsonString) e).getValue()) || this.N.contains(((JsonString) e).getValue())) ){
-                        this.operands.add(((JsonString) e).getValue());
+                    if(e instanceof JsonString && (this.T.contains(((JsonString) e).getValue()) || meta.getKeywords().contains(((JsonString) e).getValue()) || this.N.contains(((JsonString) e).getValue())) ){
+                        operands.add(((JsonString) e).getValue());
                     }
                     else
-                        throw new InvalidJsonGrammarException("Expected String being contained in terms or keywords or nonTerms. Property \'.meta.operands\'",null);
+                        throw new InvalidJsonGrammarException("Expected String being contained in \"terms\" or \"keywords\" or \"nonTerms.\" Property \'.meta.operands\'",null);
                 }
+                this.meta.setOperands(operands);
             }
             //meta.operators
             JsonElement ops = o.getElement("operators");
             if(ops instanceof JsonArray){
+                Set<String> operators = new HashSet<>();
                 ArrayList<JsonElement> oprs = ((JsonArray) ops).getElements();
                 for(JsonElement e : oprs){
                     if(e instanceof JsonString){ //&& (this.T.contains(((JsonString) e).getValue()) || this.keywords.contains(((JsonString) e).getValue()) || this.N.contains(((JsonString) e).getValue())) ){
-                        this.operators.add(((JsonString) e).getValue());
+                        operators.add(((JsonString) e).getValue());
                     }
                     else
                         throw new InvalidJsonGrammarException("Expected String being contained in temrs or keywords. Property \'.meta.operators\'",null);
                 }
+                this.meta.setOperators(operators);
             }
             //meta.commentLine
             JsonElement sc = o.getElement("commentLine");
             if(sc instanceof JsonString){
-                this.commentLine = ((JsonString) sc).getValue();
-                if(!this.T.contains(this.commentLine))
-                    throw new InvalidJsonGrammarException("Value of meta.commentLine must be the name of term (property-name of terms)!",null);
+                String commentLine = ((JsonString) sc).getValue();
+                if(!this.T.contains(commentLine))
+                    throw new InvalidJsonGrammarException("Value of \'meta.commentLine\' must be the name of term (property-name of \"terms\")!",null);
+                this.meta.setCommentLine(commentLine);
             }
             //meta.mlCommentStart
             sc = o.getElement("mlCommentStart");
             if(sc instanceof JsonString){
-                this.mlStart = ((JsonString) sc).getValue();
-                if(!this.T.contains(this.mlStart))
-                    throw new InvalidJsonGrammarException("Value of meta.mlStart must be the name of term (property-name of terms)!",null);
+                String mlStart = ((JsonString) sc).getValue();
+                if(!this.T.contains(mlStart))
+                    throw new InvalidJsonGrammarException("Value of \'meta.mlStart\' must be the name of term (property-name of \"terms\")!",null);
+                this.meta.setMlStart(mlStart);
                 sc = o.getElement("mlCommentEnd");
                 if(sc instanceof JsonString){
-                    this.mlEnd = ((JsonString) sc).getValue();
+                    String mlEnd = ((JsonString) sc).getValue();
+                    this.meta.setMlEnd(mlEnd);
                 }
                 else
-                    throw new InvalidJsonGrammarException("When meta.mlCommentStart is defined mlCommentEnd must be defined too!",null);
+                    throw new InvalidJsonGrammarException("When \'meta.mlCommentStart\' is defined \'meta.mlCommentEnd\' must be defined too!",null);
             }
             //meta.id
             sc = o.getElement("id");
             if(sc instanceof JsonString){
-                this.id = ((JsonString) sc).getValue();
-                if(!this.T.contains(this.id))
-                    throw new InvalidJsonGrammarException("Value of meta.id must be the name of term (property-name of terms)!",null);
+                String id = ((JsonString) sc).getValue();
+                if(!this.T.contains(id))
+                    throw new InvalidJsonGrammarException("Value of \'meta.id\' must be the name of term (property-name of \"terms\")!",null);
+                this.meta.setId(id);
             }
 
 
@@ -208,24 +191,26 @@ public class Grammar {
             JsonElement als = o.getElement("aliases");
             if(als instanceof JsonObject){
                 JsonObject al = (JsonObject) als;
+                Map<String,String> aliases = new HashMap<>();
                 Set<String> termNames = al.getValue().keySet();
                 for(String t : termNames){
-                    if(!this.T.contains(t) && !this.keywords.contains(t))
-                        throw new InvalidJsonGrammarException("Expected String being contained in terms or keywords.",null);
+                    if(!this.T.contains(t) && !this.meta.getKeywords().contains(t))
+                        throw new InvalidJsonGrammarException("Expected String being contained in \"terms\" or \"keywords.\"",null);
                     JsonElement el = al.getProperty(t);
                     if(el instanceof JsonString) {
                         String val = ((JsonString) el).getValue();
                         this.T.add(val);
-                        this.aliases.put(t,val);
+                        aliases.put(t,val);
                     }
                     else
-                        throw new InvalidJsonGrammarException("Expected String value.",null);
+                        throw new InvalidJsonGrammarException("Expected String value of property \'meta.aliases."+t+"\' ",null);
                 }
+                this.meta.setAliases(aliases);
             }
             //meta.types
             JsonElement types = o.getElement("types");
             if(types instanceof JsonArray){
-                this.types = new HashSet<>();
+                Set<Pair<String,Integer>> ts = new HashSet<>();
                 ArrayList<JsonElement> arr = ((JsonArray) types).getElements();
                 for(JsonElement e : arr){
                     if(e instanceof JsonObject){
@@ -242,12 +227,46 @@ public class Grammar {
                             t.setV2(((JsonNumber) ep).getValue().intValue());
                         }
                         else
-                            throw new InvalidJsonGrammarException("Expected Integer value in property of \"size\" element of \"types\"",null);
-                        this.types.add(t);
+                            throw new InvalidJsonGrammarException("Expected Integer value in property \"size\" of element of \"types\"",null);
+                        ts.add(t);
                     }
                     else
                         throw new InvalidJsonGrammarException("Expected JsonObject element in array \"types\"",null);
                 }
+                this.meta.setTypes(ts);
+            }
+
+            //meta.scopeTypes
+            JsonElement scopeTypes = o.getElement("scopeTypes");
+            if(scopeTypes instanceof JsonArray){
+                Set<String> scopeCats = new HashSet<>();
+                ArrayList<JsonElement> arr = ((JsonArray) scopeTypes).getElements();
+                for(JsonElement e : arr){
+                    if(e instanceof JsonString){
+                        String s = ((JsonString) e).getValue();
+                        scopeCats.add(s);
+                    }
+                }
+                this.meta.setScopeCategories(scopeCats);
+            }
+            //meta.scopeStart
+            JsonElement sStart = o.getElement("scopeStart");
+            if(sStart instanceof JsonString){
+                String s1 = ((JsonString) sStart).getValue();
+                if(this.T.contains(s1))
+                    this.meta.setBegin(s1);
+                else
+                    throw new InvalidJsonGrammarException("The value of \"scopeStart\" must be terminal (the property name of \"terms\")!",null);
+                JsonElement sEnd = o.getElement("scopeEnd");//meta.scopeEnd
+                if(sEnd instanceof JsonString){
+                    String s2 = ((JsonString) sEnd).getValue();
+                    if(this.T.contains(s2))
+                        this.meta.setEnd(s2);
+                    else
+                        throw new InvalidJsonGrammarException("The value of \"scopeEnd\" must be terminal (the property name of \"terms\")!",null);
+                }
+                else
+                    throw new InvalidJsonGrammarException("When defined \"scopeStart\" the \"scopeEnd\" must be defined too.\n Both are JsonString.\n",null);
             }
         }
 
@@ -294,7 +313,7 @@ public class Grammar {
                         GrammarString alpha = new GrammarString();
                         String X = ((JsonString) rpart).getValue();
                         GrammarSymbol entity;
-                        if(this.T.contains(X) || this.keywords.contains(X))
+                        if(this.T.contains(X))
                             entity = new GrammarSymbol('t',X);
                         else if(this.N.contains(X))
                             entity = new GrammarSymbol('n',X);
@@ -457,33 +476,41 @@ public class Grammar {
     }
 
     public Set<String> getKeywords(){
-        return this.keywords;
+        return this.meta.getKeywords();
     }
 
-    public Set<String> getOperands(){ return this.operands;}
+    public Set<String> getOperands(){ return this.meta.getOperands();}
 
-    public Map<String,String> getAliases(){ return this.aliases;}
+    public Map<String,String> getAliases(){ return this.meta.getAliases();}
 
     public String getCommentLine(){
-        return commentLine;
+        return this.meta.getCommentLine();
     }
 
     public String getMlCommentStart(){
-        return mlStart;
+        return this.meta.getMlStart();
     }
 
     public String getMlCommentEnd(){
-        return mlEnd;
+        return this.meta.getMlEnd();
     }
 
-    public String getIdName(){return id;}
+    public String getIdName(){return this.meta.getId();}
 
     public Set<String> getOperators(){
-        return operators;
+        return this.meta.getOperators();
     }
 
     public Set<Pair<String, Integer>> getTypes() {
-        return types;
+        return this.meta.getTypes();
+    }
+
+    public String getScopeBegin(){
+        return this.meta.getBegin();
+    }
+
+    public String getScopeEnd(){
+        return this.meta.getEnd();
     }
 
     //Compute L(U) for U non-term
@@ -717,6 +744,7 @@ public class Grammar {
         boolean t1 = true;
         while(true){
             N_0 = S.top();
+            N_i.addAll(N_0);
             Set<String> rules = P.keySet();
             for (String p : rules) {
                 Set<GrammarString> a = P.get(p);//get all grammar strings with rule p.
@@ -787,7 +815,7 @@ public class Grammar {
     public String toString() {
         StringBuilder b = new StringBuilder();
         b.append("Grammar\n\tT: "+this.T);
-        b.append("\n\tkeywords: "+this.keywords);
+        b.append("\n\tkeywords: "+this.meta.getKeywords());
         b.append("\n\tN: "+this.N);
         Set<String> kp = P.keySet();
         b.append("\n\tP {");
@@ -901,7 +929,7 @@ public class Grammar {
             }
             NN.add(p);
         }
-        return new Grammar(this.T,NN,newP,this.S,this.E,this.lex_rules,this.keywords,this.operands,this.aliases,this.commentLine,this.mlStart,this.mlEnd,this.id,this.operators,this.types);
+        return new Grammar(this.T,NN,newP,this.S,this.E,this.lex_rules,this.meta);
     }
 
 
@@ -944,7 +972,7 @@ public class Grammar {
                 NN.add(p);
             }
         }
-        return new Grammar(this.T,NN,newP,newS,this.E,this.lex_rules,this.keywords,this.operands,this.aliases,this.commentLine,this.mlStart,this.mlEnd,this.id,this.operators,this.types);
+        return new Grammar(this.T,NN,newP,newS,this.E,this.lex_rules,this.meta);
     }
 
     //Get all subsets of rule which consists of combinations of N_e.
@@ -1058,7 +1086,7 @@ public class Grammar {
             }
             newP.put(np,nalts);
         }
-        return new Grammar(this.T,NN,newP,start,this.E,lex_rules,this.keywords,this.operands,this.aliases,this.commentLine,this.mlStart,this.mlEnd,this.id,this.operators,this.types);
+        return new Grammar(this.T,NN,newP,start,this.E,this.lex_rules,this.meta);
     }
 
     //Given production with name n.
@@ -1067,7 +1095,7 @@ public class Grammar {
         List<String> altNames = new LinkedList<>();
         Set<String> ps = P.keySet();
         Set<GrammarString> r1 = P.get(n);
-        altNames.add(n);
+        //altNames.add(n);
         for(String p : ps){
             if(p.equals(n))
                 continue;
@@ -1084,14 +1112,17 @@ public class Grammar {
         Set<String> ps = P.keySet().stream().sorted((x,y) -> {
             return Integer.compare(y.length(), x.length());}).collect(Collectors.toSet());
         Map<String,String> names = new HashMap<>();
+        for(String N : this.N)
+            names.put(N,N);
         ArrayList<String> mapped = new ArrayList<>();
+        boolean isModified = false;
         for(String p : ps) {
             List<String> l = equalRules(p);
             if(l.size() > 0){
+                isModified = true;
                 String s = l.stream().sorted((x,y) -> {
                     return Integer.compare(x.length(), y.length());
                 }).collect(Collectors.toList()).get(0);
-//                System.out.println(p+": "+l+"  "+s);
                 if(!mapped.contains(p)){
                     for(String alts : l){
                         names.put(alts,s);
@@ -1112,7 +1143,8 @@ public class Grammar {
             if(k.equals(this.S))
                 start = names.get(k);
         }
-        for(String prod : NN){
+        //replace old nonTerm names with NEW NAMES
+        for(String prod : ps){
             Set<GrammarString> alts = P.get(prod);
             Set<GrammarString> nalts = new HashSet<>();
             for(GrammarString b : alts){
@@ -1129,7 +1161,13 @@ public class Grammar {
             }
             newP.put(prod,nalts);
         }
-        return new Grammar(T,NN,newP,start,this.E,lex_rules,this.keywords,this.operands,this.aliases,this.commentLine,this.mlStart,this.mlEnd,this.id,this.operators,this.types).deleteUselessSymbols();
+        if(isModified) {
+            Grammar R = new Grammar(T, NN, newP, start, this.E, lex_rules, this.meta).deleteUselessSymbols();
+            R.isMod = true;
+            return R;
+        }
+        else
+            return new Grammar(T,NN,newP,start,this.E,lex_rules,this.meta);
     }
 
     public static Grammar getChomskyGrammar(Grammar G){
@@ -1189,7 +1227,7 @@ public class Grammar {
             newP.put(p,nalts);
             NN.add(p);
         }
-        return new Grammar(G.T,NN,newP,s,G.E,G.lex_rules,G.keywords,G.operands,G.aliases,G.commentLine,G.mlStart,G.mlEnd,G.id,G.operators,G.types);
+        return new Grammar(G.T,NN,newP,s,G.E,G.lex_rules,G.meta);
     }
 
     //ELIMINATE LEFT RECURSION. (all type)
@@ -1250,7 +1288,7 @@ public class Grammar {
             newP.put(Ai+"\'",lb1);
             NN.add(Ai+"\'");
         }
-        return new Grammar(G.T,NN,newP,G.getStart(),G.E,G.getLexicalRules(),G.keywords,G.operands,G.aliases,G.commentLine,G.mlStart,G.mlEnd,G.id,G.operators,G.types);
+        return new Grammar(G.T,NN,newP,G.getStart(),G.E,G.getLexicalRules(),G.meta);
     }
 
 
@@ -1374,7 +1412,7 @@ public class Grammar {
         Set<String> NT = new HashSet<>(V_i);
         NT.retainAll(T);
 
-        return new Grammar(NT,NN,newP,this.S,this.E,lex_rules,this.keywords,this.operands,this.aliases,this.commentLine,this.mlStart,this.mlEnd,this.id,this.operators,this.types);
+        return new Grammar(NT,NN,newP,this.S,this.E,lex_rules,this.meta);
     }
 
     //Algorithm 2.9
@@ -1403,7 +1441,7 @@ public class Grammar {
             if(nbodies.size() > 0)
                 newP.put(p,nbodies);
         }
-        Grammar NG = new Grammar(this.T,NN,newP,this.S,this.E,lex_rules,this.keywords,this.operands,this.aliases,this.commentLine,this.mlStart,this.mlEnd,this.id,this.operators,this.types);
+        Grammar NG = new Grammar(this.T,NN,newP,this.S,this.E,lex_rules,this.meta);
         return NG.deleteNonReachableSymbols();
     }
 
@@ -1503,7 +1541,7 @@ public class Grammar {
                 }
             }
         }
-        return new Grammar(this.T,this.N,newP,this.S,this.E,this.lex_rules,this.keywords,this.operands,this.aliases,this.commentLine,this.mlStart,this.mlEnd,this.id,this.operators,this.types);
+        return new Grammar(this.T,this.N,newP,this.S,this.E,this.lex_rules,this.meta);
     }
 
     //Works only for Operator Grammar
@@ -1531,7 +1569,7 @@ public class Grammar {
             }
         }
         newP.put(start,nrules);
-        return new Grammar(T,NN,newP,this.S,this.E,lex_rules,this.keywords,this.operands,this.aliases,this.commentLine,this.mlStart,this.mlEnd,this.id,this.operators,this.types);
+        return new Grammar(T,NN,newP,this.S,this.E,lex_rules,this.meta);
     }
 
     public Grammar deleteLeftFactor(){
@@ -1541,33 +1579,31 @@ public class Grammar {
         Map<String,Integer> newRidxs = new HashMap<>();
         Set<String> keys = newP.keySet();
         for(String k : keys) {
-            if (!k.equals(this.S))
+            if (!k.equals(this.S))//all except start rule.
                 rules.push(k);
             newRidxs.put(k,1);
         }
-        rules.push(this.S);
+        rules.push(this.S);//begin from start rule. (TOP() = start rule)
         boolean hasEmpty = false;
         //int k = 0;
         while(!rules.isEmpty()){
             String ph = rules.top();
             rules.pop();
-//            System.out.println(ph);
             Set<GrammarString> alts = new HashSet<>(newP.get(ph));
             Set<GrammarString> nonPref = nonPreffix(alts);
-//            System.out.println("P: "+alts);
             alts.removeAll(nonPref);
-//            System.out.println("Y: "+alts);
             GrammarString preffix = null;
             if(alts.size() > 0)
                  preffix = commonPreffix(alts);
             else{
-                NN.add(ph);
+                NN.add(ph);//do not modify rules with header ph.
                 continue;
             }
 //            System.out.println("Preffix: "+preffix);
+            //IF PREFIX IS NOT empty symbol.
             if(preffix.getSymbols().size() > 1 || (preffix.getSymbols().size() == 1 && !preffix.getSymbols().get(0).getVal().equals(this.E))) {
                 int pL = preffix.getSymbols().size();
-                Set<GrammarString> bodyOfnewTerm = new HashSet<>();
+                Set<GrammarString> bodyOfnewTerm = new HashSet<>();//NEW RULE WITH NEW ALTERNATIVES.
                 for(GrammarString r : alts){
                     List<GrammarSymbol> l = r.getSymbols();
                     if(l.subList(0,pL).equals(preffix.getSymbols())) {
@@ -1585,7 +1621,7 @@ public class Grammar {
                 }
                 GrammarString prefRule = new GrammarString(new ArrayList<>(preffix.getSymbols()));
                 int id = newRidxs.get(ph);
-                String nName = ph+"\'"+id;//REPLACE ' => "
+                String nName = ph+"\'"+id;//Add NEW nonTerm WITH NAME N'id (REPLACE ' => ")
                 prefRule.addSymbol(new GrammarSymbol('n',nName));
                 nonPref.add(prefRule);
 
@@ -1597,33 +1633,35 @@ public class Grammar {
 //                System.out.println(nName);
                 newRidxs.put(ph,id);
                 newRidxs.put(nName,1);
-                rules.push(ph);
-                rules.push(nName);
+                rules.push(ph);//continue scanning rules with header ph
+                rules.push(nName);//scan new rule.
                 NN.add(nName);
             }
             NN.add(ph);
         }
-        if(hasEmpty){
+        if(hasEmpty){//after modification empty symbol has been appeared. (Source Grammar may has no any empty symbol for empty strings!)
             HashSet<String> NT = new HashSet<>(this.T);
             NT.add(this.E);
             NN.addAll(N);
-          //return new Grammar(NT,NN,newP,this.S,this.E,lex_rules);
-            Grammar NG = new Grammar(NT,NN,newP,this.S,this.E,lex_rules,this.keywords,this.operands,this.aliases,this.commentLine,this.mlStart,this.mlEnd,this.id,this.operators,this.types);
+            Grammar NG = new Grammar(NT,NN,newP,this.S,this.E,lex_rules,this.meta);
             NG = NG.getGrammarWithoutEqualRules();
-            //System.out.println(NG);
-            return NG.getNonCycledGrammar().deleteUselessSymbols();
+            if(NG.isMod)
+                return NG.getNonCycledGrammar().deleteUselessSymbols();
+            else
+                return NG;
         }
         NN.addAll(N);
-        Grammar NG = new Grammar(T,NN,newP,this.S,this.E,lex_rules,this.keywords,this.operands,this.aliases,this.commentLine,this.mlStart,this.mlEnd,this.id,this.operators,this.types);
+        Grammar NG = new Grammar(T,NN,newP,this.S,this.E,lex_rules,this.meta);
         NG = NG.getGrammarWithoutEqualRules();
-        //System.out.println(NG);
-        return NG.getNonCycledGrammar().deleteUselessSymbols();
-        //return new Grammar(T,NN,newP,this.S,this.E,lex_rules);
-        //return new Grammar(this.T,NN,newP,this.S,this.E,lex_rules).deleteChainedRules(emptyRules()).getGrammarWithoutEqualRules();
+        if(NG.isMod)
+            return NG.getNonCycledGrammar().deleteUselessSymbols();
+        else
+            return NG;
     }
 
 
 
+    //min length of all alternatives. [ P -> A1 | A2 | ... | AN, => MIN(LEN(A1),(LEN(A2),...LEN(AN)) ]
     private int commonMinLength(Set<GrammarString> prod){
         List<GrammarString> rules = ColUtils.fromSet(prod);
         int minL = rules.get(0).getSymbols().size();
@@ -1645,16 +1683,16 @@ public class Grammar {
         for(int i = 0; i < rules.size(); i++){
             boolean flag = true;
             GrammarSymbol si = rules.get(i).getSymbols().get(0);
-            for(int j = 0; j < rules.size();j++){
-                if(j == i)
+            for(int j = 0; j < rules.size();j++){//see all pairs (i,j)
+                if(j == i)//skip pairs (i,i) or (j,j)
                     continue;
                 GrammarSymbol sj = rules.get(j).getSymbols().get(0);
-                if(si.getVal().equals(sj.getVal())) {
+                if(si.getVal().equals(sj.getVal())) {//if they have common first symbol (minimal common prefix)
                     flag = false;
-                    break;
+                    break;//rule i has common prefix with rule j => see all pairs (i + 1, j)
                 }
             }
-            if(flag){
+            if(flag){//this rule has no any prefix with other alternatives.
                 nonF.add(new GrammarString(new ArrayList<>(rules.get(i).getSymbols())));
             }
         }
