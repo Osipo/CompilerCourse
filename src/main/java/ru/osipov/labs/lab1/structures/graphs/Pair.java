@@ -32,6 +32,8 @@ public class Pair<T,R> {
 
     @Override
     public boolean equals(Object o){
+        if(o == null)
+            return false;
         Pair<T,R> p = null;
         try{
             p = (Pair<T,R>)o;
@@ -39,7 +41,7 @@ public class Pair<T,R> {
         catch (ClassCastException e){
             return false;
         }
-        return p != null && p.getV1().equals(v1) && p.getV2().equals(v2);
+        return p.getV1().equals(v1) && p.getV2().equals(v2);
     }
 
     @Override

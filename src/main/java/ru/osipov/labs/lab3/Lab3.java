@@ -60,17 +60,16 @@ public class Lab3 implements CommandLineRunner {
             System.out.println("Delete preffixes");
             G = G.deleteLeftFactor();
             System.out.println(G);
-            LLParserGenerator gen = new LLParserGenerator();
             System.out.println("Build FIRST");
             System.out.println("--------------");
-            Map<String,Set<String>> FIRST = gen.firstTable(G);
+            Map<String,Set<String>> FIRST = LLParserGenerator.firstTable(G);
             for(String k : FIRST.keySet()){
                 System.out.println(k+": "+FIRST.get(k));
             }
             System.out.println("--------------");
             System.out.println("Build FOLLOW");
             System.out.println("--------------");
-            Map<String,Set<String>> FOLLOW = gen.followTable(G,FIRST);
+            Map<String,Set<String>> FOLLOW = LLParserGenerator.followTable(G,FIRST);
             for(String k : FOLLOW.keySet()){
                 System.out.println(k+": "+FOLLOW.get(k));
             }

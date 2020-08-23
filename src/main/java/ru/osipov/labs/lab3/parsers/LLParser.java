@@ -26,7 +26,7 @@ public class LLParser extends Parser{
 
     public LLParser(Grammar G, ILexer lexer){
         super(G,lexer);
-        this.table = new LLParserGenerator().getTable(G);
+        this.table = LLParserGenerator.getTable(G);
         this.T = G.getTerminals();
         this.N = G.getNonTerminals();
         this.start = G.getStart();
@@ -76,9 +76,7 @@ public class LLParser extends Parser{
 
     //Algorithm 4.20 with lexer module.
     public LinkedTree<Token> parse(String fname){
-        FileInputStream f;
-        try {
-            f = new FileInputStream(new File(fname).getAbsolutePath());
+        try (FileInputStream f = new FileInputStream(new File(fname).getAbsolutePath())){
             LinkedStack<LinkedNode<Token>> S = new LinkedStack<>();
             LinkedNode<Token> root = new LinkedNode<>();
             LinkedNode<Token> EOF = new LinkedNode<>();
@@ -100,8 +98,9 @@ public class LLParser extends Parser{
                 if(X.getValue().getName().equals(t)){//S.Top() == X && X == t
                     S.top().getValue().setLexem(tok.getLexem());
                     S.pop();
-                    if(!tok.getLexem().equals("$") && !checkScope(tok))
-                        break;
+                    if(typeCheck)
+                        if(!tok.getLexem().equals("$") && !checkScope(tok))
+                            break;
                     tok = lexer.recognize(f);
                     while(tok == null){
                         tok = lexer.recognize(f);

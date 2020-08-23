@@ -11,12 +11,13 @@ import ru.osipov.labs.lab2.grammars.GrammarSymbol;
 import java.util.*;
 
 public class LLParserGenerator {
-    public Map<Pair<String,String>, GrammarString> getTable(Grammar G){
+    public static Map<Pair<String,String>, GrammarString> getTable(Grammar G){
         HashMap<Pair<String,String>, GrammarString> table = new HashMap<>();
 
         Map<String,Set<String>> firstTable = firstTable(G);
         Map<String,Set<String>> followTable = followTable(G,firstTable);
         Set<String> ps = G.getProductions().keySet();
+        boolean hasErr = false;
         String empty = G.getEmpty();
         for(String p : ps){
             Set<GrammarString> bodies = G.getProductions().get(p);
@@ -28,8 +29,10 @@ public class LLParserGenerator {
                         Pair<String, String> rec = new Pair<>();
                         rec.setV1(p);
                         rec.setV2(f);
-                        if(table.get(rec) != null)
-                            System.out.println("Error (not LL)!");
+                        if(table.get(rec) != null) {
+                            hasErr = true;
+                            System.out.println("Grammar is not LL(1)!");
+                        }
                         table.put(rec,b);// new GrammarString(new ArrayList<>(b.getSymbols())));
                     }
                 }
@@ -38,6 +41,10 @@ public class LLParserGenerator {
                         Pair<String, String> rec = new Pair<>();
                         rec.setV1(p);
                         rec.setV2(a);
+                        if(table.get(rec) != null){
+                            hasErr = true;
+                            System.out.println("Grammar is not LL(1)!");
+                        }
                         table.put(rec, b);//new GrammarString(new ArrayList<>(b.getSymbols())));
                     }
             }
@@ -46,7 +53,9 @@ public class LLParserGenerator {
     }
 
     //Compute FIRST for each terminal and non-terminal.
-    public Map<String,Set<String>> firstTable(Grammar G){
+    //WARNING: Only for Grammars without Left-recursion!
+    //You must eliminate left-recursion in Grammar G.
+    public static Map<String,Set<String>> firstTable(Grammar G){
         Set<String> T = G.getTerminals();
         Set<String> NT = G.getNonTerminals();
         HashMap<String,Set<String>> res = new HashMap<String,Set<String>>();
@@ -56,11 +65,6 @@ public class LLParserGenerator {
             f.add(t);
             res.put(t,f);
         }
-//        for(String t : G.getKeywords()){//keywords are terminals so first(keyword) = first(t) = t.
-//            HashSet<String> f = new HashSet<>();
-//            f.add(t);
-//            res.put(t,f);
-//        }
         for(String n : NT){
             S.push(n);
         }
@@ -85,25 +89,24 @@ public class LLParserGenerator {
                             break;//end scanning after first terminal.
                         }
                     }
-                    else{
-                        if(res.containsKey(s.getVal())){
-                            if(res.get(s.getVal()).contains(G.getEmpty())) {
-                                Set<String> without_empty = res.get(s.getVal());
+                    else{//non-terminal.
+                        if(res.containsKey(s.getVal())){//if it's already computed.
+                            if(res.get(s.getVal()).contains(G.getEmpty())) {//if FIRST(X) contains empty.
+                                Set<String> without_empty = new HashSet<>(res.get(s.getVal()));//add all except empty.
                                 without_empty.remove(G.getEmpty());
                                 first_i.addAll(without_empty);
                                 ec++;//continue scanning string.
                                 continue;
                             }
                             first_i.addAll(res.get(s.getVal()));//add all symbols from first(X_i) where X_i is grammar symbol of str.
-                            break;
+                            break;//stop scanning body because X_i doesn't contains empty.
                         }
-                        addAll = true;
-                        break;
+                        addAll = true;//it is a non-computed, new non-term.
+                        break;//suspend scanning until FIRST(X_i) is not computed.
                     }
                 }
-                if(addAll){
-                    S.push(p);
-
+                if(addAll){//non-computed, new non-term X was discovered while scanning body.
+                    S.push(p);//save non-computed current non-term into stack (pause).
                     List<GrammarSymbol> ns = str.getSymbols();
                     for(int i = ns.size() - 1; i >= 0; i--){
                         if(ns.get(i).getType() == 'n')
@@ -122,7 +125,7 @@ public class LLParserGenerator {
     }
 
     //Compute FIRST for GrammarString str. (list of GrammarSymbols)
-    private Set<String> first(GrammarString str, Map<String,Set<String>> firstTable,String eps){
+    private static Set<String> first(GrammarString str, Map<String,Set<String>> firstTable,String eps){
         Set<String> res = new HashSet<>();
         int ec = 0;
         for(GrammarSymbol s : str.getSymbols()){
@@ -143,7 +146,9 @@ public class LLParserGenerator {
     }
 
 
-    public Map<String,Set<String>> followTable(Grammar G,Map<String,Set<String>> firstTable){
+    //WARNING: Only for Grammars without Left-recursion!
+    //You must eliminate left-recursion in Grammar G.
+    public static Map<String,Set<String>> followTable(Grammar G,Map<String,Set<String>> firstTable){
         List<String> NT = ColUtils.fromSet(G.getNonTerminals());
         String empty = G.getEmpty();
         HashMap<String,Set<String>> res = new HashMap<String,Set<String>>();

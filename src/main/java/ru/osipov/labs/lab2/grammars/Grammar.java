@@ -665,6 +665,28 @@ public class Grammar {
         return res;
     }
 
+    //add new StartRule with name newStart
+    //P = P  U  {newStart -> S };
+    //G = (T,N,P,newStart);
+    public void extendStart(String newStart) throws Exception {
+        if(this.T.contains(newStart) || this.N.contains(newStart)
+                || this.meta.getKeywords().contains(newStart)
+                || this.S.equals(newStart) || (this.E != null && this.E.equals(newStart)) ){
+            System.out.println("Symbol "+newStart+" is already defined!");
+            throw new Exception("cannot add new Rule. The element "+newStart+" is already exists!");
+        }
+        Set<GrammarString> np = new HashSet<>();
+        GrammarString nsbody = new GrammarString();
+        nsbody.addSymbol(new GrammarSymbol('n',this.S));
+        np.add(nsbody);
+        this.P.put(newStart,np);
+        this.N.add(newStart);
+        if(this.N_g.contains(S))
+            this.N_g.add(newStart);
+        if(this.N_e.contains(S))
+            this.N_e.add(newStart);
+        this.S = newStart;
+    }
 
     public boolean isOperatorGrammar(){
         Set<String> prs = this.P.keySet();
@@ -942,7 +964,6 @@ public class Grammar {
         Map<String,Set<GrammarString>> newP = new HashMap<>();
         String newS = this.S;
         Set<String> NN = new HashSet<>();
-
         //Check whether S -> eps. (ifTrue then add Rule S' -> S | eps).
         Set<GrammarString> S = this.P.get(this.S);
         for(GrammarString al : S){

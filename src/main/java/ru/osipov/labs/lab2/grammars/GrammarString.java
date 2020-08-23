@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GrammarString {
-    private List<GrammarSymbol> symbols;
+    protected List<GrammarSymbol> symbols;
 
     public GrammarString(){
         this.symbols = new ArrayList<>(40);
@@ -62,15 +62,6 @@ public class GrammarString {
         StringBuilder b = new StringBuilder();
         for(GrammarSymbol s : symbols){
             b.append(s.getVal()).append(" ");
-        }
-        return b.toString();
-    }
-
-    //not very yet.
-    public String toString(Map<String,List<String>> lex_rules){
-        StringBuilder b = new StringBuilder();
-        for(GrammarSymbol s : symbols){
-            b.append(s.getType() != 't' ? s.getVal() : lex_rules.get(s.getVal()).get(0));
         }
         return b.toString();
     }

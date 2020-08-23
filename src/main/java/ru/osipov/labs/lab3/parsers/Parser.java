@@ -20,6 +20,7 @@ public abstract class Parser {
     protected String empty;//empty symbol of grammar.
     protected boolean isParsed;
     protected boolean typeNotFound;
+    protected boolean typeCheck;
     private LinkedStack<EntryCategory> S;//inner scopes.
 
     private SInfo currentType;
@@ -30,6 +31,16 @@ public abstract class Parser {
     private Set<Pair<String,Integer>> types;
     private String id;
     protected EntryCategory currentScope;//current scope (global scope,class scope, field or static field scope, method or static method scope, local variables scope).
+
+
+
+    public void setTypeChecking(boolean f){
+        this.typeCheck = typeCheck;
+    }
+
+    public boolean isTypeCheck(){
+        return typeCheck;
+    }
 
     public Parser(Grammar G, ILexer lexer){
         this.lexer = lexer;
@@ -167,6 +178,7 @@ public abstract class Parser {
                 return true;
             }
             stable.addEntry(new SInfo(t.getLexem(),new Entry(currentType.getValue(),currentScope,currentType.getEntry().getMem())));
+            //ADD INFO TO CUR_CLASS IF FIELD.
             return true;
         }
         else if(!t.getName().equals(",")){//if pair of tokens are not (id, id) or (id, ,) -> forget about type.
