@@ -10,13 +10,23 @@ import ru.osipov.labs.lab2.grammars.GrammarSymbol;
 import java.util.*;
 
 public class SLRParserGenerator {
-    public static LR_0_Automaton buildLRAutomaton(Grammar G){
+    public static LR_0_Automaton buildLRAutomaton(Grammar G) throws Exception {
+        String S0 = G.getStart();
+        String S1 = G.getStart()+"\'";
         Map<Integer,Set<GrammarItem>> C = new TreeMap<>();//canonical items.
         Map<Pair<Integer,String>,Integer> gotoTable = new HashMap<>();//goto function.
 
+        try {
+            G.extendStart(S1);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+            throw new Exception("Cannot extend Grammar");
+        }
+        Map<String,Set<String>> firstTable = LLParserGenerator.firstTable(Grammar.deleteLeftRecursion(G));
         GrammarString start = new GrammarString();
-        start.addSymbol(new GrammarSymbol('n',G.getStart()));
-        GrammarItem S = new GrammarItem(start,G.getStart()+"\'");//point [S' -> .S]
+        start.addSymbol(new GrammarSymbol('n',S0));
+        GrammarItem S = new GrammarItem(start,S1);//point [S' -> .S]
 
         Set<String> symbols = new HashSet<>(G.getNonTerminals());
         symbols.addAll(G.getTerminals());
@@ -51,7 +61,7 @@ public class SLRParserGenerator {
             }
         }
         System.out.println("Canonical Set of Items was built.");
-        return new LR_0_Automaton(G,C,gotoTable);
+        return new LR_0_Automaton(G,S0,S1,C,gotoTable,firstTable);
     }
 
 
@@ -81,6 +91,7 @@ public class SLRParserGenerator {
                     GrammarSymbol next = r.getSymbols().get(0);//get .y and check if it is a non-term
                     if (next != null && next.getType() == 'n' && !backtrack.contains(next.getVal())) {//if it is a new non-term.
                         ST.add(next.getVal());//scan its production too.
+                        backtrack.add(next.getVal());
                     }
                 }
             }

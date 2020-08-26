@@ -1,0 +1,3 @@
+class program {
+    char a, b, c ;
+}

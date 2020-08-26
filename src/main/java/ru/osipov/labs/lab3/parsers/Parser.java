@@ -30,9 +30,12 @@ public abstract class Parser {
     private String curMethodName;
     private Set<Pair<String,Integer>> types;
     private String id;
+    protected ParserMode mode;
     protected EntryCategory currentScope;//current scope (global scope,class scope, field or static field scope, method or static method scope, local variables scope).
 
-
+    public void setParserMode(ParserMode mode){
+        this.mode = mode;
+    }
 
     public void setTypeChecking(boolean f){
         this.typeCheck = typeCheck;

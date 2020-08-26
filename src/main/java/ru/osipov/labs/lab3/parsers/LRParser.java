@@ -5,6 +5,7 @@ import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab3.lexers.ILexer;
 import ru.osipov.labs.lab3.lexers.Token;
+import ru.osipov.labs.lab3.parsers.generators.CLRParserGenerator;
 import ru.osipov.labs.lab3.parsers.generators.LR_0_Automaton;
 import ru.osipov.labs.lab3.parsers.generators.SLRParserGenerator;
 import ru.osipov.labs.lab3.trees.LinkedNode;
@@ -16,12 +17,28 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 //SLR parser or LR(0) parser.
-public class SLRParser extends Parser {
+public class LRParser extends Parser {
 
     private LR_0_Automaton table;
-    public SLRParser(Grammar G, ILexer lexer){
+
+    public LRParser(Grammar G, ILexer lexer){
+        this(G,lexer,LRAlgorithm.CLR);
+    }
+
+    public LRParser(Grammar G, ILexer lexer, LRAlgorithm alg) {
         super(G,lexer);
-        this.table = SLRParserGenerator.buildLRAutomaton(G);
+        try {
+            if (alg == LRAlgorithm.SLR) {
+                this.table = SLRParserGenerator.buildLRAutomaton(G);//LR(0) or SLR(1).
+            } else {
+                this.table = CLRParserGenerator.buildLRAutomaton(G);//LR(1)
+            }
+            System.out.println(table);
+        }
+        catch (Exception e){
+            System.out.println("Cannot build");
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
@@ -30,6 +47,8 @@ public class SLRParser extends Parser {
     }
 
     public LinkedTree<Token> parse(String fname){
+        if(table == null)
+            return null;
         try (FileInputStream f  = new FileInputStream(new File(fname).getAbsolutePath())){
             LinkedStack<LinkedNode<Token>> S = new LinkedStack<>();//symbols.
             LinkedStack<Integer> states = new LinkedStack<>();//states.
@@ -48,12 +67,32 @@ public class SLRParser extends Parser {
             while(true) {
                 cstate = states.top();
                 Pair<Integer,String> k = new Pair<>(cstate,t);
-
+                if(mode == ParserMode.DEBUG)
+                    System.out.println(states+" "+S+" >>"+t);
                 //command =  s_state
                 //      | r_header:size
                 //      | acc
                 //      | err
                 command = table.getActionTable().get(k);
+                if(command == null){
+                    command = table.getActionTable().get(new Pair<Integer,String>(cstate,empty));
+                    if(command != null){ //apply shift empty symbol if presence. (Rule like A -> e)
+                        String j = command.substring(command.indexOf('_') + 1);
+                        states.push(Integer.parseInt(j));
+                        LinkedNode<Token> nc = new LinkedNode<>();
+                        nc.setValue(new Token(empty,null,'t'));
+                        nidx++;
+                        nc.setIdx(nidx);
+                        S.push(nc);
+                        continue;
+                    }
+                    isParsed = false;
+                    break;
+                }
+                if(command.equals("err")){
+                    isParsed = false;
+                    break;
+                }
                 int argIdx = command.indexOf('_');
                 argIdx = argIdx == -1 ? 1 : argIdx;//in case of ACC or ERR
                 String act = command.substring(0,argIdx);
@@ -93,10 +132,6 @@ public class SLRParser extends Parser {
                     states.push(table.getGotoTable().get(new Pair<Integer,String>(cstate,header)));
                 }
                 else if(act.charAt(0) == 'a'){
-                    break;
-                }
-                else if(act.charAt(0) == 'e'){
-                    isParsed = false;
                     break;
                 }
             }

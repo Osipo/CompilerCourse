@@ -3,10 +3,11 @@ package ru.osipov.labs.lab2.grammars;
 import java.util.ArrayList;
 import java.util.List;
 
+//LR(0) item
 public class GrammarItem extends GrammarString {
 
-    private int pos;
-    private String h;
+    protected int pos;
+    protected String h;
 
     public GrammarItem(GrammarString str,String header){
         super(str.getSymbols());

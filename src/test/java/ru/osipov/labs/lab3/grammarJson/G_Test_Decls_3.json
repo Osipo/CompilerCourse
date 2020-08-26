@@ -1,0 +1,16 @@
+{
+  "terms": {
+    "id": "[a-z]+",
+    ",": ",",
+    "{": "{",
+    "}": "}",
+    ";": ";"
+  },
+  "keywords": ["class","int","char"],
+  "nonTerms": ["S","C","DL","D","T"],
+  "productions": [{"S": ["class","id","{","C","}"]},
+    {"C": "DL"},{"DL": ["T","D",";"]},{"D": ["D",",","id"]},{"D": "id"},
+    {"T": "int"},{"T": "char"},{"T": "id"}
+  ],
+  "start": "S"
+}

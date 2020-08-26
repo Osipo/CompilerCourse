@@ -92,7 +92,7 @@ public class LLParserGenerator {
                     else{//non-terminal.
                         if(res.containsKey(s.getVal())){//if it's already computed.
                             if(res.get(s.getVal()).contains(G.getEmpty())) {//if FIRST(X) contains empty.
-                                Set<String> without_empty = new HashSet<>(res.get(s.getVal()));//add all except empty.
+                                Set<String> without_empty =  new HashSet<>(res.get(s.getVal()));//add all except empty.
                                 without_empty.remove(G.getEmpty());
                                 first_i.addAll(without_empty);
                                 ec++;//continue scanning string.
@@ -125,7 +125,7 @@ public class LLParserGenerator {
     }
 
     //Compute FIRST for GrammarString str. (list of GrammarSymbols)
-    private static Set<String> first(GrammarString str, Map<String,Set<String>> firstTable,String eps){
+    public static Set<String> first(GrammarString str, Map<String,Set<String>> firstTable,String eps){
         Set<String> res = new HashSet<>();
         int ec = 0;
         for(GrammarSymbol s : str.getSymbols()){
