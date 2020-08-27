@@ -24,10 +24,10 @@ public class SLRParserGenerator {
             throw new Exception("Cannot extend Grammar");
         }
         Map<String,Set<String>> firstTable = LLParserGenerator.firstTable(Grammar.deleteLeftRecursion(G));
+
         GrammarString start = new GrammarString();
         start.addSymbol(new GrammarSymbol('n',S0));
         GrammarItem S = new GrammarItem(start,S1);//point [S' -> .S]
-
         Set<String> symbols = new HashSet<>(G.getNonTerminals());
         symbols.addAll(G.getTerminals());
         LinkedStack<Set<GrammarItem>> ST = new LinkedStack<>();

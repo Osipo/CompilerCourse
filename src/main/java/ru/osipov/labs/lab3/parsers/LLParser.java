@@ -87,14 +87,17 @@ public class LLParser extends Parser{
             S.push(root);// Stack: S,$.
             LinkedNode<Token> X = S.top();
             Token tok = lexer.recognize(f);
-            while(tok == null){
+            isParsed = true;
+            while(tok == null || tok.getName().equals("Unrecognized")){
+                if(tok != null) {
+                    System.out.println(tok);
+                    isParsed = false;//TODO: MAY BE OPTIONAL
+                }
                 tok = lexer.recognize(f);
             }
             String t = tok.getName();
-
-            isParsed = true;
             int nidx = 1;//counter of elements (tree nodes)
-            while(!X.getValue().getName().equals("$") && isParsed) {
+            while(!X.getValue().getName().equals("$")) {
                 if(X.getValue().getName().equals(t)){//S.Top() == X && X == t
                     S.top().getValue().setLexem(tok.getLexem());
                     S.pop();
@@ -102,7 +105,11 @@ public class LLParser extends Parser{
                         if(!tok.getLexem().equals("$") && !checkScope(tok))
                             break;
                     tok = lexer.recognize(f);
-                    while(tok == null){
+                    while(tok == null || tok.getName().equals("Unrecognized")){
+                        if(tok != null) {
+                            System.out.println(tok);
+                            isParsed = false;//TODO: MAY BE OPTIONAL.
+                        }
                         tok = lexer.recognize(f);
                     }
                     t = tok.getName();

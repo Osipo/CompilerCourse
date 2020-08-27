@@ -5,19 +5,35 @@ import ru.osipov.labs.lab3.trees.Action;
 import ru.osipov.labs.lab3.trees.LinkedNode;
 import ru.osipov.labs.lab3.trees.Node;
 
+import java.util.function.Predicate;
+
 public class BreakTailNode implements Action<Node<Token>> {
+    private Predicate<Token> f;
+    public BreakTailNode(){
+        this.f = null;
+    }
+    public BreakTailNode(Predicate<Token> f){
+        this.f = f;
+    }
     @Override
     public void perform(Node<Token> arg) {
         LinkedNode<Token> t = (LinkedNode<Token>) arg;
-        if(t.getValue().getName().contains("\'") && isB(t)){
-            for(LinkedNode<Token> c : t.getChildren()){
-                c.setParent(t.getParent());
-                t.getParent().getChildren().add(c);
-            }
-            t.getParent().getChildren().remove(t);
-            t.setParent(null);
-            t.setChildren(null);
+        if(f != null && f.test(t.getValue())){
+            up(t);
         }
+        else if(f == null && t.getValue().getName().contains("\'") && isB(t)){
+            up(t);
+        }
+    }
+
+    private void up(LinkedNode<Token> t){
+        for(LinkedNode<Token> c : t.getChildren()){
+            c.setParent(t.getParent());
+            t.getParent().getChildren().add(c);
+        }
+        t.getParent().getChildren().remove(t);
+        t.setParent(null);
+        t.setChildren(null);
     }
 
     private boolean isB(LinkedNode<Token> arg){

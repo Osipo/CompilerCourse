@@ -52,14 +52,19 @@ public class LRParser extends Parser {
         try (FileInputStream f  = new FileInputStream(new File(fname).getAbsolutePath())){
             LinkedStack<LinkedNode<Token>> S = new LinkedStack<>();//symbols.
             LinkedStack<Integer> states = new LinkedStack<>();//states.
+            isParsed = true;
+
             //READ first token
             Token tok = lexer.recognize(f);
-            while(tok == null){
+            while(tok == null || tok.getName().equals("Unrecognized")){
+                if(tok != null) {
+                    System.out.println(tok);
+                    isParsed = false;//TODO: MAY BE OPTIONAL.
+                }
                 tok = lexer.recognize(f);
             }
             String t = tok.getName();
 
-            isParsed = true;
             int nidx = 1;//counter of elements (tree nodes)
             int cstate = 0;
             states.push(0);//push start state 0 to the STATES_STACK.
@@ -74,7 +79,11 @@ public class LRParser extends Parser {
                 //      | acc
                 //      | err
                 command = table.getActionTable().get(k);
-                if(command == null){
+                if(command == null && empty == null){//if where are no any command and no empty.
+                    isParsed = false;
+                    break;
+                }
+                if(command == null){//if where is a empty symbol, try get command at [state, empty]
                     command = table.getActionTable().get(new Pair<Integer,String>(cstate,empty));
                     if(command != null){ //apply shift empty symbol if presence. (Rule like A -> e)
                         String j = command.substring(command.indexOf('_') + 1);
@@ -106,7 +115,11 @@ public class LRParser extends Parser {
                     S.push(nc);
                     //get next token
                     tok = lexer.recognize(f);
-                    while(tok == null){
+                    while(tok == null || tok.getName().equals("Unrecognized")){
+                        if(tok != null) {
+                            isParsed = false;//TODO: MAY BE OPTIONAL
+                            System.out.println(tok);
+                        }
                         tok = lexer.recognize(f);
                     }
                     t = tok.getName();

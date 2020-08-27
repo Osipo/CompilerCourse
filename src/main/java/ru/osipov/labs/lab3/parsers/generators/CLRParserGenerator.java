@@ -27,9 +27,21 @@ public class CLRParserGenerator {
         HashSet<String> EOF = new HashSet<>();
         EOF.add("$");
         firstTable.put("$",EOF);//FIRST($) = { $ };
-        G = G.getIndexedGrammar();
-        S0 = S0+"_2";
-        S1 = G.getStart();
+        Map<String,Set<String>> oF = new HashMap<>();
+        for(String k : firstTable.keySet()){
+            if(!k.contains("\'")) {
+                if(k.contains("_"))
+                    oF.put(k.substring(0, k.indexOf('_')), firstTable.get(k));
+                else
+                    oF.put(k,firstTable.get(k));
+            }
+        }
+        oF.put("$",EOF);
+        firstTable = oF;//computed FIRST on non left-recursive grammar with old names of grammar symbols.
+
+//        G = G.getIndexedGrammar();
+//        S0 = S0+"_2";
+//        S1 = G.getStart();
         start.addSymbol(new GrammarSymbol('n',S0));
         LR1GrammarItem S = new LR1GrammarItem(start,S1,"$");//point [S' -> .S, $]
 
@@ -100,12 +112,6 @@ public class CLRParserGenerator {
                 //System.out.println(first_b);
                 for(GrammarString r: rules){
                     GrammarSymbol next = r.getSymbols().get(0);
-                    //OR [A -> .N a]
-                    /*
-                    if(next != null && next.getType() == 'n' && r.getSymbols().size() > 1){
-                        first_b.addAll(LLParserGenerator.first(getBetweenPosition(r,1,item.getTerm()),firstTable,e));
-                    }*/
-
                     //[A -> .A t, b]
                     if(next != null && next.getType() == 'n' && next.getVal().equals(current)){
                          first_b.addAll(LLParserGenerator.first(getBetweenPosition(r,1,item.getTerm()),firstTable,e));

@@ -172,6 +172,7 @@ public class DFALexer extends DFA implements ILexer {
         states.push(s);
         StringBuilder sb = new StringBuilder();
         sb.append(cur);
+        int pl = 0;
         while(((int)cur) != 65535 && !s.isDead()){//while not EOF or not deadState.
             s = moveTo(s,cur);
             if(s == null || s.isDead()){
@@ -179,12 +180,17 @@ public class DFALexer extends DFA implements ILexer {
                 String err = sb.toString();
                 while(s == null || !s.isFinish()){
                     if(sb.length() == 0) {
-                        prevTok =  new Token("Unrecognized ", "Error at (" + io.getLine() + ":" + io.getCol() + ") :: Unrecognized token: " + err + "\n", 'e');
+                        prevTok =  new Token("Unrecognized", "Lexical error at (" + io.getLine() + ":" + io.getCol() + ") :: Unrecognized token: " + err + "\n", 'e');
+                        while(pl > 0){
+                            pl--;
+                            io.getch(f);//skip unrecognized word.
+                        }
                         return prevTok;
                     }
                     cur = sb.charAt(sb.length() - 1);
                     sb.deleteCharAt(sb.length() - 1);
                     io.ungetch(cur);
+                    pl++;
                     s = states.top();
                     states.pop();
                 }

@@ -155,7 +155,7 @@ public abstract class Parser {
             if(s != null) {//CHECK FOR REDEFINITIONS.
                 if(currentScope == EntryCategory.PARAMETER && currentScope != s.getEntry().getCat()) {
                     stable.addEntry(new SInfo(t.getLexem(),new Entry(currentType.getValue(),EntryCategory.PARAMETER,currentType.getEntry().getMem())));
-                    //ADD INFO TO CUR_METHOD.
+                    //ADD INFO ABOUT NEW PARAMERETER TO CUR_METHOD.
                     currentType = null;
                     return true;
                 }
@@ -169,7 +169,7 @@ public abstract class Parser {
                 currentScope = EntryCategory.PARAMETER;
                 S.push(EntryCategory.FIELD);//save previous scope (FIELD).
                 openScope();
-                //ADD INFO TO CUR_CLASS
+                //ADD INFO ABOUT NEW METHOD TO CUR_CLASS
                 currentType = null;
                 curMethodName = t.getLexem();
                 return true;
@@ -181,7 +181,7 @@ public abstract class Parser {
                 return true;
             }
             stable.addEntry(new SInfo(t.getLexem(),new Entry(currentType.getValue(),currentScope,currentType.getEntry().getMem())));
-            //ADD INFO TO CUR_CLASS IF FIELD.
+            //ADD INFO TO CUR_CLASS IF FIELD or ADD INFO TO METHOD IF VAR.
             return true;
         }
         else if(!t.getName().equals(",")){//if pair of tokens are not (id, id) or (id, ,) -> forget about type.

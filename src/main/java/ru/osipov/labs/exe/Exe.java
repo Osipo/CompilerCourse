@@ -16,6 +16,7 @@ import ru.osipov.labs.lab3.lexers.ILexer;
 import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.lexers.generators.FALexerGenerator;
 import ru.osipov.labs.lab3.parsers.LLParser;
+import ru.osipov.labs.lab3.parsers.LRAlgorithm;
 import ru.osipov.labs.lab3.parsers.ParserMode;
 import ru.osipov.labs.lab3.parsers.LRParser;
 import ru.osipov.labs.lab3.trees.*;
@@ -83,7 +84,7 @@ public class Exe implements CommandLineRunner {
     }
 
     private void SLRGrammarParse(Grammar G, ILexer lexer,String dir,String sc) throws IOException {
-        LRParser sa = new LRParser(G,lexer);
+        LRParser sa = new LRParser(G,lexer, LRAlgorithm.SLR);
         sa.setParserMode(ParserMode.DEBUG);
         LinkedTree<Token> tree = sa.parse(sc);
         if(tree != null){

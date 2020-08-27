@@ -26,7 +26,6 @@ public class LR_1_Automaton extends LR_0_Automaton {
     }
 
     private void initActions(){
-        boolean hasErr = false;
         Set<Integer> keys = C1.keySet();
         for(Integer i : keys){//for each set of items C1_i in C1
             Set<LR1GrammarItem> C1_i = C1.get(i);
@@ -41,17 +40,19 @@ public class LR_1_Automaton extends LR_0_Automaton {
                         String C1 = actionTable.get(k);
                         if(C1.charAt(0) != 's') {
                             hasErr = true;
-                            System.out.println("Err item from I"+i+": " + item+"term: "+item.getAt());
-                            System.out.println("Ambiguous: "+actionTable.get(k)+" / s_"+j);
-                            System.out.println("Conflict detected! (Reduce-Shift) Grammar is not LR(1)!");
-                            System.out.println("Try to resolve as Shift.");
+                            System.out.println("Error:");
+                            System.out.println("\tErr item from I"+i+": " + item+"term: "+item.getAt());
+                            System.out.println("\tAmbiguous: "+actionTable.get(k)+" / s_"+j);
+                            System.out.println("\tConflict detected! (Reduce-Shift) Grammar is not LR(1)!");
+                            System.out.println("\tTry to resolve as Shift.");
                             actionTable.put(k,"s_"+j);
                         }
                         else if(Integer.parseInt(C1.substring(2)) != j){//not the same.
                             hasErr = true;
-                            System.out.println("Err item from I"+i+": " + item+"term: "+item.getAt());
-                            System.out.println("Ambiguous: "+actionTable.get(k)+" / s_"+j);
-                            System.out.println("Conflict detected! (Shift-Shift) Grammar is not LR(1)!");
+                            System.out.println("Error.");
+                            System.out.println("\tErr item from I"+i+": " + item+"term: "+item.getAt());
+                            System.out.println("\tAmbiguous: "+actionTable.get(k)+" / s_"+j);
+                            System.out.println("\tConflict detected! (Shift-Shift) Grammar is not LR(1)!");
                         }
                     }
                     else{
@@ -80,9 +81,10 @@ public class LR_1_Automaton extends LR_0_Automaton {
                         String com = actionTable.get(k);
                         char a = com.charAt(0);
                         String conftype = (a == 's') ? "(Shift-Reduce)" : "(Reduce-Reduce)";
-                        System.out.println("Err item from I_"+i+": " + item+" term: "+item.getTerm());
-                        System.out.println("Ambiguous: "+com+" / r_"+item.getHeader()+":"+item.getSymbols().size());
-                        System.out.println("Conflict detected! "+conftype+" Grammar is not LR(1)!");
+                        System.out.println("Error.");
+                        System.out.println("\tErr item from I_"+i+": " + item+" term: "+item.getTerm());
+                        System.out.println("\tAmbiguous: "+com+" / r_"+item.getHeader()+":"+item.getSymbols().size());
+                        System.out.println("\tConflict detected! "+conftype+" Grammar is not LR(1)!");
                     }
                 }
             }
