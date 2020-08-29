@@ -40,9 +40,9 @@
     "commentLine": "#",
     "scopeStart": "{",
     "scopeEnd": "}",
-    "operands": ["id","num","realNum","true","false","ch","UE","D"],
+    "operands": ["id","num","realNum","true","false","ch"],
     "scopeTypes": ["CLASS","METHOD","BLOCK","GLOBAL"],
-    "operators": ["<","<=",">",">=","==","<>","=","+","-","*","/","%","^","->","&&","||","if","while","class","def","return","um","up","DL","FP","F","OPLIST","H"],
+    "operators": ["<","<=",">",">=","==","<>","=","+","-","*","/","%","^","->","&&","||","if","while","class","def","return","um","up","not"],
     "aliases": {
       "-": "um",
       "+": "up"
@@ -58,7 +58,7 @@
     ]
   },
   "nonTerms": ["S","SL","L","DL","D","MD","T","H","FL","F","OPLIST","OP","R","P","B",
-  "DISJ","CONJ","E","AE","RELOP","TE","FA","UE","PE","EXP","CB","FP","ELS","LDL"
+  "DISJ","CONJ","E","AE","RELOP","TE","FA","UE","PE","OEXP","CB","FP","ELS","LDL","CALL","AP","AL","ARG","EXP"
   ],
   "productions": [{"S": ["class","id","{","CB","}"]},
     {"CB": "SL"},{"CB": "empty"},
@@ -67,16 +67,19 @@
     {"D": ["D",",","id"]},{"D": "id"},{"T": "int"},{"T": "long"},{"T": "float"},{"T": "double"},{"T": "char"},
     {"T": "bool"},{"T": "void"},{"T": "id"},
     {"MD": ["def","T","id","H"]},{"H": ["(","FP",")"]},{"H": ["(","FP",")","R"]},
-    {"OP": ["return","EXP"]},
-    {"EXP": "B"},{"EXP": "empty"},
+    {"OP": ["return","OEXP"]},
+    {"OEXP": "EXP"},{"OEXP": "empty"},
     {"FP": "FL"},{"FP": "empty"},
     {"FL": ["FL",",","F"]},{"FL": "F"},
     {"F": ["T","id"]},{"P": ["OP",";"]},{"P": "R"},
     {"R": ["{","OPLIST","}"]},{"OPLIST": ["OPLIST","P"]},{"OPLIST": ["P"]},
     {"P": ["if","(","B",")","P","ELS"]},{"ELS": ["else","P"]},{"ELS": null},
     {"P": ["while","(","B",")","P"]},
-    {"OP": ["id","=","B"]},{"OP": "LDL"},{"LDL": ["T","D"]},
+    {"OP": ["id","=","EXP"]},{"OP": "LDL"},{"LDL": ["T","D"]},{"OP": "EXP"},
     {"RELOP": "<"},{"RELOP": "<="},{"RELOP": ">"},{"RELOP": ">="},{"RELOP": "=="},{"RELOP": "<>"},
+    {"EXP": "B"},{"EXP": "CALL"},
+    {"CALL": ["id","(","AP",")"]},{"AP": "AL"},{"AP": "empty"},
+    {"AL": ["AL",",","ARG"]},{"AL": "ARG"},{"ARG": "EXP"},
     {"B": ["B","->","DISJ"]},{"B": "DISJ"},
     {"DISJ": ["DISJ","||","CONJ"]},{"DISJ": "CONJ"},
     {"CONJ": ["CONJ","&&","E"]},{"CONJ": "E"},

@@ -4,15 +4,21 @@ public class Entry {
     protected int mem;
     protected String type;
     protected EntryCategory cat;
+    protected String name;
 
-    public Entry(String type, EntryCategory cat, int mem){
+    public Entry(String name, String type, EntryCategory cat, int mem){
         this.mem = mem;
         this.cat = cat;
         this.type = type;
+        this.name = name;
     }
 
-    public Entry(String type, EntryCategory cat){
-        this(type,cat,0);
+    public String getName(){
+        return name;
+    }
+
+    public Entry(String name,String type, EntryCategory cat){
+        this(name,type,cat,0);
     }
 
     public void setType(String type) {

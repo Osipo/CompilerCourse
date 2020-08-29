@@ -121,7 +121,7 @@ public class TestLLParser {
         G = Grammar.deleteLeftRecursion(G);
         G = G.deleteLeftFactor();
         assert G != null;
-        System.out.println("Target G");
+        System.out.println("Target _______");
         System.out.println(G);
         FALexerGenerator lg = new FALexerGenerator();
         CNFA nfa = lg.buildNFA(G);
@@ -241,7 +241,7 @@ public class TestLLParser {
 
 //        //Test 4
 //        current = System.currentTimeMillis();
-//        t = sa.parse(G,fi2);
+//        t = sa.parse(_______,fi2);
 //        m1 = (System.currentTimeMillis()) - current;
 //        assert t != null;
 //        current = System.currentTimeMillis();
@@ -255,7 +255,7 @@ public class TestLLParser {
 //
 //        //Test 5
 //        current = System.currentTimeMillis();
-//        t = sa.parse(G,fi3);
+//        t = sa.parse(_______,fi3);
 //        m1 = (System.currentTimeMillis()) - current;
 //        assert t != null;
 //
@@ -270,7 +270,7 @@ public class TestLLParser {
 
 // //       Test 6
 //        current = System.currentTimeMillis();
-//        t = sa.parse(G,fi6);
+//        t = sa.parse(_______,fi6);
 //        m1 = (System.currentTimeMillis()) - current;
 //        assert t != null;
 //
@@ -335,7 +335,7 @@ public class TestLLParser {
 
         lexer.getImagefromStr(dir,"lexer_ECMA_2");
 //        System.out.println("DELETE LEFT RECURSION");
-//        Grammar G1 = Grammar.deleteLeftRecursion(G);
+//        Grammar G1 = Grammar.deleteLeftRecursion(_______);
 //        System.out.println("DELETE LEFT PREFFIXES");
 //        G1 = G1.deleteLeftFactor();
 

@@ -77,7 +77,7 @@ public class Graph {
             return;
         }
         try (FileWriter fw = new FileWriter(f,true);){
-            fw.write("digraph G {\n");
+            fw.write("digraph _______ {\n");
             for(Vertex v : nodes){
                 fw.write(v.getName());
                 fw.write("[ label=\"");

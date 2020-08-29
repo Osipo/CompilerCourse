@@ -63,32 +63,32 @@ public class Main implements CommandLineRunner {
                 System.out.println(e.getMessage());
                 System.exit(-2);
             }
-            //System.out.println("G: 2_4_11");
+            //System.out.println("_______: 2_4_11");
             System.out.println(G);
             System.out.println("Delete left recursion");
             G = Grammar.deleteLeftRecursion(G);
             System.out.println(G);
             System.out.println("Delete preffixes");
             System.out.println(G.deleteLeftFactor());
-//            Grammar DG = G.deleteUselessSymbols();
-//            System.out.println("Grammar G without useless symbols");
+//            Grammar DG = _______.deleteUselessSymbols();
+//            System.out.println("Grammar _______ without useless symbols");
 //            System.out.println(DG);
 ////            //Delete long rules from grammar.
-////            Grammar NG = G.getShortenedGrammar();
-////            System.out.println("Shortened G");//8 rules.
+////            Grammar NG = _______.getShortenedGrammar();
+////            System.out.println("Shortened _______");//8 rules.
 ////            System.out.println(NG);
 //////
-////              //Delete empty rules from grammar G.
-//              Grammar EG1 = G.getNonEmptyWordsGrammar();//13 rules.
-//////            //Delete empty rules in shortened G.
+////              //Delete empty rules from grammar _______.
+//              Grammar EG1 = _______.getNonEmptyWordsGrammar();//13 rules.
+//////            //Delete empty rules in shortened _______.
 ////              Grammar EG2 = NG.getNonEmptyWordsGrammar();//11 rules.
 //////
-//            System.out.println("Get grammar without eps rules from unshortened G.");//13 rules.
+//            System.out.println("Get grammar without eps rules from unshortened _______.");//13 rules.
 //            System.out.println(EG1);
 ////            System.out.println("SG: same grammar but first it was shortened and then parsed.");
 ////            System.out.println(EG2);//11 rules.
 //////
-////            System.out.println("Get shortened grammar from non-shortened parsed G");
+////            System.out.println("Get shortened grammar from non-shortened parsed _______");
 ////            Grammar EG3 = EG1.getShortenedGrammar();//18 rules.
 ////            System.out.println(EG3);
 //
@@ -97,17 +97,17 @@ public class Main implements CommandLineRunner {
 //            Grammar G_i = EG1.getIndexedGrammar();
 //            System.out.println(G_i);
 //            System.out.println("---Delete left recursion---");
-//            Grammar G_r = Grammar.deleteLeftRecursion(G);
+//            Grammar G_r = Grammar.deleteLeftRecursion(_______);
 //            System.out.println(G_r);
-//            System.out.println("For all non-terms in G compute A =>* B");
-//            for(String N : G.getNonTerminals()){
-//                System.out.println(N+" : "+G.compute_allGeneratedN(N));
+//            System.out.println("For all non-terms in _______ compute A =>* B");
+//            for(String N : _______.getNonTerminals()){
+//                System.out.println(N+" : "+_______.compute_allGeneratedN(N));
 //            }
 //            System.out.println("Grammar without rules A -> B (A,B are non-terminals)");
-//            System.out.println(G.getNonCycledGrammar());
-            //G = G.getNonCycledGrammar();
+//            System.out.println(_______.getNonCycledGrammar());
+            //_______ = _______.getNonCycledGrammar();
            // System.out.println("delete cycles");
-           // System.out.println(G);
+           // System.out.println(_______);
         }
         else{
             System.out.println("Invalid json. Json document is required!");

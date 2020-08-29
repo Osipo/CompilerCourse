@@ -27,7 +27,7 @@ public class ShiftReduceParser extends Parser {
         this.table = gen.operatorPresedence(G);
         this.rIdx = gen.getIndicesOfRules(G.getSpanningGrammar());
         //System.out.println("Parser was built.");
-        //printTableRelations(G);
+        //printTableRelations(_______);
 
     }
 

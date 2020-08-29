@@ -8,17 +8,17 @@ import ru.osipov.labs.lab3.trees.Node;
 import java.util.function.Predicate;
 
 public class BreakTailNode implements Action<Node<Token>> {
-    private Predicate<Token> f;
+    private Predicate<LinkedNode<Token>> f;
     public BreakTailNode(){
-        this.f = null;
+        this.f = this::isB;
     }
-    public BreakTailNode(Predicate<Token> f){
+    public BreakTailNode(Predicate<LinkedNode<Token>> f){
         this.f = f;
     }
     @Override
     public void perform(Node<Token> arg) {
         LinkedNode<Token> t = (LinkedNode<Token>) arg;
-        if(f != null && f.test(t.getValue())){
+        if(f != null && f.test(t)){
             up(t);
         }
         else if(f == null && t.getValue().getName().contains("\'") && isB(t)){
@@ -27,6 +27,7 @@ public class BreakTailNode implements Action<Node<Token>> {
     }
 
     private void up(LinkedNode<Token> t){
+        System.out.println(t.getValue());
         for(LinkedNode<Token> c : t.getChildren()){
             c.setParent(t.getParent());
             t.getParent().getChildren().add(c);
@@ -37,7 +38,7 @@ public class BreakTailNode implements Action<Node<Token>> {
     }
 
     private boolean isB(LinkedNode<Token> arg){
-        return arg.getParent() != null &&
+        return arg.getParent() != null && arg.getChildren() != null && arg.getChildren().size() > 0 &&
                 (arg.getParent().getChildren().indexOf(arg) == arg.getParent().getChildren().size() - 1
                 || arg.getParent().getChildren().indexOf(arg) == 0);
     }

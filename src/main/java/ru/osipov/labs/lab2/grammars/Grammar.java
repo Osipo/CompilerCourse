@@ -667,7 +667,7 @@ public class Grammar {
 
     //add new StartRule with name newStart
     //P = P  U  {newStart -> S };
-    //G = (T,N,P,newStart);
+    //_______ = (T,N,P,newStart);
     public void extendStart(String newStart) throws Exception {
         if(this.T.contains(newStart) || this.N.contains(newStart)
                 || this.meta.getKeywords().contains(newStart)
@@ -799,7 +799,7 @@ public class Grammar {
         }
     }
 
-    //Compute set of non-terminals which generate strings of Language L(G).
+    //Compute set of non-terminals which generate strings of Language L(_______).
     private void computeN_g(){
         Set<String> N_0 = new HashSet<>();
         Set<String> N_i = new HashSet<>();
@@ -1259,8 +1259,10 @@ public class Grammar {
     public static Grammar deleteLeftRecursion(Grammar G){
         G = G.deleteUselessSymbols();
         G = G.getNonEmptyWordsGrammar();
-        if(G.hasCycles())
+        if(G.hasCycles()) {
+            System.out.println("Has cycles. Remove them.");
             G = G.getNonCycledGrammar();
+        }
         G = G.getIndexedGrammar();
         int n = G.getNonTerminals().size();
         Map<String,Set<GrammarString>> newP = new HashMap<>();

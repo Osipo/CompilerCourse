@@ -60,7 +60,7 @@ public class Lab4 implements CommandLineRunner {
                 System.out.println(G);
                 System.out.println("\n");
                 boolean opG = G.isOperatorGrammar();
-                System.out.println("Is Operator G: "+opG);
+                System.out.println("Is Operator _______: "+opG);
                 Grammar GS = null;
 
                 //build lexer.

@@ -48,7 +48,7 @@ public class TestLeftRecursion {
         int N1 = G.getNonTerminals().size();
         G = G.getNonCycledGrammar();
         int N2 = G.getNonTerminals().size();
-        System.out.println("G without chained rules");
+        System.out.println("_______ without chained rules");
         System.out.println(G);
         System.out.println("Target");
         G = Grammar.deleteLeftRecursion(G);

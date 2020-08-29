@@ -31,7 +31,10 @@ public class LLParserGenerator {
                         rec.setV2(f);
                         if(table.get(rec) != null) {
                             hasErr = true;
-                            System.out.println("Grammar is not LL(1)!");
+                            System.out.println("Error");
+                            System.out.println("\tCell: ["+rec.getV1()+", "+rec.getV2()+"]");
+                            System.out.println("\tAmbiguous: "+table.get(rec)+" / "+b);
+                            System.out.println("\tConflict detected ! Grammar is not LL(1)!");
                         }
                         table.put(rec,b);// new GrammarString(new ArrayList<>(b.getSymbols())));
                     }
@@ -43,7 +46,10 @@ public class LLParserGenerator {
                         rec.setV2(a);
                         if(table.get(rec) != null){
                             hasErr = true;
-                            System.out.println("Grammar is not LL(1)!");
+                            System.out.println("Error");
+                            System.out.println("\tCell: ["+rec.getV1()+", "+rec.getV2()+"]");
+                            System.out.println("\tAmbiguous: "+table.get(rec)+" / "+b);
+                            System.out.println("\tConflict detected ! Grammar is not LL(1)!");
                         }
                         table.put(rec, b);//new GrammarString(new ArrayList<>(b.getSymbols())));
                     }
@@ -54,7 +60,7 @@ public class LLParserGenerator {
 
     //Compute FIRST for each terminal and non-terminal.
     //WARNING: Only for Grammars without Left-recursion!
-    //You must eliminate left-recursion in Grammar G.
+    //You must eliminate left-recursion in Grammar _______.
     public static Map<String,Set<String>> firstTable(Grammar G){
         Set<String> T = G.getTerminals();
         Set<String> NT = G.getNonTerminals();
@@ -147,7 +153,7 @@ public class LLParserGenerator {
 
 
     //WARNING: Only for Grammars without Left-recursion!
-    //You must eliminate left-recursion in Grammar G.
+    //You must eliminate left-recursion in Grammar _______.
     public static Map<String,Set<String>> followTable(Grammar G,Map<String,Set<String>> firstTable){
         List<String> NT = ColUtils.fromSet(G.getNonTerminals());
         String empty = G.getEmpty();
@@ -157,7 +163,7 @@ public class LLParserGenerator {
             S.push(N);
             res.put(N,new ObservableHashSet<String>());
         }
-        res.get(G.getStart()).add("$");//add $ to FOLLOW(S) where S = start symbol of G.
+        res.get(G.getStart()).add("$");//add $ to FOLLOW(S) where S = start symbol of _______.
         while(!S.isEmpty()){
             String p = S.top();
             S.pop();
@@ -174,7 +180,7 @@ public class LLParserGenerator {
                             first.addAll(res.get(p));
                         }
                         first.remove(empty);
-//                        if(sym.getVal().equals(G.getStart()))
+//                        if(sym.getVal().equals(_______.getStart()))
 //                            first.add("$");
                         res.get(l.get(i).getVal()).addAll(first);
                         //res.put(l.get(i).getVal(),first);

@@ -148,6 +148,7 @@ public class LRParser extends Parser {
                     break;
                 }
             }
+            lexer.reset();
             if(isParsed){
                 return new LinkedTree<Token>(S.top());
             }

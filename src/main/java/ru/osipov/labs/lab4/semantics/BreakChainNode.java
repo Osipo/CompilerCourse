@@ -15,9 +15,34 @@ public class BreakChainNode implements Action<Node<Token>> {
         LinkedNode<Token> t = (LinkedNode<Token>) arg;
         LinkedNode<Token> p = t.getParent();
         if(p != null && p.getChildren().size() == 1){
-            t.setParent(p.getParent());//up node to 1 level
-            p.getParent().getChildren().add(t);
-            p.getParent().getChildren().remove(p);
+            //set token(p) = token(t)
+            //remove t from p and add its children (t_children) to p.
+            p.setValue(t.getValue());
+            p.getChildren().remove(t);
+            for(LinkedNode<Token> c : t.getChildren()){
+                p.getChildren().add(c);
+                c.setParent(p);
+            }
+            t.setParent(null);
+            t.setChildren(null);
+        }
+        //Recursive chain (from left or right recursion)
+        else if(p != null && t.getValue().getName().equals(p.getValue().getName())){
+
+            //Check whether a recursive N is a part or IF or WHILE operator
+            //N -> if ( B ) N ELS,  ELS -> else N | empty
+            //N -> while ( B ) N
+            String ltok = p.getChildren().get(p.getChildren().size() - 1).getValue().getName();
+            if(ltok.equals("if") || ltok.equals("while"))//it is not a part of IF or WHILE operator which may produce recursive chain as their bodies are sequence of operators.
+                return;
+            //delete t from p and add its children (t_children) to p.
+            p.getChildren().remove(t);
+            for(LinkedNode<Token> c : t.getChildren()){
+                p.getChildren().add(c);
+                c.setParent(p);
+            }
+            t.setParent(null);
+            t.setChildren(null);
         }
     }
 }

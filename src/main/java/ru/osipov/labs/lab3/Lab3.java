@@ -83,7 +83,7 @@ public class Lab3 implements CommandLineRunner {
             lexer.getImagefromStr(sc.substring(0,sc.lastIndexOf('\\') + 1),"Lexer");
             LLParser syntaxP = new LLParser(G,lexer);
 
-            System.out.println("Get Tree of G");
+            System.out.println("Get Tree of _______");
             LinkedTree<Token> tree = syntaxP.parse(sc);
             System.out.println("--------");
             if(tree != null) {

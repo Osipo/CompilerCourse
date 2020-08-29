@@ -99,11 +99,10 @@ public class LLParser extends Parser{
             int nidx = 1;//counter of elements (tree nodes)
             while(!X.getValue().getName().equals("$")) {
                 if(X.getValue().getName().equals(t)){//S.Top() == X && X == t
+                    if(mode == ParserMode.DEBUG)
+                        System.out.println(S+" >>"+t+" action: "+"Remove "+t);
                     S.top().getValue().setLexem(tok.getLexem());
                     S.pop();
-                    if(typeCheck)
-                        if(!tok.getLexem().equals("$") && !checkScope(tok))
-                            break;
                     tok = lexer.recognize(f);
                     while(tok == null || tok.getName().equals("Unrecognized")){
                         if(tok != null) {
@@ -122,16 +121,21 @@ public class LLParser extends Parser{
                     break;
                 }
                 else if(this.T.contains(X.getValue().getName())) {
+                    if(mode == ParserMode.DEBUG)
+                        System.out.println(S+" >>"+t+" action: "+"Error: Unmatched terms!");
                     isParsed = false;
                     break;
                 }
                 GrammarString prod = table.get(new Pair<String,String>(X.getValue().getName(),t));
                 if(prod == null) {
-                    System.out.println("No production!!");
+                    if(mode == ParserMode.DEBUG)
+                        System.out.println(S+" >>"+t+" action: "+"Error: No Production ");
                     isParsed = false;
                     break;
                 }
                 else{
+                    if(mode == ParserMode.DEBUG)
+                        System.out.println(S+" >>"+t+" action: "+"Produce "+prod);
                     List<GrammarSymbol> symbols = prod.getSymbols();
                     S.pop();
                     //LinkedStack<LinkedNode<String>> RS = new LinkedStack<>();//used only to order children YK..Y1 -> Y1..Yk in brace notation
@@ -154,9 +158,6 @@ public class LLParser extends Parser{
                 return new LinkedTree<Token>(root);
             }
             else {
-                if(typeNotFound){
-                    System.out.println("type with name "+tok.getLexem()+" is not defined!");
-                }
                 if(tok.getType() != 'e') {
                     System.out.println(lexer.generateError(S.top().getValue().getName(),tok.getName()));
                 }

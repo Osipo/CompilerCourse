@@ -60,6 +60,7 @@ public class STable {
         if(rec == null){
             rec = new BinarySearchTree<SInfo>(new StringContainerComparator<SInfo>());
             rec.add(new SInfo(s));
+            this.table.set(h,rec);
         }
         else{
             rec.add(new SInfo(s));

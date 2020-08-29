@@ -39,9 +39,9 @@ public class CLRParserGenerator {
         oF.put("$",EOF);
         firstTable = oF;//computed FIRST on non left-recursive grammar with old names of grammar symbols.
 
-//        G = G.getIndexedGrammar();
+//        _______ = _______.getIndexedGrammar();
 //        S0 = S0+"_2";
-//        S1 = G.getStart();
+//        S1 = _______.getStart();
         start.addSymbol(new GrammarSymbol('n',S0));
         LR1GrammarItem S = new LR1GrammarItem(start,S1,"$");//point [S' -> .S, $]
 
