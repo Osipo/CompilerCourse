@@ -7,7 +7,7 @@ import java.util.*;
 public class BinarySearchTree<T> implements Tree<T> {
     private LinkedBinaryNode<T> _r;
     private int _count;
-    private Visitor<T> _visitor;
+    private SubVisitor<T> _visitor;
     private int _h;
     private Comparator<T> _comp;
 
@@ -215,7 +215,7 @@ public class BinarySearchTree<T> implements Tree<T> {
     }
 
     @Override
-    public void setVisitor(Visitor<T> visitor){
+    public void setVisitor(SubVisitor<T> visitor){
         this._visitor = visitor;
     }
 
@@ -230,6 +230,27 @@ public class BinarySearchTree<T> implements Tree<T> {
                 break;
             case IN:
                 _visitor.inOrder(this,act);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public <R extends Node<T>> void visitFrom(VisitorMode order, Action<Node<T>> act,R node){
+        Node<Integer> nc = new Node<>(0);//Some actions MAY MODIFY count of TREE_NODES.
+        switch(order){
+            case PRE:
+                _visitor.preOrder(this,act,node);
+                break;
+            case POST:
+                _visitor.postOrder(this,act,node);
+                break;
+            case IN:
+                _visitor.inOrder(this,act,node);
+                break;
+            case NONE:
+                act.perform(node);//NONE => perform action on the root.
                 break;
             default:
                 break;

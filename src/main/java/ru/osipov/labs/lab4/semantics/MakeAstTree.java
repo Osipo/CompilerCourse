@@ -39,17 +39,19 @@ public class MakeAstTree implements Action<Node<Token>> {
                c.setParent(null);
                i = -1;
            }
-           //remove nonTerm if it is useless. And up to 1 level its children.
+           //remove nonTerm if it is a container of operands. And up to 1 level its children.
+           /*
            else if(c.getValue().getType() != 't'  && operands.contains(c.getValue().getName())){
                current.getChildren().remove(c);
                c.setParent(null);
+               System.out.println("NEVER NEVER NEVER NEVER");
                i = -1;
                for(LinkedNode<Token> c2 : c.getChildren()){
                    c2.setParent(current);
                    current.getChildren().add(c2);
                }
                //c.setChildren(null);
-           }
+           }*/
            else if(operators.contains(c.getValue().getName())){
                c.setParent(null);
                current.getChildren().remove(c);

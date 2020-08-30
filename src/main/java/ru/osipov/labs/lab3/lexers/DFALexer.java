@@ -166,7 +166,7 @@ public class DFALexer extends DFA implements ILexer {
             cur = (char) io.getch(f);
         }
         if(((int)cur) == 65535)
-            return new Token("$","$",'t');
+            return new Token("$","$",'t',io.getLine(),io.getCol());
         Vertex s = this.start;
         LinkedStack<Vertex> states = new LinkedStack<>();
         states.push(s);
@@ -180,7 +180,7 @@ public class DFALexer extends DFA implements ILexer {
                 String err = sb.toString();
                 while(s == null || !s.isFinish()){
                     if(sb.length() == 0) {
-                        prevTok =  new Token("Unrecognized", "Lexical error at (" + io.getLine() + ":" + io.getCol() + ") :: Unrecognized token: " + err + "\n", 'e');
+                        prevTok =  new Token("Unrecognized", "Lexical error at (" + io.getLine() + ":" + io.getCol() + ") :: Unrecognized token: " + err + "\n", 'e',io.getLine(),io.getCol());
                         while(pl > 0){
                             pl--;
                             io.getch(f);//skip unrecognized word.
@@ -220,22 +220,22 @@ public class DFALexer extends DFA implements ILexer {
                             isp = false;
                         }
                     }
-                    return new Token("$","$",'t');
+                    return new Token("$","$",'t',io.getLine(),io.getCol());
                 }
                 if(s.getValue().equals(this.id) && keywords.size() > 0 && keywords.contains(sb.toString())) {
-                    prevTok = new Token(sb.toString(), sb.toString(), 't');
+                    prevTok = new Token(sb.toString(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else if(prevTok == null || (operands.size() > 0 && operands.contains(prevTok.getName())) ){
-                    prevTok =  new Token(s.getValue(), sb.toString(), 't');
+                    prevTok =  new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else if(prevTok != null && operands.size() > 0){
-                    prevTok = new Token(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString(), 't');
+                    prevTok = new Token(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else {
-                    prevTok =  new Token(s.getValue(), sb.toString(), 't');
+                    prevTok =  new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
             }
@@ -276,32 +276,32 @@ public class DFALexer extends DFA implements ILexer {
                             isp = false;
                         }
                     }
-                    return new Token("$","$",'t');
+                    return new Token("$","$",'t',io.getLine(),io.getCol());
                 }
                 if(s.getValue().equals("id") && keywords.size() > 0 && keywords.contains(sb.toString())) {
-                    prevTok = new Token(sb.toString(), sb.toString(), 't');
+                    prevTok = new Token(sb.toString(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else if(prevTok == null || (operands.size() > 0 && operands.contains(prevTok.getName())) ){
-                    prevTok =  new Token(s.getValue(), sb.toString(), 't');
+                    prevTok =  new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else if(prevTok != null && operands.size() > 0){
-                    prevTok = new Token(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString(), 't');
+                    prevTok = new Token(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else {
-                    prevTok =  new Token(s.getValue(), sb.toString(), 't');
+                    prevTok =  new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
             }
             else {
-                prevTok =  new Token("Unrecognized", "Error at (" + io.getLine() + ":" + io.getCol() + ") :: Unrecognized token: " + sb.toString() + "\n", 'e');
+                prevTok =  new Token("Unrecognized", "Error at (" + io.getLine() + ":" + io.getCol() + ") :: Unrecognized token: " + sb.toString() + "\n", 'e',io.getLine(),io.getCol());
                 return prevTok;
             }
         }
         else {
-            prevTok =  new Token("$", "$", 't');
+            prevTok =  new Token("$", "$", 't',io.getLine(),io.getCol());
             return prevTok;
         }
     }
@@ -317,7 +317,7 @@ public class DFALexer extends DFA implements ILexer {
     }
 
     public Token generateError(String s1, String s2){
-        return new Token("Unrecognized","Error at ("+io.getLine()+":"+io.getCol()+") :: Expected token: "+s1+"  but actual: "+s2+"\n",'e');
+        return new Token("Unrecognized","Error at ("+io.getLine()+":"+io.getCol()+") :: Expected token: "+s1+"  but actual: "+s2+"\n",'e',io.getLine(),io.getCol());
     }
 
     @Override

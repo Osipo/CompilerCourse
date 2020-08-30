@@ -8,27 +8,16 @@ import java.util.Map;
 
 public class TokenAttrs extends Token {
 
-    private Map<String, StringWriter> attrs;
-
-
+    private String code;
     public TokenAttrs(Token t){
-        super(t); this.attrs = new HashMap<>();
+        super(t); this.code = "";
     }
 
-    public Map<String, StringWriter> getAttrs() {
-        return attrs;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public void setAttrs(Map<String, StringWriter> attrs) {
-        this.attrs = attrs;
-    }
-
-    public void addAttr(String name, StringWriter output){
-        this.attrs.put(name,output);
-    }
-
-    @Override
-    public StringWriter getContent(){
-        return this.attrs.get("code");
+    public String getCode(){
+        return code;
     }
 }

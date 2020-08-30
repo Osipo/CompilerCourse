@@ -4,9 +4,8 @@ import ru.osipov.labs.lab1.structures.graphs.Pair;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab3.lexers.Token;
-import ru.osipov.labs.lab3.trees.Action;
-import ru.osipov.labs.lab3.trees.LinkedNode;
-import ru.osipov.labs.lab3.trees.Node;
+import ru.osipov.labs.lab3.lexers.TokenAttrs;
+import ru.osipov.labs.lab3.trees.*;
 import ru.osipov.labs.lab4.semantics.*;
 
 import java.util.*;
@@ -19,6 +18,7 @@ public class InterCodeGenerator implements Action<Node<Token>> {
     private LinkedStack<String> labels;//labels.
     private Set<Pair<String,Integer>> types;
     private Grammar G;
+    private LinkedTree<Token> parsed;
     private long counter;//counts of temp variables.
 
     private SInfo currentType;
@@ -28,17 +28,19 @@ public class InterCodeGenerator implements Action<Node<Token>> {
     private ClassInfo curClass;
     private MethodInfo curMethod;
     private EntryCategory currentScope;
+    private Node<Token> currentNode;
 
     //IS Expression (ifTrue -> try to find definition for each variable in expression)
     private boolean isExp;
 
-    private Map<String,Set<LinkedNode<Token>>> unsearched;
+    private Map<String,Set<LinkedNode<Token>>> unsearched;//for random field or method decls.
     private List<SemanticError> errors;
 
     private TranslatorActions actionType;
 
-    public InterCodeGenerator(Grammar G){
+    public InterCodeGenerator(Grammar G, LinkedTree<Token> tree){
         this.G = G;
+        this.parsed = tree;
         counter = 0;
         this.isExp = false;
         this.unsearched = new HashMap<>();
@@ -63,6 +65,11 @@ public class InterCodeGenerator implements Action<Node<Token>> {
             }
             stable.addEntry(rec);
         }
+        TypeNegotiation.setGen(this);
+    }
+
+    public LinkedTree<Token> getAnnotatedParsedTree(){
+        return parsed;
     }
 
     public void printTable(){
@@ -86,17 +93,26 @@ public class InterCodeGenerator implements Action<Node<Token>> {
 
     public void setActionType(TranslatorActions actionType){
         this.actionType = actionType;
-        reset();
     }
 
-    private void reset(){
+    public void reset(){
         this.currentScope = EntryCategory.GLOBAL;
         this.currentType = null;
         this.curClass = null;
         this.curMethod = null;
         this.curClassName = null;
         this.curMethodName = null;
+        this.currentNode = null;
         this.isExp = false;
+        this.unsearched = null;
+    }
+
+    public long getCounter() {
+        return counter;
+    }
+
+    public void incCounter(){
+        this.counter = counter + 1;
     }
 
     public TranslatorActions getActionType(){
@@ -160,7 +176,7 @@ public class InterCodeGenerator implements Action<Node<Token>> {
         else if(isExp && n.getParent().getValue().getName().equals("=") && n.getParent().getChildren().indexOf(n) == n.getChildren().size() - 1){
             SInfo i = stable.get(t.getLexem());
             if(i == null){
-                errors.add(new SemanticError("Variable "+t.getLexem()+" is not defined!",SemanticErrorType.VARIABLE_NOT_FOUND));
+                errors.add(new SemanticError("Error at: ("+t.getLine()+", "+t.getColumn()+") Variable "+t.getLexem()+" is not defined!",SemanticErrorType.VARIABLE_NOT_FOUND));
             }
             else
                 n.setRecord(i.getEntry());
@@ -272,13 +288,13 @@ public class InterCodeGenerator implements Action<Node<Token>> {
                     n.setRecord(clazz);
                 }
                 else{
-                    errors.add(new SemanticError("Class "+t.getLexem()+" is already defined!",SemanticErrorType.TYPE_REDEFINED));
+                    errors.add(new SemanticError("Error at: ("+t.getLine()+", "+t.getColumn()+") Class "+t.getLexem()+" is already defined!",SemanticErrorType.TYPE_REDEFINED));
                 }
             }
             else {
                 currentType = stable.get(t.getLexem());
                 if (currentType == null) {//CHECK THAT IS DEFINED.
-                    errors.add(new SemanticError("Type "+t.getLexem()+" is not found!",SemanticErrorType.TYPE_NOT_FOUND));
+                    errors.add(new SemanticError("Error at: ("+t.getLine()+", "+t.getColumn()+") Type "+t.getLexem()+" is not found!",SemanticErrorType.TYPE_NOT_FOUND));
                 }
             }
         }
@@ -301,7 +317,7 @@ public class InterCodeGenerator implements Action<Node<Token>> {
                     return;
                 }
                 else
-                    errors.add(new SemanticError(t.getLexem()+" is already defined!",SemanticErrorType.TYPE_REDEFINED));
+                    errors.add(new SemanticError("Error at: ("+t.getLine()+", "+t.getColumn()+") "+t.getLexem()+" is already defined!",SemanticErrorType.TYPE_REDEFINED));
             }
             addInfo(n);
         }
@@ -358,10 +374,217 @@ public class InterCodeGenerator implements Action<Node<Token>> {
 
     //Check types of expressions. (traverse tree in POST_ORDER)
     private void typeCheck(LinkedNode<Token> n){
+        if(n.getParent() != null && n.getParent().getValue().getName().equals("def")
+                && n.getParent().getChildren().indexOf(n) == 1){//id of method was found.
+            currentNode = n;
+        }
+        if(n.getValue().getName().equals("=") || n.getValue().getName().equals("return")
+            || n.getValue().getName().equals("CALL")){
+            parsed.visitFrom(VisitorMode.POST,this::checkExpr,n);
+        }
+    }
 
-        //if parent is operator.
-        if(n.getParent() != null && G.getOperators().contains(n.getValue().getName())){
+    //assing '=' always has two children.
+    //return 'return' always has one child.
+    //generate IE code for type conversion and expressions.
+    //Check also method calls (parameters with arguments) and compute type of CALL node.
+    private void checkExpr(Node<Token> n){
+        LinkedNode<Token> arg = (LinkedNode<Token>) n;
 
+        //argument list was read (ARGS)
+        if(arg.getValue().getName().equals("AL")){
+            LinkedNode<Token> mId = arg.getParent().getChildren().get(1);
+            //method not defined.
+            if(mId.getRecord() == null){
+                errors.add(new SemanticError("Error at: ("+mId.getValue().getLine()+", "+mId.getValue().getColumn()+") Cannot find method with name:  "+mId.getValue().getLexem()+".",SemanticErrorType.TYPE_NOT_FOUND));
+                return;
+            }
+            if(mId.getRecord() instanceof MethodInfo){
+                StringBuilder sb = new StringBuilder();
+                MethodInfo mi = (MethodInfo) mId.getRecord();
+                List<ParameterInfo> params = mi.getParams();
+                List<LinkedNode<Token>> args = arg.getChildren();
+                if(params.size() != args.size()){
+                    errors.add(new SemanticError("Error at: ("+mId.getValue().getLine()+", "+mId.getValue().getColumn()+") Wrong number of parameters of method:  "+mId.getValue().getLexem()+". Expected:  "+params.size()+" but actual:  "+args.size(),SemanticErrorType.WRONG_PARAMS_NUMBER));
+                    return;
+                }
+                for(int i = 0; i < params.size(); i++){
+                    String ptype = params.get(i).getType();
+                    String pname = params.get(i).getName();
+                    String atype = args.get(i).getRecord() == null ? "Null" : args.get(i).getRecord().getType();
+                    if(!ptype.equals(atype)){
+                        errors.add(new SemanticError("Error at: ("+args.get(i).getValue().getLine()+", "+args.get(i).getValue().getColumn()+") Expected type of "+(i + 1)+" parameter:  "+ptype+" but found:  "+atype,SemanticErrorType.WRONG_TYPE));
+                        return;
+                    }
+                    sb.append("PARAM ").append(args.get(i).getValue().getLexem()).append(" :z ").append(":p").append(i).append("\n");
+                }
+                sb.append("GOTO ").append(mi.getName()).append("\n");
+                Token v = arg.getParent().getValue();
+                TokenAttrs c = new TokenAttrs(v);
+                c.setCode(sb.toString());
+                arg.getParent().setValue(c);
+            }
+            return;
+        }
+
+        //CALL NODE.
+        if(arg.getValue().getName().equals("CALL")){
+            LinkedNode<Token> t = arg.getChildren().get(1);//method Id node
+            String type = t.getRecord() == null ? "Null" : t.getRecord().getType();
+
+            //set type of CALL node from return type of method.
+            arg.setRecord(new Entry(type,type,EntryCategory.METHOD_TYPE,0));
+        }
+
+        //if it is a single right node of CALL or method CALL with one parameter.
+        else if(arg.getParent().getValue().getName().equals("CALL")
+            && arg.getParent().getChildren().indexOf(arg) == 0 && arg.getValue().getType() == 't'){
+
+            LinkedNode<Token> mId = arg.getParent().getChildren().get(1);
+            //method not defined.
+            if(mId.getRecord() == null){
+                errors.add(new SemanticError("Error at: ("+mId.getValue().getLine()+", "+mId.getValue().getColumn()+") Cannot find method with name:  "+mId.getValue().getLexem()+".",SemanticErrorType.TYPE_NOT_FOUND));
+                return;
+            }
+            if(mId.getRecord() instanceof MethodInfo){
+                StringBuilder sb = new StringBuilder();
+                MethodInfo mi = (MethodInfo) mId.getRecord();
+                List<ParameterInfo> params = mi.getParams();
+                if(params.size() != 1){
+                    errors.add(new SemanticError("Error at: ("+arg.getValue().getLine()+", "+arg.getValue().getColumn()+") Wrong number of parameters of method:  "+mId.getValue().getLexem()+". Expected:  "+params.size()+" but actual:  "+1,SemanticErrorType.WRONG_PARAMS_NUMBER));
+                    return;
+                }
+                String ptype = params.get(0).getType();
+                String atype = arg.getRecord() == null ? "Null" : arg.getRecord().getType();
+                if(!ptype.equals(atype)){
+                    errors.add(new SemanticError("Error at: ("+arg.getValue().getLine()+", "+arg.getValue().getColumn()+") Expected type of "+1+" parameter:  "+ptype+" but found:  "+atype,SemanticErrorType.WRONG_TYPE));
+                    return;
+                }
+                sb.append("PARAM ").append(arg.getValue().getLexem()).append(" :z ").append(":p0").append('\n');
+                sb.append("GOTO ").append(mi.getName()).append('\n');
+            }
+            return;
+        }
+        if(arg.getValue().getName().equals("return")){
+            LinkedNode<Token> t = arg.getChildren().get(0);
+            String rtype = currentNode.getRecord().getType();
+            if(t.getRecord() == null){
+                String tp = "Null";
+                errors.add(new SemanticError("Error at: ("+t.getValue().getLine()+", "+t.getValue().getColumn()+") Expected return type:  "+rtype+" but found:  "+tp,SemanticErrorType.WRONG_TYPE));
+                return;
+            }
+            //if both type are the same.
+            if(t.getRecord().getType().equals(rtype)){
+                Token exp = t.getValue();
+                TokenAttrs code = new TokenAttrs(n.getValue());
+                //incCounter();
+                code.setCode("RETURN "+" :z"+" :z "+exp.getLexem());
+                code.setLexem(exp.getLexem());
+                n.setValue(code);
+            }
+            //else if type of expression t can be extended to method return type.
+            else if(TypeNegotiation.greaterThan(currentNode,t)){//return type > type of t.
+                Token exp = t.getValue();
+                TokenAttrs code = new TokenAttrs(n.getValue());
+                code.setCode("RETURN "+" :z"+" :z "+exp.getLexem());
+                code.setLexem(exp.getLexem());
+                n.setValue(code);
+            }
+            else
+                errors.add(new SemanticError("Error at: ("+t.getValue().getLine()+", "+t.getValue().getColumn()+") Expected return type:  "+rtype+" but found:  "+t.getRecord().getType(),SemanticErrorType.WRONG_TYPE));
+        }
+        else if(arg.getValue().getName().equals("=")){
+            LinkedNode<Token> t1 = arg.getChildren().get(0);
+            LinkedNode<Token> t2 = arg.getChildren().get(1);
+            String pm = "Error at: ("+t1.getValue().getLine()+", "+t1.getValue().getColumn()+") ";
+            if(t1.getRecord() == null || t2.getRecord() == null){
+                String tp = t1.getRecord() == null ? "Null" : t1.getRecord().getType();
+                String tp2 = t2.getRecord() == null ? "Null" : t2.getRecord().getType();
+                String m = t2.getRecord() == null ? "Variable not defined!" : "Expected:  "+t2.getRecord().getType()+" but found:  "+tp;
+                errors.add(new SemanticError(pm+"Cannot apply operator \'"+n.getValue().getName()+"\'. "+m,SemanticErrorType.WRONG_TYPE));
+                return;
+            }
+            //if both type are the same.
+            if(t1.getRecord().getType().equals(t2.getRecord().getType())){
+                Token val = t2.getValue();
+                Token exp = t1.getValue();
+                TokenAttrs code = new TokenAttrs(n.getValue());
+                //operator ASSIGN (=) is unary or binary operator (when binary it contains type of expression to be assigned)
+                code.setCode("= "+exp.getLexem()+" :z "+val.getLexem());
+                n.setValue(code);
+            }
+            //else if type of expression t1 can be extended to t2.
+            else if(TypeNegotiation.greaterThan(t2,t1)){//t2 > t1.
+                Token val = t2.getValue();
+                Token exp = t1.getValue();
+                TokenAttrs code = new TokenAttrs(n.getValue());
+                code.setCode("= "+exp.getLexem()+" :z "+val.getLexem());
+                n.setValue(code);
+            }
+            else
+                errors.add(new SemanticError(pm+"Cannot apply operator \'"+n.getValue().getName()+"\'. Expected:  "+t2.getRecord().getType()+" but found:  "+t1.getRecord().getType(),SemanticErrorType.WRONG_TYPE));
+        }
+        else if(G.getOperators().contains(arg.getValue().getName())){
+            Token op = n.getValue();
+            LinkedNode<Token> t1 = arg.getParent().getChildren().get(0);
+            LinkedNode<Token> t2 = arg.getParent().getChildren().get(1);
+            String pm = "Error at: ("+t1.getValue().getLine()+", "+t1.getValue().getColumn()+") ";
+            if(t1.getRecord() == null || t2.getRecord() == null){
+                String tp = t1.getRecord() == null ? "Null" : t1.getRecord().getType();
+                String tp2 = t2.getRecord() == null ? "Null" : t2.getRecord().getType();
+                errors.add(new SemanticError(pm+"Cannot apply operator \'"+n.getValue().getName()+"\' to  "+tp+"  and  "+tp2,SemanticErrorType.WRONG_TYPE));
+                return;
+            }
+            if(t1.getRecord().getType().equals(t2.getRecord().getType())){
+                incCounter();
+                Token exp1 = t2.getValue();
+                Token exp2 = t1.getValue();
+                TokenAttrs code = new TokenAttrs(op);
+                code.setCode(op.getLexem()+" "+exp1.getLexem()+" "+exp2.getLexem()+" "+":t"+counter);
+                code.setLexem(":t"+counter);
+                n.setValue(code);
+            }
+            //else if type of t1 can be extended to t2.
+            else if(TypeNegotiation.maxType(t1,t2)){
+                incCounter();
+                Token exp1 = t2.getValue();
+                Token exp2 = t1.getValue();
+                TokenAttrs code = new TokenAttrs(op);
+                code.setCode(op.getLexem()+" "+exp1.getLexem()+" "+exp2.getLexem()+" "+":t"+counter);
+                code.setLexem(":t"+counter);//now lexeme is r where r is result of quadraple (op, e1, e2, r)
+                n.setValue(code);
+            }
+            else
+                errors.add(new SemanticError(pm+"Cannot apply operator \'"+n.getValue().getName()+"\' to  "+t1.getRecord().getType()+"  and  "+t2.getRecord().getType(),SemanticErrorType.WRONG_TYPE));
+        }
+    }
+
+    //Before type checking rename params in methods bodies. (for parameters transition)
+    private void renameParams(Node<Token> n){
+        LinkedNode<Token> arg = (LinkedNode<Token>) n;
+        if(arg.getValue().getName().equals("def")){
+            currentNode = null;
+        }
+        else if(arg.getParent() != null && arg.getParent().getValue().getName().equals("def")
+            && arg.getParent().getChildren().indexOf(arg) == 1){
+            currentNode = arg;
+        }
+        else if(arg.getValue().getName().equals(G.getIdName()) && currentNode != null){
+            Entry e = currentNode.getRecord();
+            if(!(e instanceof MethodInfo)){
+                errors.add(new SemanticError("Error at: ("+currentNode.getValue().getLine()+", "+currentNode.getValue().getColumn()+") Cannot find method with name:  "+currentNode.getValue().getLexem()+".",SemanticErrorType.TYPE_NOT_FOUND));
+            }
+            else{
+                MethodInfo mi = (MethodInfo) e;
+                List<String> params = mi.getParams().stream().map(Entry::getName).collect(Collectors.toList());
+                //if parameter was found rename it for PARAM command.
+                int idx;
+                if((idx = params.indexOf(arg.getValue().getLexem())) != -1){
+                    arg.getValue().setLexem(":p"+idx);
+                    if(arg.getRecord() != null)
+                        arg.getRecord().setNewName(":p"+idx);
+                }
+            }
         }
     }
 
@@ -370,6 +593,8 @@ public class InterCodeGenerator implements Action<Node<Token>> {
         LinkedNode<Token> n = (LinkedNode<Token>) arg;
         if(actionType == TranslatorActions.SEARCH_DEFINITIONS)
             search(n);
+        else if(actionType == TranslatorActions.RENAME_PARAMS)
+            renameParams(n);
         else if(actionType == TranslatorActions.TYPE_CHECK)
             typeCheck(n);
     }

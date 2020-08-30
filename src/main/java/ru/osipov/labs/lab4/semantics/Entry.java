@@ -17,6 +17,10 @@ public class Entry {
         return name;
     }
 
+    public void setNewName(String name){
+        this.name = name;
+    }
+
     public Entry(String name,String type, EntryCategory cat){
         this(name,type,cat,0);
     }

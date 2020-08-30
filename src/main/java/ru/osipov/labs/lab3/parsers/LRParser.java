@@ -16,7 +16,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-//SLR parser or LR(0) parser.
+//Implements all LR parsers.
+//Contains two LR parser generators.
+//SLR parser or LR(0) parser in (SLRParserGenerator class)
+//CLR parser or LR(1) parser in (CLRParserGenerator class)
 public class LRParser extends Parser {
 
     private LR_0_Automaton table;
@@ -49,6 +52,7 @@ public class LRParser extends Parser {
     public LinkedTree<Token> parse(String fname){
         if(table == null)
             return null;
+        int l,col = 0;
         try (FileInputStream f  = new FileInputStream(new File(fname).getAbsolutePath())){
             LinkedStack<LinkedNode<Token>> S = new LinkedStack<>();//symbols.
             LinkedStack<Integer> states = new LinkedStack<>();//states.
@@ -63,6 +67,8 @@ public class LRParser extends Parser {
                 }
                 tok = lexer.recognize(f);
             }
+            l = tok.getLine();
+            col = tok.getColumn();
             String t = tok.getName();
 
             int nidx = 1;//counter of elements (tree nodes)
@@ -89,7 +95,7 @@ public class LRParser extends Parser {
                         String j = command.substring(command.indexOf('_') + 1);
                         states.push(Integer.parseInt(j));
                         LinkedNode<Token> nc = new LinkedNode<>();
-                        nc.setValue(new Token(empty,null,'t'));
+                        nc.setValue(new Token(empty,null,'t',l,col));
                         nidx++;
                         nc.setIdx(nidx);
                         S.push(nc);
@@ -123,6 +129,8 @@ public class LRParser extends Parser {
                         tok = lexer.recognize(f);
                     }
                     t = tok.getName();
+                    l = tok.getLine();
+                    col = tok.getColumn();
                 }
                 else if(act.charAt(0) == 'r'){
                     String args = command.substring(argIdx + 1);
@@ -137,7 +145,7 @@ public class LRParser extends Parser {
                         parent.getChildren().add(c);
                         sz--;
                     }
-                    parent.setValue(new Token(header,header,'n'));
+                    parent.setValue(new Token(header,header,'n',l,col));
                     nidx++;
                     parent.setIdx(nidx);
                     S.push(parent);

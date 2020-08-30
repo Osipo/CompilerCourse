@@ -101,7 +101,7 @@ public class Exe implements CommandLineRunner {
             //Sem Action 1: Delete useless syntax nodes.
             DeleteUselessSyntaxNode act1 = new DeleteUselessSyntaxNode(G);
             tree.visit(VisitorMode.PRE,act1);
-            System.out.println("Useless syntax node are deleted. (symbols like \",\" \"(\" and etc.");
+            System.out.println("Useless syntax node are deleted. (symbols like \",\" \";\" and etc.)");
             Graphviz.fromString(tree.toDot("ptreeA1")).render(Format.PNG).toFile(new File(dir+"\\UsefulTree_SLR_a1"));
 
             //Sem Action 2: Delete chain Nodes (Rules like A -> B, B -> C).
@@ -110,14 +110,21 @@ public class Exe implements CommandLineRunner {
             System.out.println("Chain was deleted");
             Graphviz.fromString(tree.toDot("ptreeA2")).render(Format.PNG).toFile(new File(dir+"\\ZippedTree_SLR_a2"));
 
+            //Sem Action 3: Build AS Tree.
             MakeAstTree act3 = new MakeAstTree(G);
             tree.visit(VisitorMode.PRE,act3);
             System.out.println("AST was built.");
             Graphviz.fromString(tree.toDot("pTreeA3")).render(Format.PNG).toFile(new File(dir+"\\ASTree_SLR"));
             System.out.println("Tree nodes after processing: "+tree.getCount());
 
-            InterCodeGenerator gen = new InterCodeGenerator(G);
+            InterCodeGenerator gen = new InterCodeGenerator(G,tree);
+            tree.visit(VisitorMode.PRE,gen);//SEARCH_DEFINITIONS
+            System.out.println("Definitions are read.");
+            gen.setActionType(TranslatorActions.RENAME_PARAMS);
+            gen.reset();
             tree.visit(VisitorMode.PRE,gen);
+            System.out.println("Parameters of methods in bodies are renamed");
+            gen.reset();
 
         }
         else{

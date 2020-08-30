@@ -54,19 +54,22 @@ public class ShiftReduceParser extends Parser {
     public LinkedTree<Token> parse(Grammar G, String fname){
         FileInputStream f;
         boolean isParsed = false;
+        int line,col = 0;
         try {
             f = new FileInputStream(new File(fname).getAbsolutePath());
             InputStreamReader ch = new InputStreamReader(f);
 
             LinkedStack<LinkedNode<Token>> S = new LinkedStack<>();
             LinkedNode<Token> EOF = new LinkedNode<>();
-            EOF.setValue(new Token("$","$",'t'));
+            EOF.setValue(new Token("$","$",'t',0,0));
             Iterator<LinkedNode<Token>> S_iter = S.iterator();
 
             Token tok = lexer.recognize(f);//get token from the input.
             while(tok == null){
                 tok = lexer.recognize(f);//skip comments.
             }
+            line = tok.getLine();
+            col = tok.getColumn();
             S.push(EOF);//Initial:: ($,tok). //Finish:: ($S,$).
             LinkedNode<Token> A = null;//current symbol on Stack.
             LinkedStack<Integer> rules = new LinkedStack<>();
@@ -98,6 +101,8 @@ public class ShiftReduceParser extends Parser {
                     while(tok == null){//skip comments.
                         tok = lexer.recognize(f);
                     }
+                    line = tok.getLine();
+                    col = tok.getColumn();
                 }
                 else if(rel == '>'){//reduce
                     //System.out.println("reduce");
@@ -151,7 +156,7 @@ public class ShiftReduceParser extends Parser {
                     Integer r_i = rIdx.getStates().get(b.toString());
                     rules.push(r_i);
                     String header = G.getStart();
-                    parent.setValue(new Token(header,header,'n'));
+                    parent.setValue(new Token(header,header,'n',line,col));
                     S.push(parent);
                     //System.out.println(S);
                 }

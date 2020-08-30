@@ -9,18 +9,18 @@ import java.util.List;
 public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
     private int _count;
     private LinkedNode<T> _r;
-    private Visitor<T> _visitor;
+    private SubVisitor<T> _visitor;
 
     public LinkedTree(){
         _r = new LinkedNode<T>();
-        _visitor = new NRVisitor<T>();
+        _visitor = new NRSubVisitor<T>();
         _count = 1;
     }
 
     public LinkedTree(LinkedNode<T> n){
         n.setParent(null);
         _r = n;
-        _visitor = new NRVisitor<T>();
+        _visitor = new NRSubVisitor<T>();
         _count = 0;
         Node<Integer> nc = new Node<>(_count);
         __ComputeC(nc);
@@ -119,6 +119,35 @@ public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
         }
     }
 
+    @Override
+    public <R extends Node<T>> void visitFrom(VisitorMode order, Action<Node<T>> act,R node){
+        Node<Integer> nc = new Node<>(0);//Some actions MAY MODIFY count of TREE_NODES.
+        switch(order){
+            case PRE:
+                _visitor.preOrder(this,act,node);
+                __ComputeC(nc);
+                _count = nc.getValue();
+                break;
+            case POST:
+                _visitor.postOrder(this,act,node);
+                __ComputeC(nc);
+                _count = nc.getValue();
+                break;
+            case IN:
+                _visitor.inOrder(this,act,node);
+                __ComputeC(nc);
+                _count = nc.getValue();
+                break;
+            case NONE:
+                act.perform(node);//NONE => perform action on the root.
+                __ComputeC(nc);
+                _count = nc.getValue();
+                break;
+            default:
+                break;
+        }
+    }
+
     /*Tree implementation*/
     @Override
     public Node<T> root(){
@@ -178,7 +207,7 @@ public class LinkedTree<T> implements Tree<T>, PositionalTree<T> {
     }
 
     @Override
-    public void setVisitor(Visitor<T> visitor){
+    public void setVisitor(SubVisitor<T> visitor){
         this._visitor = visitor;
     }
 

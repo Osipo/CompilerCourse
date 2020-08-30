@@ -9,8 +9,9 @@ public interface Tree<T> {
     Node<T> rightSibling(Node<T> node);
     Node<T> root();
     T value(Node<T> node);
-    void setVisitor(Visitor<T> visitor);
+    void setVisitor(SubVisitor<T> visitor);
     void visit(VisitorMode order, Action<Node<T>> act);
+    <R extends Node<T>> void visitFrom(VisitorMode order, Action<Node<T>> act, R subTree);
     int getCount();
     void clear();//FROM ICollection<T>
 }

@@ -2,7 +2,8 @@ package ru.osipov.labs.lab3.trees;
 
 import ru.osipov.labs.lab1.structures.lists.ArrStack;
 
-public class BinaryNRVisitor<T> extends NRVisitor<T> implements Visitor<T> {
+//Works fine with IMMUTABLE Binary Search Trees.
+public class BinaryNRVisitor<T> extends NRSubVisitor<T> implements Visitor<T>, SubVisitor<T> {
 
     //SYMMETRIC BSTREE TRAVERSAL WITHOUT RECURSION
     @Override

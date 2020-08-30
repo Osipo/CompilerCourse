@@ -5,7 +5,9 @@ import ru.osipov.labs.lab1.structures.lists.ArrStack;
 
 import java.util.List;
 
-public class SequentialNRVisitor<T> extends NRVisitor<T> implements Visitor<T> {
+//Works fine with MUTABLE TREES
+//BUT USES STACK (So Children C1...CN of node N will be interpreted as CN...C1)
+public class SequentialNRVisitor<T> extends NRSubVisitor<T> implements Visitor<T>, SubVisitor<T> {
 
 
     @Override
@@ -29,6 +31,90 @@ public class SequentialNRVisitor<T> extends NRVisitor<T> implements Visitor<T> {
                 STACK.push(c);
             }
             act.perform(m);
+        }
+        if(!noCount)
+            System.out.println("Visited: "+co);
+    }
+
+    @Override
+    public void preOrder(Tree<T> tree, Action<Node<T>> act, Node<T> node) {
+        Node<T> m = node;
+
+        if(act == null){
+            act = (n) -> System.out.print(tree.value(n).toString()+" ");
+        }
+
+        ArrStack<Node<T>> STACK = new ArrStack<>(tree.getCount() * 2);
+        STACK.push(m);
+        long co = 0;
+        while(!STACK.isEmpty()) {
+            if(!noCount)
+                co++;
+            m = STACK.top();
+            STACK.pop();
+            List<Node<T>> ch = tree.getChildren(m);
+            for(Node<T> c : ch){
+                STACK.push(c);
+            }
+            act.perform(m);
+        }
+        if(!noCount)
+            System.out.println("Visited: "+co);
+    }
+
+    @Override
+    public void postOrder(Tree<T> tree, Action<Node<T>> act) {
+        Node<T> m = tree.root();
+
+        if(act == null){
+            act = (n) -> System.out.print(tree.value(n).toString()+" ");
+        }
+
+        ArrStack<Node<T>> STACK = new ArrStack<>(tree.getCount() * 2);
+        STACK.push(m);
+        long co = 0;
+        while(!STACK.isEmpty()) {
+            if(!noCount)
+                co++;
+            m = STACK.top();
+            List<Node<T>> ch = tree.getChildren(m);
+            if(ch != null && ch.size() > 0)
+                for(Node<T> c : ch){
+                    STACK.push(c);
+                }
+            else {
+                act.perform(m);
+                STACK.pop();
+            }
+        }
+        if(!noCount)
+            System.out.println("Visited: "+co);
+    }
+
+    @Override
+    public void postOrder(Tree<T> tree, Action<Node<T>> act, Node<T> node) {
+        Node<T> m = node;
+
+        if(act == null){
+            act = (n) -> System.out.print(tree.value(n).toString()+" ");
+        }
+
+        ArrStack<Node<T>> STACK = new ArrStack<>(tree.getCount() * 2);
+        STACK.push(m);
+        long co = 0;
+        while(!STACK.isEmpty()) {
+            if(!noCount)
+                co++;
+            m = STACK.top();
+            List<Node<T>> ch = tree.getChildren(m);
+            if(ch != null && ch.size() > 0)
+                for(Node<T> c : ch){
+                    STACK.push(c);
+                }
+            else {
+                act.perform(m);
+                STACK.pop();
+            }
         }
         if(!noCount)
             System.out.println("Visited: "+co);

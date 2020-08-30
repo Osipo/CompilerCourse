@@ -9,24 +9,17 @@ import ru.osipov.labs.lab1.structures.automats.CNFA;
 import ru.osipov.labs.lab1.structures.automats.DFA;
 import ru.osipov.labs.lab1.utils.RegexRPNParser;
 import ru.osipov.labs.lab2.grammars.Grammar;
-import ru.osipov.labs.lab2.grammars.GrammarSymbol;
 import ru.osipov.labs.lab2.grammars.json.InvalidJsonGrammarException;
 import ru.osipov.labs.lab2.jsonParser.SimpleJsonParser;
 import ru.osipov.labs.lab2.jsonParser.jsElements.JsonObject;
 import ru.osipov.labs.lab3.lexers.DFALexer;
 import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.lexers.generators.FALexerGenerator;
-import ru.osipov.labs.lab3.parsers.LLParser;
-import ru.osipov.labs.lab3.parsers.generators.LLParserGenerator;
 import ru.osipov.labs.lab3.trees.LinkedTree;
 import guru.nidi.graphviz.engine.Graphviz;
-import ru.osipov.labs.lab3.trees.VisitorMode;
 import ru.osipov.labs.lab4.parsers.ShiftReduceParser;
-import ru.osipov.labs.lab4.semantics.SInfo;
-import ru.osipov.labs.lab4.semantics.SintPostfixTranslator;
 
 import java.io.File;
-import java.util.*;
 
 
 @SpringBootConfiguration

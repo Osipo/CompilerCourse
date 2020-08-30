@@ -1,29 +1,11 @@
 package ru.osipov.labs.lab3.trees;
 
 import ru.osipov.labs.lab1.structures.lists.ArrStack;
-import ru.osipov.labs.lab1.structures.lists.LinkedStack;
 
-//Works fine with IMMUTABLE TREES.
-public class NRVisitor<T> implements Visitor<T> {
-
-    protected boolean noCount;
-
-    public NRVisitor(){
-        this.noCount = true;
-    }
-
-    public void setNoCount(boolean f){
-        this.noCount = f;
-    }
-
-    public boolean isNoCount(){
-        return noCount;
-    }
-
-    //MAY PRODUCE ERRORS WHEN TREE IS BEING MODIFIED. (MUTABLE)
+public class NRSubVisitor<T> extends NRVisitor<T> implements SubVisitor<T> {
     @Override
-    public void preOrder(Tree<T> tree, Action<Node<T>> act){
-        Node<T> m = tree.root();//ROOT(T)
+    public void preOrder(Tree<T> tree, Action<Node<T>> act,Node<T> node){
+        Node<T> m = node;
 
         if(act == null){
             act = (n) -> System.out.print(tree.value(n).toString()+" ");
@@ -53,8 +35,8 @@ public class NRVisitor<T> implements Visitor<T> {
     }
 
     @Override
-    public void inOrder(Tree<T> t, Action<Node<T>> act) {
-        Node<T> m = t.root();//ROOT(T)
+    public void inOrder(Tree<T> t, Action<Node<T>> act,Node<T> node) {
+        Node<T> m = node;
 
         if(act == null){
             act = (n) -> System.out.print(t.value(n).toString()+" ");
@@ -96,10 +78,9 @@ public class NRVisitor<T> implements Visitor<T> {
         }
     }
 
-
     @Override
-    public void postOrder(Tree<T> tree, Action<Node<T>> act) {
-        Node<T> m = tree.root();//ROOT(T)
+    public void postOrder(Tree<T> tree, Action<Node<T>> act,Node<T> node) {
+        Node<T> m = node;
 
         if(act == null){
             act = (n) -> System.out.print(tree.value(n).toString()+" ");
@@ -109,7 +90,6 @@ public class NRVisitor<T> implements Visitor<T> {
         long c  = 0;
         while(true){
             if(m != null){
-                //act.perform(m);//LABEL(node,TREE)
                 STACK.push(m);
                 m = tree.leftMostChild(m);//LEFTMOST_CHILD(node,TREE)
             }

@@ -80,8 +80,9 @@ public class LLParser extends Parser{
             LinkedStack<LinkedNode<Token>> S = new LinkedStack<>();
             LinkedNode<Token> root = new LinkedNode<>();
             LinkedNode<Token> EOF = new LinkedNode<>();
-            EOF.setValue(new Token("$","$",'t'));
-            root.setValue(new Token(start,start,'n'));
+            int line, col = 0;
+            EOF.setValue(new Token("$","$",'t',0,0));
+            root.setValue(new Token(start,start,'n',0,0));
             root.setIdx(1);
             S.push(EOF);
             S.push(root);// Stack: S,$.
@@ -96,6 +97,8 @@ public class LLParser extends Parser{
                 tok = lexer.recognize(f);
             }
             String t = tok.getName();
+            line = tok.getLine();
+            col = tok.getColumn();
             int nidx = 1;//counter of elements (tree nodes)
             while(!X.getValue().getName().equals("$")) {
                 if(X.getValue().getName().equals(t)){//S.Top() == X && X == t
@@ -112,6 +115,8 @@ public class LLParser extends Parser{
                         tok = lexer.recognize(f);
                     }
                     t = tok.getName();
+                    line = tok.getLine();
+                    col = tok.getColumn();
                     X = S.top();
                     continue;
                 }
@@ -142,7 +147,7 @@ public class LLParser extends Parser{
                     for(int i = symbols.size() - 1; i >= 0; i--){
                         LinkedNode<Token> node = new LinkedNode<>();
                         nidx++;
-                        node.setValue(new Token(symbols.get(i).getVal(),null,symbols.get(i).getType()));
+                        node.setValue(new Token(symbols.get(i).getVal(),null,symbols.get(i).getType(),line,col));
                         node.setIdx(nidx);
                         node.setParent(X);
                         X.getChildren().add(node);//ON STACK: Xn..X_1 => X_1..Xn BUT ON TREE: Xn..X_1

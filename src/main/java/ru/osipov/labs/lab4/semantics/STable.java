@@ -30,7 +30,7 @@ public class STable {
             this.table.set(i,null);
         }
         this.table = null;
-        System.out.println("Table was clear.");
+        //System.out.println("Table was clear.");
     }
     public void init(){
         int l = HASH_MAX - HASH_MIN + 1;
@@ -38,7 +38,7 @@ public class STable {
         for(int i = 0; i < l; i++){
             this.table.add(null);
         }
-        System.out.println("Table was initiated with "+table.size()+" null elements.");
+        //System.out.println("Table was initiated with "+table.size()+" null elements.");
     }
 
     public void add(SInfo entry){

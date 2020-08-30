@@ -16,8 +16,10 @@ class Program {
     # Define method calc with two parameters
     def int calc(int a, long b){
         b = 5 - ( - b) ;
-        char c ;
+        chr () ;
+        chr(1);
         calc(b,5) ;
+        calc (a + 2,b,c);
         c = chr(1,b) ;
         a = ( b + 4 ) * 5 ^ 2;
         if(a > b)

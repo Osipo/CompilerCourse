@@ -1,9 +1,11 @@
 package ru.osipov.labs.lab3.trees;
 
+import ru.osipov.labs.lab4.semantics.Entry;
+
 public class Node<T> {
     protected T value;
     protected int idx;
-    protected String code;
+    protected Entry record;
     public void setValue(T val) {
         this.value = val;
     }
@@ -12,12 +14,12 @@ public class Node<T> {
         return value;
     }
 
-    public void setCode(String c){
-        this.code = c;
+    public void setRecord(Entry record) {
+        this.record = record;
     }
 
-    public String getCode(){
-        return code;
+    public Entry getRecord() {
+        return record;
     }
 
     public void setIdx(int i){
@@ -32,6 +34,7 @@ public class Node<T> {
 
     public Node(){
         this.value = null;
+        this.record = null;
     }
 
     @Override
