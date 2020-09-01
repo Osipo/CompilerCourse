@@ -15,7 +15,6 @@ import ru.osipov.labs.lab3.lexers.DFALexer;
 import ru.osipov.labs.lab3.lexers.ILexer;
 import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.lexers.generators.FALexerGenerator;
-import ru.osipov.labs.lab3.parsers.LLParser;
 import ru.osipov.labs.lab3.parsers.LRAlgorithm;
 import ru.osipov.labs.lab3.parsers.ParserMode;
 import ru.osipov.labs.lab3.parsers.LRParser;
@@ -34,7 +33,6 @@ public class Exe implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        RegexRPNParser rpn = new RegexRPNParser();
         String p = System.getProperty("user.dir");
         System.out.println("Current working dir: "+p);
 
@@ -117,13 +115,18 @@ public class Exe implements CommandLineRunner {
             Graphviz.fromString(tree.toDot("pTreeA3")).render(Format.PNG).toFile(new File(dir+"\\ASTree_SLR"));
             System.out.println("Tree nodes after processing: "+tree.getCount());
 
+            //Semantic analyzer and IE code generator.
             InterCodeGenerator gen = new InterCodeGenerator(G,tree);
+
             tree.visit(VisitorMode.PRE,gen);//SEARCH_DEFINITIONS
             System.out.println("Definitions are read.");
+
             gen.setActionType(TranslatorActions.RENAME_PARAMS);
             gen.reset();
             tree.visit(VisitorMode.PRE,gen);
             System.out.println("Parameters of methods in bodies are renamed");
+
+            gen.setActionType(TranslatorActions.TYPE_CHECK);
             gen.reset();
 
         }
