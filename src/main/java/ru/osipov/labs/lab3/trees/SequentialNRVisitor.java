@@ -3,6 +3,7 @@ package ru.osipov.labs.lab3.trees;
 
 import ru.osipov.labs.lab1.structures.lists.ArrStack;
 
+import java.util.HashSet;
 import java.util.List;
 
 //Works fine with MUTABLE TREES
@@ -71,13 +72,18 @@ public class SequentialNRVisitor<T> extends NRSubVisitor<T> implements Visitor<T
         }
 
         ArrStack<Node<T>> STACK = new ArrStack<>(tree.getCount() * 2);
+        HashSet<Node<T>> visited = new HashSet<>();
         STACK.push(m);
         long co = 0;
         while(!STACK.isEmpty()) {
             if(!noCount)
                 co++;
             m = STACK.top();
-            List<Node<T>> ch = tree.getChildren(m);
+            List<Node<T>> ch = null;
+            if(!visited.contains(m)){
+                visited.add(m);
+                ch = tree.getChildren(m);
+            }
             if(ch != null && ch.size() > 0)
                 for(Node<T> c : ch){
                     STACK.push(c);
@@ -101,12 +107,17 @@ public class SequentialNRVisitor<T> extends NRSubVisitor<T> implements Visitor<T
 
         ArrStack<Node<T>> STACK = new ArrStack<>(tree.getCount() * 2);
         STACK.push(m);
+        HashSet<Node<T>> visited = new HashSet<>();
         long co = 0;
         while(!STACK.isEmpty()) {
             if(!noCount)
                 co++;
             m = STACK.top();
-            List<Node<T>> ch = tree.getChildren(m);
+            List<Node<T>> ch = null;
+            if(!visited.contains(m)){
+                visited.add(m);
+                ch = tree.getChildren(m);
+            }
             if(ch != null && ch.size() > 0)
                 for(Node<T> c : ch){
                     STACK.push(c);

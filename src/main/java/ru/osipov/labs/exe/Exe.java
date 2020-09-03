@@ -19,6 +19,7 @@ import ru.osipov.labs.lab3.parsers.ParserMode;
 import ru.osipov.labs.lab3.parsers.LRParser;
 import ru.osipov.labs.lab3.trees.*;
 import ru.osipov.labs.lab4.semantics.*;
+import ru.osipov.labs.lab4.translators.IntermediateCodeGenerator;
 import ru.osipov.labs.lab4.translators.SemanticAnalyzer;
 import ru.osipov.labs.lab4.translators.TranslatorActions;
 
@@ -115,18 +116,22 @@ public class Exe implements CommandLineRunner {
             System.out.println("Tree nodes after processing: "+tree.getCount());
 
             //Semantic analyzer and IE code generator.
-            SemanticAnalyzer gen = new SemanticAnalyzer(G,tree);
+            SemanticAnalyzer semantic = new SemanticAnalyzer(G,tree);
 
-            tree.visit(VisitorMode.PRE,gen);//SEARCH_DEFINITIONS
+            tree.visit(VisitorMode.PRE,semantic);//SEARCH_DEFINITIONS
             System.out.println("Definitions are read.");
 
-            gen.setActionType(TranslatorActions.RENAME_PARAMS);
-            gen.reset();
-            tree.visit(VisitorMode.PRE,gen);
-            System.out.println("Parameters of methods in bodies are renamed");
+            semantic.setActionType(TranslatorActions.RENAME_PARAMS);
+            semantic.reset();
+            tree.visit(VisitorMode.PRE,semantic);
+            System.out.println("Parameters of methods in bodies are renamed.");
 
-            gen.setActionType(TranslatorActions.TYPE_CHECK);
-            gen.reset();
+            semantic.setActionType(TranslatorActions.TYPE_CHECK);
+            semantic.reset();
+            tree.visit(VisitorMode.PRE,semantic);
+            System.out.println("Types were checked.");
+
+            IntermediateCodeGenerator generator = semantic.getCodeGenerator();
 
         }
         else{

@@ -79,6 +79,10 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         TypeNegotiation.setGen(this);
     }
 
+    public IntermediateCodeGenerator getCodeGenerator(){
+        return new IntermediateCodeGenerator(G,parsed,lcounter);
+    }
+
     public LinkedTree<Token> getAnnotatedParsedTree(){
         return parsed;
     }
@@ -403,7 +407,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         }
         if(n.getValue().getName().equals("=") || n.getValue().getName().equals("return")
             || n.getValue().getName().equals("CALL")){
-            parsed.visitFrom(VisitorMode.POST,this::checkExpr,n);
+            parsed.visitFrom(VisitorMode.POST,this::checkExpr,n);//ERROR
         }
     }
 
@@ -414,7 +418,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
     //Also generate code for method calls and save it into CALL node.
     private void checkExpr(Node<Token> n){
         LinkedNode<Token> arg = (LinkedNode<Token>) n;
-
+        //System.out.println(n.getValue());
         //argument list was read (ARGS)
         if(arg.getValue().getName().equals("AL")){
             LinkedNode<Token> mId = arg.getParent().getChildren().get(1);
@@ -663,12 +667,12 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         //arithmetic operator or rel operator (+,-,*,/,<,>,==,<>)
         else if(G.getOperators().contains(arg.getValue().getName())){
             Token op = n.getValue();
-
+            //System.out.println(n.getValue()+": "+n.getValue().getName());
             //else if it is a UNARY OP.
             if(op.getName().equals("um") || op.getName().equals("up")){
-                LinkedNode<Token> t1 = arg.getParent().getChildren().get(0);
-                String pm = "Error at: ("+t1.getValue().getLine()+", "+t1.getValue().getColumn()+") ";
-                if(t1.getRecord() == null){
+                LinkedNode<Token> t1 = arg.getChildren().get(0);
+                String pm = "Error at: ("+arg.getValue().getLine()+", "+arg.getValue().getColumn()+") ";
+                if(arg.getRecord() == null){
                     String tp = "Null";
                     errors.add(new SemanticError(pm+"Cannot apply operator \'"+op.getName()+"\' to  "+tp+". Numeric type expected!",SemanticErrorType.WRONG_TYPE));
                     return;
@@ -686,8 +690,8 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 return;
             }
 
-            LinkedNode<Token> t1 = arg.getParent().getChildren().get(0);
-            LinkedNode<Token> t2 = arg.getParent().getChildren().get(1);
+            LinkedNode<Token> t1 = arg.getChildren().get(0);
+            LinkedNode<Token> t2 = arg.getChildren().get(1);
             String pm = "Error at: ("+t1.getValue().getLine()+", "+t1.getValue().getColumn()+") ";
             if(t1.getRecord() == null || t2.getRecord() == null){
                 String tp = t1.getRecord() == null ? "Null" : t1.getRecord().getType();

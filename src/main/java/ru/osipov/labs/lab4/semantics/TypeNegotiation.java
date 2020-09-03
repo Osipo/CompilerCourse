@@ -119,8 +119,13 @@ public class TypeNegotiation {
         code.setLexem(gen.getCounter()+"t");
         temp.setValue(code);
 
-        //set new type to parent node!
-        gen.getAnnotatedParsedTree().parent(t).getRecord().setType(etype);
+        //set new type to parent node! (CHECK node AL :: parent(t) => AL)
+        Node<Token> parent = gen.getAnnotatedParsedTree().parent(t);
+        if(parent.getRecord() == null){
+            parent.setRecord(new Entry(parent.getValue().getName(),etype,EntryCategory.CONSTANT,0));
+        }
+        else
+            parent.getRecord().setType(etype);
     }
 
 
