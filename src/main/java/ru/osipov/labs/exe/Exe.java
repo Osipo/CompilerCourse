@@ -125,14 +125,19 @@ public class Exe implements CommandLineRunner {
             semantic.reset();
             tree.visit(VisitorMode.PRE,semantic);
             System.out.println("Parameters of methods in bodies are renamed.");
-
-            semantic.setActionType(TranslatorActions.TYPE_CHECK);
+//
+//            semantic.setActionType(TranslatorActions.TYPE_CHECK);
+//            semantic.reset();
+//            tree.visit(VisitorMode.PRE,semantic);
+//            System.out.println("Types were checked.");
+//
+//            IntermediateCodeGenerator generator = semantic.getCodeGenerator();
+//            System.out.println("Has errors: "+semantic.hasErrors());
+//            if(semantic.hasErrors())
+//                semantic.showErrors();
+            semantic.setActionType(TranslatorActions.SHOW_DEFINITIONS);
             semantic.reset();
             tree.visit(VisitorMode.PRE,semantic);
-            System.out.println("Types were checked.");
-
-            IntermediateCodeGenerator generator = semantic.getCodeGenerator();
-
         }
         else{
             System.out.println("Syntax errors detected!");

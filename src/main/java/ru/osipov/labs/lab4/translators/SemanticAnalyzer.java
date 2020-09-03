@@ -20,7 +20,6 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
     private Env stable;//Symbols table (for id, vars and etc.)
 
     private LinkedStack<EntryCategory> S;//inner scopes.
-    private LinkedStack<String> labels;//labels.
     private Set<Pair<String,Integer>> types;
     private Grammar G;
     private LinkedTree<Token> parsed;
@@ -30,8 +29,6 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
 
     private SInfo currentType;
     private List<ClassInfo> classes;
-    private String curClassName;
-    private String curMethodName;
     private ClassInfo curClass;
     private MethodInfo curMethod;
     private EntryCategory currentScope;
@@ -40,6 +37,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
     //IS Expression (ifTrue -> try to find definition for each variable in expression)
     private boolean isExp;
     private boolean refFlag;
+    private List<String> oldPNames;//old parameters names.
 
     private Map<String,Set<LinkedNode<Token>>> unsearched;//for random field or method decls.
     private List<SemanticError> errors;
@@ -50,6 +48,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
     public SemanticAnalyzer(Grammar G, LinkedTree<Token> tree){
         this.G = G;
         this.parsed = tree;
+        this.oldPNames = new ArrayList<>();
         counter = 0;
         lcounter = 0;
         this.isExp = false;
@@ -57,8 +56,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         this.unsearched = new HashMap<>();
         this.actionType = TranslatorActions.SEARCH_DEFINITIONS;
         this.errors = new ArrayList<>();
-        this.S = new LinkedStack<>();//symbol tables.
-        this.labels = new LinkedStack<>();
+        this.S = new LinkedStack<>();//scope types.
         this.currentScope = EntryCategory.GLOBAL;
         this.classes = new ArrayList<>();//classes.
         this.stable = new Env(null);//root (dummy) table.
@@ -119,11 +117,12 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         this.currentType = null;
         this.curClass = null;
         this.curMethod = null;
-        this.curClassName = null;
-        this.curMethodName = null;
         this.currentNode = null;
         this.isExp = false;
         this.unsearched = null;
+        this.oldPNames = null;
+        this.refFlag = false;
+        this.S = null;
     }
 
     public long getCounter() {
@@ -139,11 +138,17 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
     }
 
 
+    //SEARCH ALL DEFINITIONS AND CHECK
+    // 1) USAGE IS AFTER DEFINITION (int a; a = 2;) but not (a = 5; int a;)
+    // 1.1) YOU MAY USE METHODS AND FIELDS BEFORE THEIR DEFINITIONS IN BODIES OF OTHER METHODS.
+    // 1.2) IF AND ONLY IF YOU DEFINE THESE COMPONENTS SOMEWHERE ELSE.
+    // 2) THERE ARE NO ANY REDIFINITION.
     private void search(LinkedNode<Token> n){
         Token t = n.getValue();
+        //System.out.println("node: "+t.getLexem()+"  scope: "+currentScope+" isExp: "+isExp);
         if(t.getType() == 'n'){
             //located expression.
-            if(t.getName().equals("CALL") || t.getName().equals("AL")) {
+            if(t.getName().equals("CALL") || t.getName().equals("AL") || t.getName().equals("AP")) {
                 isExp = true;
                 currentType = null;
             }
@@ -161,10 +166,12 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         }
         if(t.getLexem().equals("class")){
             currentScope = EntryCategory.CLASS;
+            isExp = false;
             return;
         }
         else if(t.getLexem().equals("ref")){
             refFlag = true;
+            isExp = false;
         }
         if(t.getName().equals(G.getScopeBegin())){
             if(currentScope == EntryCategory.CLASS){
@@ -180,18 +187,28 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             openScope();
         }
         else if(t.getName().equals(G.getScopeEnd())){
-            currentScope = S.top();
             //extract FIELD scope if we exit from METHOD.
-            if(currentScope == EntryCategory.PARAMETER) {
+            //System.out.println(S);
+            if(currentScope == EntryCategory.VAR){
                 closeScope();
-                S.pop();
                 currentScope = S.top();
+                if(currentScope == EntryCategory.PARAMETER) {
+                    closeScope();
+                    S.pop();
+                    currentScope = S.top();
+                }
+                else if(currentScope == EntryCategory.VAR)
+                    S.pop();
             }
-            S.pop();
-            closeScope();
+            else if(currentScope == EntryCategory.FIELD){
+                currentScope = S.top();
+                S.pop();
+                closeScope();
+            }
         }
         else if(t.getLexem().equals("def")){
             currentType = null;
+            isExp = false;
             currentScope = EntryCategory.METHOD;
         }
         //left id before '=' token (>>id = EXP)
@@ -290,6 +307,11 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                         n.setRecord(e);
                         break;
                     }
+                    case "ch":{
+                        Entry e = new Entry(t.getLexem(),"char",EntryCategory.CONSTANT,2);
+                        n.setRecord(e);
+                        break;
+                    }
                 }
             }
         }
@@ -302,7 +324,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                     System.out.println("New class: "+t.getLexem());
                     ClassInfo clazz = new ClassInfo(t.getLexem(),0);
                     stable.addEntry(new SInfo(t.getLexem(),clazz));
-                    curClassName = t.getLexem();
+                    //curClassName = t.getLexem();
                     curClass = clazz;
                     classes.add(clazz);
                     //add new type.
@@ -318,6 +340,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 if (currentType == null) {//CHECK THAT IS DEFINED.
                     errors.add(new SemanticError("Error at: ("+t.getLine()+", "+t.getColumn()+") Type "+t.getLexem()+" is not found!",SemanticErrorType.TYPE_NOT_FOUND));
                 }
+                //System.out.println("CurType: "+t.getLexem());
             }
         }
         //type T was read. next (T >> id ;).
@@ -357,7 +380,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             openScope();
             //ADD INFO ABOUT NEW METHOD TO CUR_CLASS
             currentType = null;
-            curMethodName = name;
+            //curMethodName = name;
             curMethod = m;
             curClass.addMethod(m);
             node.setRecord(m);
@@ -729,9 +752,13 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         if(arg.getValue().getName().equals("def")){
             currentNode = null;
         }
+        //new method header was reached.
         else if(arg.getParent() != null && arg.getParent().getValue().getName().equals("def")
             && arg.getParent().getChildren().indexOf(arg) == 1){
             currentNode = arg;
+            if(arg.getRecord() != null && arg.getRecord() instanceof MethodInfo){
+                oldPNames.addAll(  ((MethodInfo)arg.getRecord()).getParams().stream().map(Entry::getName).collect(Collectors.toList()));
+            }
         }
         else if(arg.getValue().getName().equals(G.getIdName()) && currentNode != null){
             Entry e = currentNode.getRecord();
@@ -740,16 +767,20 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             }
             else{
                 MethodInfo mi = (MethodInfo) e;
-                List<String> params = mi.getParams().stream().map(Entry::getName).collect(Collectors.toList());
                 //if parameter was found rename it for PARAM command.
                 int idx;
-                if((idx = params.indexOf(arg.getValue().getLexem())) != -1){
-                    arg.getValue().setLexem(":p"+idx);
-                    if(arg.getRecord() != null)
-                        arg.getRecord().setNewName(":p"+idx);
+                if((idx = oldPNames.indexOf(arg.getValue().getLexem())) != -1){
+                    arg.getValue().setLexem(":p" + idx);
+                    arg.getRecord().setNewName(":p" + idx);
                 }
             }
         }
+    }
+
+    private void showDefs(Node<Token> arg){
+        LinkedNode<Token> n = (LinkedNode<Token>) arg;
+        if(n.getRecord() != null)
+            System.out.println(n.getRecord().getCat()+" "+n.getValue().getLexem()+":: "+n.getRecord());
     }
 
     @Override
@@ -761,5 +792,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             renameParams(n);
         else if(actionType == TranslatorActions.TYPE_CHECK)
             typeCheck(n);
+        else if(actionType == TranslatorActions.SHOW_DEFINITIONS)
+            showDefs(n);
     }
 }

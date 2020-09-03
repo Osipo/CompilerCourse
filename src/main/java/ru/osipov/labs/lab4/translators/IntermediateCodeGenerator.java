@@ -96,7 +96,7 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
                     TokenAttrs a2 = (TokenAttrs) else_node;
                     String l = a2.getCode();
                     writer.write(a1.getCode());
-                    writer.write(l);
+                    writer.write(l);//label from ELS node.
                 }
             }
             //while condition was read.
@@ -107,7 +107,8 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
                     lcounter++;
                     String loop = "L" + lcounter + ": ";
 
-                    writer.write("IFTRUE "+a1.getCode()+" "+loop+" :z"+" \n");
+                    writer.write(a1.getCode());
+                    writer.write("IFTRUE "+a1.getLexem()+" "+loop+" :z"+" \n");
 
                     //begin while-loop body.
                     writer.write(loop+"\n");
@@ -135,7 +136,8 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
                     TokenAttrs a1 = (TokenAttrs)t;
                     String l = labels.top();
                     labels.pop();
-                    writer.write("IFTRUE "+a1.getCode()+" "+l+" :z"+" \n");
+                    writer.write(a1.getCode());
+                    writer.write("IFTRUE "+a1.getLexem()+" "+l+" :z"+" \n");
                 }
             }
             else if(arg.getValue() instanceof TokenAttrs){
