@@ -122,7 +122,7 @@ public class TypeNegotiation {
         //set new type to parent node! (CHECK node AL :: parent(t) => AL)
         Node<Token> parent = gen.getAnnotatedParsedTree().parent(t);
         if(parent.getRecord() == null){
-            parent.setRecord(new Entry(parent.getValue().getName(),etype,EntryCategory.CONSTANT,0));
+            parent.setRecord(new Entry(parent.getValue().getName(),etype,EntryCategory.EXPR_TYPE,0));
         }
         else
             parent.getRecord().setType(etype);

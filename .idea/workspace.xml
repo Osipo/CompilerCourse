@@ -11,9 +11,10 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/Exe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/Exe.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/IntermediateCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/IntermediateCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/EntryCategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/EntryCategory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/TypeNegotiation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/TypeNegotiation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/SemanticAnalyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/SemanticAnalyzer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/TranslatorActions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/TranslatorActions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/SemanticError.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/SemanticError.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

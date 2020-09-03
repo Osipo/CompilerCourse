@@ -40,7 +40,8 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
     private List<String> oldPNames;//old parameters names.
 
     private Map<String,Set<LinkedNode<Token>>> unsearched;//for random field or method decls.
-    private List<SemanticError> errors;
+    private Map<String,String> constant_temps;//temp variables for constants. (constant_value -> temp_name)
+    private Set<SemanticError> errors;
 
     private TranslatorActions actionType;
 
@@ -55,7 +56,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         this.refFlag = false;
         this.unsearched = new HashMap<>();
         this.actionType = TranslatorActions.SEARCH_DEFINITIONS;
-        this.errors = new ArrayList<>();
+        this.errors = new HashSet<>();
         this.S = new LinkedStack<>();//scope types.
         this.currentScope = EntryCategory.GLOBAL;
         this.classes = new ArrayList<>();//classes.
@@ -120,7 +121,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         this.currentNode = null;
         this.isExp = false;
         this.unsearched = null;
-        this.oldPNames = null;
+        //this.oldPNames = null; DO NOT NULLIFY BEFORE renameParams
         this.refFlag = false;
         this.S = null;
     }
@@ -641,6 +642,9 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 code.setCode("= "+exp.getLexem()+" "+rtype+" :res \n");
                 code.setLexem(":res");
                 n.setValue(code);
+                if(n.getRecord() == null){
+                    n.setRecord(new Entry(n.getValue().getName(),rtype,EntryCategory.EXPR_TYPE,0));
+                }
             }
             //else if type of expression t can be extended to method return type.
             else if(TypeNegotiation.greaterThan(currentNode,t)){//return type > type of t.
@@ -673,6 +677,9 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
 
                 code.setCode("= "+exp.getLexem()+" "+t2.getRecord().getType()+" "+val.getLexem()+" \n");
                 n.setValue(code);
+                if(n.getRecord() == null){
+                    n.setRecord(new Entry(n.getValue().getName(),t1.getRecord().getType(),EntryCategory.EXPR_TYPE,0));
+                }
                 //n.getRecord().setType(t2.getRecord().getType());
             }
             //else if type of expression t1 can be extended to t2.
@@ -694,8 +701,8 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             //else if it is a UNARY OP.
             if(op.getName().equals("um") || op.getName().equals("up")){
                 LinkedNode<Token> t1 = arg.getChildren().get(0);
-                String pm = "Error at: ("+arg.getValue().getLine()+", "+arg.getValue().getColumn()+") ";
-                if(arg.getRecord() == null){
+                String pm = "Error at: ("+t1.getValue().getLine()+", "+t1.getValue().getColumn()+") ";
+                if(t1.getRecord() == null){
                     String tp = "Null";
                     errors.add(new SemanticError(pm+"Cannot apply operator \'"+op.getName()+"\' to  "+tp+". Numeric type expected!",SemanticErrorType.WRONG_TYPE));
                     return;
@@ -707,6 +714,9 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                     code.setCode(op.getLexem()+" "+exp1.getLexem()+":"+t1.getRecord().getType()+" :z "+":t"+counter+" \n");
                     code.setLexem(":t"+counter);
                     n.setValue(code);
+                    if(arg.getRecord() == null){
+                        arg.setRecord(new Entry(arg.getValue().getName(),t1.getRecord().getType(),EntryCategory.EXPR_TYPE,0));
+                    }
                 }
                 else
                     errors.add(new SemanticError(pm+"Cannot apply operator \'"+op.getName()+"\' to  "+t1.getRecord().getType()+". Numeric type expected!",SemanticErrorType.WRONG_TYPE));
@@ -730,6 +740,9 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 code.setCode(op.getLexem()+" "+exp1.getLexem()+":"+t2.getRecord().getType()+" "+exp2.getLexem()+":"+t1.getRecord().getType()+" "+":t"+counter+" \n");
                 code.setLexem(":t"+counter);
                 n.setValue(code);
+                if(n.getRecord() == null){
+                    n.setRecord(new Entry(n.getValue().getName(),t1.getRecord().getType(),EntryCategory.EXPR_TYPE,0));
+                }
             }
             //else if type of t1 can be extended to t2.
             else if(TypeNegotiation.maxType(t1,t2)){
@@ -757,6 +770,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             && arg.getParent().getChildren().indexOf(arg) == 1){
             currentNode = arg;
             if(arg.getRecord() != null && arg.getRecord() instanceof MethodInfo){
+
                 oldPNames.addAll(  ((MethodInfo)arg.getRecord()).getParams().stream().map(Entry::getName).collect(Collectors.toList()));
             }
         }

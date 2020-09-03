@@ -20,4 +20,23 @@ public class SemanticError {
     public String toString(){
         return type+" "+msg+"\n";
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o == null)
+            return false;
+        try{
+            SemanticError e = (SemanticError)o;
+            return e.getMsg().equalsIgnoreCase(this.msg) && e.getType() == this.type;
+        }
+        catch (ClassCastException c){
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode(){
+        String s = this.type + this.msg;
+        return s.hashCode();
+    }
 }
