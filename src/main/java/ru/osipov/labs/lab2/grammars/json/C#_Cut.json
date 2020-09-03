@@ -31,7 +31,7 @@
     "empty": null
   },
   "keywords": ["class","true","false","if","else","while",
-    "int","long","float","double","char","bool","void","not","def","return"
+    "int","long","float","double","char","bool","void","not","def","ref","return"
   ],
   "meta": {
     "mlCommentStart": "/*",
@@ -71,7 +71,7 @@
     {"OEXP": "EXP"},{"OEXP": "empty"},
     {"FP": "FL"},{"FP": "empty"},
     {"FL": ["FL",",","F"]},{"FL": "F"},
-    {"F": ["T","id"]},{"P": ["OP",";"]},{"P": "R"},
+    {"F": ["T","id"]},{"F": ["ref","T","id"]},{"P": ["OP",";"]},{"P": "R"},
     {"R": ["{","OPLIST","}"]},{"OPLIST": ["OPLIST","P"]},{"OPLIST": ["P"]},
     {"P": ["if","(","B",")","P","ELS"]},{"ELS": ["else","P"]},{"ELS": null},
     {"P": ["while","(","B",")","P"]},

@@ -6,7 +6,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import ru.osipov.labs.lab1.structures.automats.CNFA;
 import ru.osipov.labs.lab1.structures.automats.DFA;
-import ru.osipov.labs.lab1.utils.RegexRPNParser;
 import ru.osipov.labs.lab2.grammars.Grammar;
 import ru.osipov.labs.lab2.grammars.json.InvalidJsonGrammarException;
 import ru.osipov.labs.lab2.jsonParser.SimpleJsonParser;
@@ -20,7 +19,7 @@ import ru.osipov.labs.lab3.parsers.ParserMode;
 import ru.osipov.labs.lab3.parsers.LRParser;
 import ru.osipov.labs.lab3.trees.*;
 import ru.osipov.labs.lab4.semantics.*;
-import ru.osipov.labs.lab4.translators.InterCodeGenerator;
+import ru.osipov.labs.lab4.translators.SemanticAnalyzer;
 import ru.osipov.labs.lab4.translators.TranslatorActions;
 
 import java.io.File;
@@ -116,7 +115,7 @@ public class Exe implements CommandLineRunner {
             System.out.println("Tree nodes after processing: "+tree.getCount());
 
             //Semantic analyzer and IE code generator.
-            InterCodeGenerator gen = new InterCodeGenerator(G,tree);
+            SemanticAnalyzer gen = new SemanticAnalyzer(G,tree);
 
             tree.visit(VisitorMode.PRE,gen);//SEARCH_DEFINITIONS
             System.out.println("Definitions are read.");

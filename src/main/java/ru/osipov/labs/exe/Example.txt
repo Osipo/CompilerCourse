@@ -14,7 +14,7 @@ class Program {
     }
 
     # Define method calc with two parameters
-    def int calc(int a, long b){
+    def int calc(int a, ref long b){
         b = 5 - ( - b) ;
         chr () ;
         chr(1);

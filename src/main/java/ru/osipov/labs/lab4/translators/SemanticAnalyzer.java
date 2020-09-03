@@ -8,10 +8,15 @@ import ru.osipov.labs.lab3.lexers.TokenAttrs;
 import ru.osipov.labs.lab3.trees.*;
 import ru.osipov.labs.lab4.semantics.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class InterCodeGenerator implements Action<Node<Token>> {
+//PRODUCE ANNOTATED TREE FROM given (field: parsed)
+public class SemanticAnalyzer implements Action<Node<Token>> {
     private Env stable;//Symbols table (for id, vars and etc.)
 
     private LinkedStack<EntryCategory> S;//inner scopes.
@@ -19,7 +24,9 @@ public class InterCodeGenerator implements Action<Node<Token>> {
     private Set<Pair<String,Integer>> types;
     private Grammar G;
     private LinkedTree<Token> parsed;
+
     private long counter;//counts of temp variables.
+    private long lcounter;//counts of labels.
 
     private SInfo currentType;
     private List<ClassInfo> classes;
@@ -32,17 +39,21 @@ public class InterCodeGenerator implements Action<Node<Token>> {
 
     //IS Expression (ifTrue -> try to find definition for each variable in expression)
     private boolean isExp;
+    private boolean refFlag;
 
     private Map<String,Set<LinkedNode<Token>>> unsearched;//for random field or method decls.
     private List<SemanticError> errors;
 
     private TranslatorActions actionType;
 
-    public InterCodeGenerator(Grammar G, LinkedTree<Token> tree){
+    //Accept Grammar G and Abstract Syntax tree.
+    public SemanticAnalyzer(Grammar G, LinkedTree<Token> tree){
         this.G = G;
         this.parsed = tree;
         counter = 0;
+        lcounter = 0;
         this.isExp = false;
+        this.refFlag = false;
         this.unsearched = new HashMap<>();
         this.actionType = TranslatorActions.SEARCH_DEFINITIONS;
         this.errors = new ArrayList<>();
@@ -80,6 +91,10 @@ public class InterCodeGenerator implements Action<Node<Token>> {
         for(SemanticError e : errors){
             System.out.println(e);
         }
+    }
+
+    public boolean hasErrors(){
+        return errors.size() > 0;
     }
 
     protected void openScope(){
@@ -143,6 +158,9 @@ public class InterCodeGenerator implements Action<Node<Token>> {
         if(t.getLexem().equals("class")){
             currentScope = EntryCategory.CLASS;
             return;
+        }
+        else if(t.getLexem().equals("ref")){
+            refFlag = true;
         }
         if(t.getName().equals(G.getScopeBegin())){
             if(currentScope == EntryCategory.CLASS){
@@ -305,11 +323,13 @@ public class InterCodeGenerator implements Action<Node<Token>> {
                 //IF IT IS NOT A NEW PARAMETER AND CURRENT SCOPE IS PARAMETER LIST
                 if(currentScope == EntryCategory.PARAMETER && currentScope != s.getEntry().getCat()) {
                     ParameterInfo p = new ParameterInfo(t.getLexem(),currentType.getValue(),currentType.getEntry().getMem());
+                    p.setRef(refFlag);
                     stable.addEntry(new SInfo(t.getLexem(),p));
                     //ADD INFO ABOUT NEW PARAMERETER TO CUR_METHOD.
                     currentType = null;
                     curMethod.addParameter(p);
                     n.setRecord(p);
+                    refFlag = false;
                     return;
                 }
                 else if(currentScope != s.getEntry().getCat()){//if it is a new entity type with same name (method with same name as field or class)
@@ -346,10 +366,12 @@ public class InterCodeGenerator implements Action<Node<Token>> {
         }
         else if(currentScope == EntryCategory.PARAMETER){
             ParameterInfo p = new ParameterInfo(name,currentType.getValue(),currentType.getEntry().getMem());
+            p.setRef(refFlag);
             stable.addEntry(new SInfo(name,p));
             //ADD INFO TO CUR_METHOD.
             curMethod.addParameter(p);
             node.setRecord(p);
+            refFlag = false;
             currentType = null;
         }
         //ADD INFO TO CUR_CLASS IF FIELD or ADD INFO TO METHOD IF VAR.
@@ -377,6 +399,7 @@ public class InterCodeGenerator implements Action<Node<Token>> {
         if(n.getParent() != null && n.getParent().getValue().getName().equals("def")
                 && n.getParent().getChildren().indexOf(n) == 1){//id of method was found.
             currentNode = n;
+            curMethod = n.getRecord() == null ? null : (MethodInfo)n.getRecord();
         }
         if(n.getValue().getName().equals("=") || n.getValue().getName().equals("return")
             || n.getValue().getName().equals("CALL")){
@@ -388,6 +411,7 @@ public class InterCodeGenerator implements Action<Node<Token>> {
     //return 'return' always has one child.
     //generate IE code for type conversion and expressions.
     //Check also method calls (parameters with arguments) and compute type of CALL node.
+    //Also generate code for method calls and save it into CALL node.
     private void checkExpr(Node<Token> n){
         LinkedNode<Token> arg = (LinkedNode<Token>) n;
 
@@ -408,17 +432,59 @@ public class InterCodeGenerator implements Action<Node<Token>> {
                     errors.add(new SemanticError("Error at: ("+mId.getValue().getLine()+", "+mId.getValue().getColumn()+") Wrong number of parameters of method:  "+mId.getValue().getLexem()+". Expected:  "+params.size()+" but actual:  "+args.size(),SemanticErrorType.WRONG_PARAMS_NUMBER));
                     return;
                 }
+
+                LinkedStack<String> pStack = new LinkedStack<>();
+                List<String> sentNames = new ArrayList<>();//names of variables which sent to the arg list of CALL expression as Refs
+                boolean errs = false;
                 for(int i = 0; i < params.size(); i++){
-                    String ptype = params.get(i).getType();
-                    String pname = params.get(i).getName();
+                    ParameterInfo param = params.get(i);
+                    String ptype = param.getType();
+                    String pname = param.getName();
                     String atype = args.get(i).getRecord() == null ? "Null" : args.get(i).getRecord().getType();
+                    String aname = args.get(i).getRecord() == null ? ":undef" : args.get(i).getRecord().getName();
                     if(!ptype.equals(atype)){
                         errors.add(new SemanticError("Error at: ("+args.get(i).getValue().getLine()+", "+args.get(i).getValue().getColumn()+") Expected type of "+(i + 1)+" parameter:  "+ptype+" but found:  "+atype,SemanticErrorType.WRONG_TYPE));
-                        return;
+                        errs = true;
+                        continue;
                     }
-                    sb.append("PARAM ").append(args.get(i).getValue().getLexem()).append(" :z ").append(":p").append(i).append("\n");
+                    //passing by value => SAVE INTO STACK.
+                    if(!param.isRef()){
+                        pStack.push(aname);
+                        sb.append("PUSH_P ").append(pname).append(" \n");
+                    }
+                    else
+                        sentNames.add(aname);
                 }
-                sb.append("GOTO ").append(mi.getName()).append("\n");
+                if(curMethod == null){
+                    errors.add(new SemanticError("Error at: ("+currentNode.getValue().getLine()+", "+currentNode.getValue().getColumn()+"). Current method body belongs to method that is redefined!",SemanticErrorType.TYPE_REDEFINED));
+                    return;
+                }
+                if(errs){//WRONG TYPES OF PARAMETERS
+                    return;
+                }
+                List<ParameterInfo> oldParams = curMethod.getParams();
+                //FOR EACH PARAMETER IN CURRENT METHOD SAVE THEM INTO STACK.
+                for(int i = 0; i < oldParams.size();i++){
+                    ParameterInfo p = oldParams.get(i);
+                    if(!sentNames.contains(p.getName())) {
+                        pStack.push(p.getName());
+                        sb.append("PUSH_P ").append(p.getName()).append(" \n");
+                    }
+                }
+                //THEN PUT NEW VALUES TO PARAMETERS.
+                for(int i = 0; i < params.size();i++){
+                    sb.append("PARAM ").append(args.get(i).getValue().getLexem()).append(" :z ").append(":p").append(i).append(" \n");
+                }
+
+                //ADD TO STACK OLD PARAMETERS OF CURRENT METHOD.
+                sb.append("GOTO ").append(mi.getName()).append(":").append(" \n");
+                lcounter++;
+                sb.append("L").append(lcounter).append(':').append(" \n");
+                while(!pStack.isEmpty()){
+                    sb.append("POP_P ").append(pStack.top()).append(" \n");
+                    pStack.pop();
+                }
+                //POP FROM STACK AFTER CALLING.
                 Token v = arg.getParent().getValue();
                 TokenAttrs c = new TokenAttrs(v);
                 c.setCode(sb.toString());
@@ -436,7 +502,7 @@ public class InterCodeGenerator implements Action<Node<Token>> {
             arg.setRecord(new Entry(type,type,EntryCategory.METHOD_TYPE,0));
         }
 
-        //if it is a single right node of CALL or method CALL with one parameter.
+        //if it is a single right TERM_node of CALL (method CALL with one parameter).
         else if(arg.getParent().getValue().getName().equals("CALL")
             && arg.getParent().getChildren().indexOf(arg) == 0 && arg.getValue().getType() == 't'){
 
@@ -450,24 +516,91 @@ public class InterCodeGenerator implements Action<Node<Token>> {
                 StringBuilder sb = new StringBuilder();
                 MethodInfo mi = (MethodInfo) mId.getRecord();
                 List<ParameterInfo> params = mi.getParams();
+                String argumentName = "";
+                LinkedStack<String> pStack = new LinkedStack<>();
                 if(params.size() != 1){
                     errors.add(new SemanticError("Error at: ("+arg.getValue().getLine()+", "+arg.getValue().getColumn()+") Wrong number of parameters of method:  "+mId.getValue().getLexem()+". Expected:  "+params.size()+" but actual:  "+1,SemanticErrorType.WRONG_PARAMS_NUMBER));
                     return;
                 }
                 String ptype = params.get(0).getType();
+                String aname = arg.getRecord() == null ? ":undef" : arg.getRecord().getName();
+                boolean isRef = params.get(0).isRef();
                 String atype = arg.getRecord() == null ? "Null" : arg.getRecord().getType();
                 if(!ptype.equals(atype)){
                     errors.add(new SemanticError("Error at: ("+arg.getValue().getLine()+", "+arg.getValue().getColumn()+") Expected type of "+1+" parameter:  "+ptype+" but found:  "+atype,SemanticErrorType.WRONG_TYPE));
                     return;
                 }
-                sb.append("PARAM ").append(arg.getValue().getLexem()).append(" :z ").append(":p0").append('\n');
-                sb.append("GOTO ").append(mi.getName()).append('\n');
+                if(!isRef){
+                    pStack.push(aname);
+                }
+                else{
+                    argumentName = aname;
+                }
+                if(curMethod == null){
+                    errors.add(new SemanticError("Error at: ("+currentNode.getValue().getLine()+", "+currentNode.getValue().getColumn()+"). Current method body belongs to method that is redefined!",SemanticErrorType.TYPE_REDEFINED));
+                    return;
+                }
+                List<ParameterInfo> oldParams = curMethod.getParams();
+                //FOR EACH PARAMETER IN CURRENT METHOD SAVE THEM INTO STACK.
+                for(int i = 0; i < oldParams.size();i++){
+                    ParameterInfo p = oldParams.get(i);
+                    if(!argumentName.equals(p.getName())) {
+                        pStack.push(p.getName());
+                        sb.append("PUSH_P ").append(p.getName()).append(" \n");
+                    }
+                }
+                sb.append("PARAM ").append(arg.getValue().getLexem()).append(" :z ").append(":p0 ").append('\n');
+                sb.append("GOTO ").append(mi.getName()).append(":").append(" \n");
+                lcounter++;
+                sb.append("L").append(lcounter).append(':').append(" \n");
+                while(!pStack.isEmpty()){
+                    sb.append("POP_P ").append(pStack.top()).append(" \n");
+                    pStack.pop();
+                }
+                TokenAttrs c = new TokenAttrs(arg.getParent().getValue());
+                c.setCode(sb.toString());
+                arg.getParent().setValue(c);
             }
             return;
         }
+        //Else if it is a single right NON_Term_node of CALL (CALL of method without parameters)
+        else if(arg.getParent().getValue().getName().equals("CALL") && arg.getParent().getChildren().indexOf(arg) == 0 ){
+            LinkedNode<Token> mId = arg.getParent().getChildren().get(1);
+            //method not defined.
+            if(mId.getRecord() == null){
+                errors.add(new SemanticError("Error at: ("+mId.getValue().getLine()+", "+mId.getValue().getColumn()+") Cannot find method with name:  "+mId.getValue().getLexem()+".",SemanticErrorType.TYPE_NOT_FOUND));
+                return;
+            }
+            if(mId.getRecord() instanceof MethodInfo) {
+                MethodInfo mi = (MethodInfo)mId.getRecord();
+                if (curMethod == null) {
+                    errors.add(new SemanticError("Error at: (" + currentNode.getValue().getLine() + ", " + currentNode.getValue().getColumn() + "). Current method body belongs to method that is redefined!", SemanticErrorType.TYPE_REDEFINED));
+                    return;
+                }
+                List<ParameterInfo> oldParams = curMethod.getParams();
+                LinkedStack<String> pStack = new LinkedStack<>();
+                StringBuilder sb = new StringBuilder();
+                //FOR EACH PARAMETER IN CURRENT METHOD SAVE THEM INTO STACK.
+                for (int i = 0; i < oldParams.size(); i++) {
+                    ParameterInfo p = oldParams.get(i);
+                    pStack.push(p.getName());
+                    sb.append("PUSH_P ").append(p.getName()).append(" \n");
+                }
+                sb.append("GOTO ").append(mi.getName()).append(":").append(" \n");
+                lcounter++;
+                sb.append("L").append(lcounter).append(':').append(" \n");
+                while (!pStack.isEmpty()) {
+                    sb.append("POP_P ").append(pStack.top()).append(" \n");
+                    pStack.pop();
+                }
+                TokenAttrs c = new TokenAttrs(arg.getParent().getValue());
+                c.setCode(sb.toString());
+                arg.getParent().setValue(c);
+            }
+        }
         if(arg.getValue().getName().equals("return")){
             LinkedNode<Token> t = arg.getChildren().get(0);
-            String rtype = currentNode.getRecord().getType();
+            String rtype = currentNode.getRecord() == null ? "Undefined" : currentNode.getRecord().getType();
             if(t.getRecord() == null){
                 String tp = "Null";
                 errors.add(new SemanticError("Error at: ("+t.getValue().getLine()+", "+t.getValue().getColumn()+") Expected return type:  "+rtype+" but found:  "+tp,SemanticErrorType.WRONG_TYPE));
@@ -478,16 +611,16 @@ public class InterCodeGenerator implements Action<Node<Token>> {
                 Token exp = t.getValue();
                 TokenAttrs code = new TokenAttrs(n.getValue());
                 //incCounter();
-                code.setCode("RETURN "+" :z"+" :z "+exp.getLexem());
-                code.setLexem(exp.getLexem());
+                code.setCode("= "+exp.getLexem()+" "+rtype+" :res \n");
+                code.setLexem(":res");
                 n.setValue(code);
             }
             //else if type of expression t can be extended to method return type.
             else if(TypeNegotiation.greaterThan(currentNode,t)){//return type > type of t.
                 Token exp = t.getValue();
                 TokenAttrs code = new TokenAttrs(n.getValue());
-                code.setCode("RETURN "+" :z"+" :z "+exp.getLexem());
-                code.setLexem(exp.getLexem());
+                code.setCode("= "+exp.getLexem()+" "+rtype+" :res \n");
+                code.setLexem(":res");
                 n.setValue(code);
             }
             else
@@ -510,22 +643,49 @@ public class InterCodeGenerator implements Action<Node<Token>> {
                 Token exp = t1.getValue();
                 TokenAttrs code = new TokenAttrs(n.getValue());
                 //operator ASSIGN (=) is unary or binary operator (when binary it contains type of expression to be assigned)
-                code.setCode("= "+exp.getLexem()+" :z "+val.getLexem());
+
+                code.setCode("= "+exp.getLexem()+" "+t2.getRecord().getType()+" "+val.getLexem()+" \n");
                 n.setValue(code);
+                //n.getRecord().setType(t2.getRecord().getType());
             }
             //else if type of expression t1 can be extended to t2.
             else if(TypeNegotiation.greaterThan(t2,t1)){//t2 > t1.
                 Token val = t2.getValue();
                 Token exp = t1.getValue();
                 TokenAttrs code = new TokenAttrs(n.getValue());
-                code.setCode("= "+exp.getLexem()+" :z "+val.getLexem());
+                code.setCode("= "+exp.getLexem()+" "+t2.getRecord().getType()+" "+val.getLexem()+" \n");
                 n.setValue(code);
+                //n.getRecord().setType(t2.getRecord().getType());
             }
             else
                 errors.add(new SemanticError(pm+"Cannot apply operator \'"+n.getValue().getName()+"\'. Expected:  "+t2.getRecord().getType()+" but found:  "+t1.getRecord().getType(),SemanticErrorType.WRONG_TYPE));
         }
+        //arithmetic operator or rel operator (+,-,*,/,<,>,==,<>)
         else if(G.getOperators().contains(arg.getValue().getName())){
             Token op = n.getValue();
+
+            //else if it is a UNARY OP.
+            if(op.getName().equals("um") || op.getName().equals("up")){
+                LinkedNode<Token> t1 = arg.getParent().getChildren().get(0);
+                String pm = "Error at: ("+t1.getValue().getLine()+", "+t1.getValue().getColumn()+") ";
+                if(t1.getRecord() == null){
+                    String tp = "Null";
+                    errors.add(new SemanticError(pm+"Cannot apply operator \'"+op.getName()+"\' to  "+tp+". Numeric type expected!",SemanticErrorType.WRONG_TYPE));
+                    return;
+                }
+                if(TypeNegotiation.isNumeric(t1.getRecord())){
+                    incCounter();
+                    Token exp1 = t1.getValue();
+                    TokenAttrs code = new TokenAttrs(op);
+                    code.setCode(op.getLexem()+" "+exp1.getLexem()+":"+t1.getRecord().getType()+" :z "+":t"+counter+" \n");
+                    code.setLexem(":t"+counter);
+                    n.setValue(code);
+                }
+                else
+                    errors.add(new SemanticError(pm+"Cannot apply operator \'"+op.getName()+"\' to  "+t1.getRecord().getType()+". Numeric type expected!",SemanticErrorType.WRONG_TYPE));
+                return;
+            }
+
             LinkedNode<Token> t1 = arg.getParent().getChildren().get(0);
             LinkedNode<Token> t2 = arg.getParent().getChildren().get(1);
             String pm = "Error at: ("+t1.getValue().getLine()+", "+t1.getValue().getColumn()+") ";
@@ -540,7 +700,7 @@ public class InterCodeGenerator implements Action<Node<Token>> {
                 Token exp1 = t2.getValue();
                 Token exp2 = t1.getValue();
                 TokenAttrs code = new TokenAttrs(op);
-                code.setCode(op.getLexem()+" "+exp1.getLexem()+" "+exp2.getLexem()+" "+":t"+counter);
+                code.setCode(op.getLexem()+" "+exp1.getLexem()+":"+t2.getRecord().getType()+" "+exp2.getLexem()+":"+t1.getRecord().getType()+" "+":t"+counter+" \n");
                 code.setLexem(":t"+counter);
                 n.setValue(code);
             }
@@ -550,7 +710,7 @@ public class InterCodeGenerator implements Action<Node<Token>> {
                 Token exp1 = t2.getValue();
                 Token exp2 = t1.getValue();
                 TokenAttrs code = new TokenAttrs(op);
-                code.setCode(op.getLexem()+" "+exp1.getLexem()+" "+exp2.getLexem()+" "+":t"+counter);
+                code.setCode(op.getLexem()+" "+exp1.getLexem()+":"+t2.getRecord().getType()+" "+exp2.getLexem()+":"+t1.getRecord().getType()+" "+":t"+counter+" \n");
                 code.setLexem(":t"+counter);//now lexeme is r where r is result of quadraple (op, e1, e2, r)
                 n.setValue(code);
             }

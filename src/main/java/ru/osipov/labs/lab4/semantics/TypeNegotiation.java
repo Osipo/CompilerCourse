@@ -3,11 +3,11 @@ package ru.osipov.labs.lab4.semantics;
 import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.lexers.TokenAttrs;
 import ru.osipov.labs.lab3.trees.Node;
-import ru.osipov.labs.lab4.translators.InterCodeGenerator;
+import ru.osipov.labs.lab4.translators.SemanticAnalyzer;
 
 public class TypeNegotiation {
-    private static InterCodeGenerator gen;
-    public static void setGen(InterCodeGenerator g){
+    private static SemanticAnalyzer gen;
+    public static void setGen(SemanticAnalyzer g){
         gen = g;
     }
     public static boolean maxType(Node<Token> t1, Node<Token> t2){
@@ -164,7 +164,7 @@ public class TypeNegotiation {
         return null;
     }
 
-    private static boolean isNumeric(Entry t){
+    public static boolean isNumeric(Entry t){
         if(t == null)
             return false;
         String type = t.getType();

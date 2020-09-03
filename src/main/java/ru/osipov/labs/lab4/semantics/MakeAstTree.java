@@ -30,7 +30,7 @@ public class MakeAstTree implements Action<Node<Token>> {
     @Override
     public void perform(Node<Token> arg) {
        LinkedNode<Token> current = (LinkedNode<Token>) arg;
-        System.out.println(current.getValue().getName());
+       //System.out.println(current.getValue().getName());
        for (int i = 0; i < current.getChildren().size(); i++) {
            LinkedNode<Token> c = current.getChildren().get(i);
            String name = c.getValue().getName();
