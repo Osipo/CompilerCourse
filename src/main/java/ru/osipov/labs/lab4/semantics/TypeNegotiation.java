@@ -115,9 +115,16 @@ public class TypeNegotiation {
         Token v = temp.getValue();
         TokenAttrs code = new TokenAttrs(v);
         gen.incCounter();
-        code.setCode("= "+v.getLexem()+" "+etype+" "+gen.getCounter()+"t");
-        code.setLexem(gen.getCounter()+"t");
-        temp.setValue(code);
+        //generate code for type conversion.
+        code.setCode("= "+v.getLexem()+" "+etype+" "+":t"+gen.getCounter()+" \n");
+        code.setLexem(":t"+gen.getCounter());
+        if(temp.getValue() instanceof TokenAttrs){
+            TokenAttrs opCode = (TokenAttrs)temp.getValue();
+            opCode.setCode(opCode.getCode() + code.getCode());
+        }
+        else
+            temp.setValue(code);
+        temp.getRecord().setType(etype);
 
         //set new type to parent node! (CHECK node AL :: parent(t) => AL)
         Node<Token> parent = gen.getAnnotatedParsedTree().parent(t);

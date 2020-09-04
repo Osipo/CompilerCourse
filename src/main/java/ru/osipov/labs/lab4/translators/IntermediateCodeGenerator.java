@@ -58,7 +58,8 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
             if (arg.getValue().getName().equals("def")) {
                 LinkedNode<Token> m = arg.getChildren().get(1);
                 writer.write(m.getValue().getLexem() + ": \n");
-                tree.visit(VisitorMode.POST, this::produceCode);
+                LinkedNode<Token> mb = arg.getChildren().get(0);
+                tree.visitFrom(VisitorMode.POST, this::produceCode,mb);
             }
         }catch (IOException e){
             System.out.println("Cannot write to file.");
@@ -68,6 +69,7 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
     //produce code for IF-ELSE and WHILE nodes.
     private void produceCode(Node<Token> n){
         LinkedNode<Token> arg = (LinkedNode<Token>) n;
+        //System.out.println(arg);
         try {
             //IF condition was read.
             if (arg.getParent().getValue().getName().equals("if") && arg.getParent().getChildren().indexOf(arg) == 2) {
@@ -121,6 +123,8 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
             }
             else if(arg.getValue() instanceof TokenAttrs){
                 TokenAttrs cod = (TokenAttrs)arg.getValue();
+                //System.out.println("Node with code: ");
+                //System.out.println(cod);
                 writer.write(cod.getCode());
             }
         }catch (IOException e){

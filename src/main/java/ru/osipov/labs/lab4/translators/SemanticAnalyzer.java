@@ -429,8 +429,14 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             currentNode = n;
             curMethod = n.getRecord() == null ? null : (MethodInfo)n.getRecord();
         }
-        if(n.getValue().getName().equals("=") || n.getValue().getName().equals("return")
-            || n.getValue().getName().equals("CALL")){
+        boolean isIfCond = false;
+        boolean isWhileCond = false;
+        if(n.getParent() != null){
+             isIfCond = n.getParent().getValue().getName().equals("if") && n.getParent().getChildren().indexOf(n) == 2;
+             isWhileCond = n.getParent().getValue().getName().equals("while") && n.getParent().getChildren().indexOf(n) == 1;
+        }
+        if(n.getValue().getName().equals("=") || n.getValue().getName().equals("return") || n.getValue().getName().equals("CALL")
+            || isIfCond || isWhileCond){
             parsed.visitFrom(VisitorMode.POST,this::checkExpr,n);//ERROR
         }
     }
@@ -505,8 +511,9 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 }
 
                 //ADD TO STACK OLD PARAMETERS OF CURRENT METHOD.
-                sb.append("GOTO ").append(mi.getName()).append(":").append(" \n");
+                sb.append("GOTO ").append(mi.getName()).append(":");
                 lcounter++;
+                sb.append(" L").append(lcounter).append(": \n");
                 sb.append("L").append(lcounter).append(':').append(" \n");
                 while(!pStack.isEmpty()){
                     sb.append("POP_P ").append(pStack.top()).append(" \n");
@@ -578,8 +585,9 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                     }
                 }
                 sb.append("PARAM ").append(arg.getValue().getLexem()).append(" :z ").append(":p0 ").append('\n');
-                sb.append("GOTO ").append(mi.getName()).append(":").append(" \n");
+                sb.append("GOTO ").append(mi.getName()).append(":");
                 lcounter++;
+                sb.append(" L").append(lcounter).append(": \n");
                 sb.append("L").append(lcounter).append(':').append(" \n");
                 while(!pStack.isEmpty()){
                     sb.append("POP_P ").append(pStack.top()).append(" \n");
@@ -614,8 +622,9 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                     pStack.push(p.getName());
                     sb.append("PUSH_P ").append(p.getName()).append(" \n");
                 }
-                sb.append("GOTO ").append(mi.getName()).append(":").append(" \n");
+                sb.append("GOTO ").append(mi.getName()).append(":");
                 lcounter++;
+                sb.append(" L").append(lcounter).append(": \n");
                 sb.append("L").append(lcounter).append(':').append(" \n");
                 while (!pStack.isEmpty()) {
                     sb.append("POP_P ").append(pStack.top()).append(" \n");
@@ -625,6 +634,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 c.setCode(sb.toString());
                 arg.getParent().setValue(c);
             }
+            return;
         }
         if(arg.getValue().getName().equals("return")){
             LinkedNode<Token> t = arg.getChildren().get(0);
@@ -670,8 +680,8 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             }
             //if both type are the same.
             if(t1.getRecord().getType().equals(t2.getRecord().getType())){
-                Token val = t2.getValue();
-                Token exp = t1.getValue();
+                Token val = t2.getValue();//1 left
+                Token exp = t1.getValue();//0 right
                 TokenAttrs code = new TokenAttrs(n.getValue());
                 //operator ASSIGN (=) is unary or binary operator (when binary it contains type of expression to be assigned)
 
@@ -711,7 +721,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                     incCounter();
                     Token exp1 = t1.getValue();
                     TokenAttrs code = new TokenAttrs(op);
-                    code.setCode(op.getLexem()+" "+exp1.getLexem()+":"+t1.getRecord().getType()+" :z "+":t"+counter+" \n");
+                    code.setCode(op.getName()+" "+exp1.getLexem()+":"+t1.getRecord().getType()+" :z "+":t"+counter+" \n");
                     code.setLexem(":t"+counter);
                     n.setValue(code);
                     if(arg.getRecord() == null){
@@ -737,7 +747,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 Token exp1 = t2.getValue();
                 Token exp2 = t1.getValue();
                 TokenAttrs code = new TokenAttrs(op);
-                code.setCode(op.getLexem()+" "+exp1.getLexem()+":"+t2.getRecord().getType()+" "+exp2.getLexem()+":"+t1.getRecord().getType()+" "+":t"+counter+" \n");
+                code.setCode(op.getName()+" "+exp1.getLexem()+":"+t2.getRecord().getType()+" "+exp2.getLexem()+":"+t1.getRecord().getType()+" "+":t"+counter+" \n");
                 code.setLexem(":t"+counter);
                 n.setValue(code);
                 if(n.getRecord() == null){
@@ -750,7 +760,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 Token exp1 = t2.getValue();
                 Token exp2 = t1.getValue();
                 TokenAttrs code = new TokenAttrs(op);
-                code.setCode(op.getLexem()+" "+exp1.getLexem()+":"+t2.getRecord().getType()+" "+exp2.getLexem()+":"+t1.getRecord().getType()+" "+":t"+counter+" \n");
+                code.setCode(op.getName()+" "+exp1.getLexem()+":"+t2.getRecord().getType()+" "+exp2.getLexem()+":"+t1.getRecord().getType()+" "+":t"+counter+" \n");
                 code.setLexem(":t"+counter);//now lexeme is r where r is result of quadraple (op, e1, e2, r)
                 n.setValue(code);
             }

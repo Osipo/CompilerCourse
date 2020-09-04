@@ -1,0 +1,39 @@
+chr: 
+= 'q' char a 
+= a char :res 
+calc: 
+= 5 long :t2 
+um :p1:long :z :t1 
+- :t2:long :t1:long :t3 
+= :t3 long :p1 
+PUSH_P :p0 
+PUSH_P :p1 
+GOTO chr: L1: 
+L1: 
+POP_P :p1 
+POP_P :p0 
+PUSH_P :p0 
+PUSH_P :p0 
+PARAM 5 :z :p0 
+PARAM :p1 :z :p1 
+GOTO calc: L2: 
+L2: 
+POP_P :p0 
+POP_P 5 
+= 4 long :t4 
++ :p1:long :t4:long :t5 
+^ 5:int 2:int :t6 
+= :t6 long :t7 
+* :t5:long :t6:long :t8 
+= :t8 long :p1 
+= :p0 long :t9 
+<= :p1:long :p0:long :t11 
+IFTRUE :t11 L3:  :z 
+L3: 
+= 1 long :t12 
++ :p1:long :t12:long :t13 
+<= :p1:long :p0:long :t11 
+IFTRUE :t11 L3:  :z 
+= :p0 long :p1 
+* :p0:long :p1:long :t14 
+= :t14 long :res 

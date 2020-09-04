@@ -40,7 +40,7 @@ public class Exe implements CommandLineRunner {
         String sc = System.getProperty("user.dir")+"\\src\\main\\java\\ru\\osipov\\labs\\exe";
         String dir = System.getProperty("user.dir")+"\\src\\main\\java\\ru\\osipov\\labs\\exe";
 
-        sc = sc + "\\Example.txt"; //INPUT
+        sc = sc + "\\Example_2.txt"; //INPUT
 
         p = p + "\\src\\main\\java\\ru\\osipov\\labs\\lab2\\";
         p = p + "grammars\\json\\C#_Cut.json";//Grammar.
@@ -62,8 +62,6 @@ public class Exe implements CommandLineRunner {
                 DFALexer lexer = new DFALexer(new DFA(nfa));
                 lexer.getImagefromStr(sc.substring(0,sc.lastIndexOf('\\') + 1),"Lexer");
 
-                //Parse grammar which type is LL(1).
-                //LLGrammarParse(_______,lexer,dir,sc);
 
                 //Parse grammar which type is SLR or LR(0)
                 SLRGrammarParse(G,lexer,dir,sc);
@@ -84,7 +82,7 @@ public class Exe implements CommandLineRunner {
     }
 
     private void SLRGrammarParse(Grammar G, ILexer lexer,String dir,String sc) throws IOException {
-        LRParser sa = new LRParser(G,lexer, LRAlgorithm.SLR);
+        LRParser sa = new LRParser(G,lexer, LRAlgorithm.SLR);//Parser algorithm: SLR(1)
         sa.setParserMode(ParserMode.DEBUG);
         System.out.println("\n");
         LinkedTree<Token> tree = sa.parse(sc);

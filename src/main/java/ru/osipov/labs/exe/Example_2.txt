@@ -1,0 +1,28 @@
+# This is the class definition.
+# The root of the program.
+class Program {
+    char a, b, c ;
+    Program po ; # recursive definition.
+
+    /*
+    define method chr without any parameters
+    which returns expression with type char
+    */
+    def char chr(){
+        a = 'q';
+        return a;
+    }
+
+    # Define method calc with two parameters
+    def long calc(int a, ref long b){
+        b = 5 - ( - b) ;
+        chr () ;
+        calc(b,5) ;
+        b = ( b + 4 ) * 5 ^ 2;
+        if(a > b)
+            while ( b <= a) b = b + 1;
+        else
+            b = a;
+        return a * b;
+    }
+}
