@@ -7,11 +7,6 @@ import ru.osipov.labs.lab3.lexers.Token;
 import ru.osipov.labs.lab3.lexers.TokenAttrs;
 import ru.osipov.labs.lab3.trees.*;
 import ru.osipov.labs.lab4.semantics.*;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -437,7 +432,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         }
         if(n.getValue().getName().equals("=") || n.getValue().getName().equals("return") || n.getValue().getName().equals("CALL")
             || isIfCond || isWhileCond){
-            parsed.visitFrom(VisitorMode.POST,this::checkExpr,n);//ERROR
+            parsed.visitFrom(VisitorMode.POST,this::checkExpr,n);
         }
     }
 
@@ -451,7 +446,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
         //System.out.println(n.getValue());
         //argument list was read (ARGS)
         if(arg.getValue().getName().equals("AL")){
-            LinkedNode<Token> mId = arg.getParent().getChildren().get(1);
+            LinkedNode<Token> mId = arg.getParent().getChildren().get(1);//AL -> CALL -> CHILDREN(1)
             //method not defined.
             if(mId.getRecord() == null){
                 errors.add(new SemanticError("Error at: ("+mId.getValue().getLine()+", "+mId.getValue().getColumn()+") Cannot find method with name:  "+mId.getValue().getLexem()+".",SemanticErrorType.TYPE_NOT_FOUND));
@@ -484,7 +479,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                     //passing by value => SAVE INTO STACK.
                     if(!param.isRef()){
                         pStack.push(aname);
-                        sb.append("PUSH_P ").append(pname).append(" \n");
+                        sb.append("PUSH_P ").append(aname).append(" \n");
                     }
                     else
                         sentNames.add(aname);
@@ -646,10 +641,12 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             }
             //if both type are the same.
             if(t.getRecord().getType().equals(rtype)){
-                Token exp = t.getValue();
+                String exp = t.getValue().getLexem();
+                if(t.getValue().getName().equals("CALL"))
+                    exp = ":res";
                 TokenAttrs code = new TokenAttrs(n.getValue());
                 //incCounter();
-                code.setCode("= "+exp.getLexem()+" "+rtype+" :res \n");
+                code.setCode("= "+exp+" "+rtype+" :res \n");
                 code.setLexem(":res");
                 n.setValue(code);
                 if(n.getRecord() == null){
@@ -681,11 +678,13 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             //if both type are the same.
             if(t1.getRecord().getType().equals(t2.getRecord().getType())){
                 Token val = t2.getValue();//1 left
-                Token exp = t1.getValue();//0 right
+                String exp = t1.getValue().getLexem();//0 right
+                if(t1.getValue().getName().equals("CALL"))
+                    exp = ":res";
                 TokenAttrs code = new TokenAttrs(n.getValue());
                 //operator ASSIGN (=) is unary or binary operator (when binary it contains type of expression to be assigned)
 
-                code.setCode("= "+exp.getLexem()+" "+t2.getRecord().getType()+" "+val.getLexem()+" \n");
+                code.setCode("= "+exp+" "+t2.getRecord().getType()+" "+val.getLexem()+" \n");
                 n.setValue(code);
                 if(n.getRecord() == null){
                     n.setRecord(new Entry(n.getValue().getName(),t1.getRecord().getType(),EntryCategory.EXPR_TYPE,0));

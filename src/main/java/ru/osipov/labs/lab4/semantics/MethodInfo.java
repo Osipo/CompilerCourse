@@ -11,6 +11,17 @@ public class MethodInfo extends Entry {
         this.params = new ArrayList<>();
     }
 
+    //copy constructor.
+    public MethodInfo(MethodInfo info){
+        super(info.getName(),info.getType(),info.getCat(),info.getMem());
+        this.params = new ArrayList<>(info.getParams());
+    }
+
+    @Override
+    public MethodInfo deepClone(){
+        return new MethodInfo(this);
+    }
+
     public void addParameter(ParameterInfo p){
         this.params.add(p);
     }

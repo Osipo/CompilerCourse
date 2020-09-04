@@ -13,6 +13,17 @@ public class Entry {
         this.name = name;
     }
 
+    public Entry(Entry t){
+        this.mem = t.getMem();
+        this.cat = t.getCat();
+        this.type = t.getType();
+        this.name = t.getName();
+    }
+
+    public Entry deepClone(){
+        return new Entry(this);
+    }
+
     public String getName(){
         return name;
     }

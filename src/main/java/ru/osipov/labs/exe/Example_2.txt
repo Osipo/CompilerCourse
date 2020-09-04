@@ -17,7 +17,7 @@ class Program {
     def long calc(int a, ref long b){
         b = 5 - ( - b) ;
         chr () ;
-        calc(b,5) ;
+        b = calc(b,5) ;
         b = ( b + 4 ) * 5 ^ 2;
         if(a > b)
             while ( b <= a) b = b + 1;

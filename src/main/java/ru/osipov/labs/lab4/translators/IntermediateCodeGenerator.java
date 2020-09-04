@@ -73,9 +73,9 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
         try {
             //IF condition was read.
             if (arg.getParent().getValue().getName().equals("if") && arg.getParent().getChildren().indexOf(arg) == 2) {
-                Token if_node = arg.getParent().getValue();
-                if (if_node instanceof TokenAttrs) {
-                    TokenAttrs cod = (TokenAttrs) if_node;
+                Token if_cond = arg.getValue();
+                if (if_cond instanceof TokenAttrs) {
+                    TokenAttrs cod = (TokenAttrs) if_cond;
                     StringBuilder sb = new StringBuilder();
                     lcounter++;
                     //ifFalse(t1,L1,z) => if t1 == false then GOTO L1 else z.
@@ -87,6 +87,7 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
                     LinkedNode<Token> else_node = arg.getParent().getChildren().get(0);
                     TokenAttrs eLabel = new TokenAttrs(else_node.getValue());
                     eLabel.setCode("L" + lcounter + ": \n");
+                    else_node.setValue(eLabel);
                 }
             }
             //if-body was read.
@@ -97,8 +98,17 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
                     TokenAttrs a1 = (TokenAttrs) if_body;
                     TokenAttrs a2 = (TokenAttrs) else_node;
                     String l = a2.getCode();
-                    writer.write(a1.getCode());
-                    writer.write(l);//label from ELS node.
+                    //while loop was a part of if body.
+                    //move label from while to statements after else. (label for FALSE_WHILE which skips WHILE_loop statements)
+                    if(arg.getValue().getName().equals("while")){
+                        writer.write(l);//write label from ELS node
+                        a2.setCode(a1.getCode());//set label from WHILE node to ELS node.
+                    }
+                    else {
+                        writer.write(a1.getCode());
+                        writer.write(l);//label from ELS node.
+                        a2.setCode("");//clear label from ELS node after writing.
+                    }
                 }
             }
             //while condition was read.
@@ -108,17 +118,30 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
                     TokenAttrs a1 = (TokenAttrs)t;
                     lcounter++;
                     String loop = "L" + lcounter + ": ";
+                    lcounter++;
+                    String eloop = "L" + lcounter + ": ";
 
                     writer.write(a1.getCode());
-                    writer.write("IFTRUE "+a1.getLexem()+" "+loop+" :z"+" \n");
+                    writer.write("IFTRUE "+a1.getLexem()+" "+loop+" "+eloop+"\n");
 
                     //begin while-loop body.
                     writer.write(loop+"\n");
                     labels.push(loop);
+
+                    //save loop that skips the while-section into WHILE Node.
+                    LinkedNode<Token> p = arg.getParent();
+                    TokenAttrs after_while = new TokenAttrs(p.getValue());
+                    after_while.setCode(eloop+"\n");
+                    arg.getParent().setValue(after_while);
                 }
             }
             //while body was read.
             else if(arg.getParent().getValue().getName().equals("while") && arg.getParent().getChildren().indexOf(arg) == 0){
+                Token t = arg.getValue();
+                if(t instanceof TokenAttrs){
+                    TokenAttrs end_loop = (TokenAttrs)t;
+                    writer.write(end_loop.getCode());//write last command of while loop. (last statement in while body)
+                }
                 tree.visitFrom(VisitorMode.POST,this::generateWhileLoop,arg.getParent().getChildren().get(1));
             }
             else if(arg.getValue() instanceof TokenAttrs){
@@ -141,7 +164,14 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
                     String l = labels.top();
                     labels.pop();
                     writer.write(a1.getCode());
-                    writer.write("IFTRUE "+a1.getLexem()+" "+l+" :z"+" \n");
+                    Token t2 = arg.getParent().getValue();
+                    String l2 = "";
+                    if(t2 instanceof TokenAttrs){
+                        TokenAttrs l2_a = (TokenAttrs)t2;
+                        l2 = l2_a.getCode();
+                        l2 = l2.substring(0,l2.length() - 1);//remove redundant \n symbol.
+                    }
+                    writer.write("IFTRUE "+a1.getLexem()+" "+l+" "+l2+" \n");
                 }
             }
             else if(arg.getValue() instanceof TokenAttrs){

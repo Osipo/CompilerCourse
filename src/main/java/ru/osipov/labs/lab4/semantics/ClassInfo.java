@@ -13,10 +13,30 @@ public class ClassInfo extends Entry{
         this.fields = new ArrayList<>();
     }
 
+    //constructor copy.
+    public ClassInfo(ClassInfo info){
+        super(info.getName(),info.getType(),info.getCat(),info.getMem());
+        this.methods = new ArrayList<>(info.getMethods());
+        this.fields = new ArrayList<>(info.getFields());
+    }
+
+    @Override
+    public ClassInfo deepClone(){
+        return new ClassInfo(this);
+    }
+
     public void addField(FieldInfo f){this.fields.add(f);}
 
     public void addMethod(MethodInfo m){
         this.methods.add(m);
+    }
+
+    public List<MethodInfo> getMethods(){
+        return methods;
+    }
+
+    public List<FieldInfo> getFields(){
+        return fields;
     }
 
     public boolean containsMethod(String e){

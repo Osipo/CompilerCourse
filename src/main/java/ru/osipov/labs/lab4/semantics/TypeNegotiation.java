@@ -116,23 +116,31 @@ public class TypeNegotiation {
         TokenAttrs code = new TokenAttrs(v);
         gen.incCounter();
         //generate code for type conversion.
-        code.setCode("= "+v.getLexem()+" "+etype+" "+":t"+gen.getCounter()+" \n");
-        code.setLexem(":t"+gen.getCounter());
+        if(temp.getValue().getName().equals("CALL"))
+            code.setCode("= :res " + etype + " :t" + gen.getCounter() + " \n");
+        else
+            code.setCode("= " + v.getLexem() + " " + etype + " " + ":t" + gen.getCounter() + " \n");
+
+        code.setLexem(":t" + gen.getCounter());
         if(temp.getValue() instanceof TokenAttrs){
             TokenAttrs opCode = (TokenAttrs)temp.getValue();
             opCode.setCode(opCode.getCode() + code.getCode());
+            opCode.setLexem(":t"+gen.getCounter());
         }
         else
             temp.setValue(code);
-        temp.getRecord().setType(etype);
+        //temp.getRecord().setType(etype);//HAS SIDE EFFECT. (other nodes with the same entry change type)!!
+        Entry e = temp.getRecord().deepClone();//Make polymorphic clone.
+        e.setType(etype);
+        temp.setRecord(e);
 
         //set new type to parent node! (CHECK node AL :: parent(t) => AL)
         Node<Token> parent = gen.getAnnotatedParsedTree().parent(t);
-        if(parent.getRecord() == null){
+//        if(parent.getRecord() == null){
             parent.setRecord(new Entry(parent.getValue().getName(),etype,EntryCategory.EXPR_TYPE,0));
-        }
-        else
-            parent.getRecord().setType(etype);
+        //}
+//        else
+//            parent.getRecord().setType(etype);
     }
 
 

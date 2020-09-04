@@ -8,6 +8,17 @@ public class ParameterInfo extends Entry {
         super(name,type, EntryCategory.PARAMETER, mem);
     }
 
+    //constructor copy
+    public ParameterInfo(ParameterInfo info){
+        super(info.getName(),info.getType(),info.getCat(),info.getMem());
+        this.isRef = info.isRef;
+    }
+
+    @Override
+    public ParameterInfo deepClone(){
+        return new ParameterInfo(this);
+    }
+
     public void setRef(boolean f){
         this.isRef = f;
     }
