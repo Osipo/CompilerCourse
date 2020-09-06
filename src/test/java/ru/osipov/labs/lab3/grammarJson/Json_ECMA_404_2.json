@@ -20,6 +20,9 @@
   },
   "keywords": ["null","true","false"],
   "nonTerms": ["J","ELEMS","ELEM","OBJECT","ARRAY","VAL","MEMBERS","MEMBER"],
+  "meta": {
+    "operands": ["string","id","true","false","null","num","realNum","binNum","realBinNum","octalNum","realOctalNum","hexNum","realHexNum"]
+  },
   "productions": [{"J": "ELEM"},{"ELEM": "VAL"},
     {"ELEMS": ["ELEMS",",","ELEM"]},{"ELEMS": "ELEM"},
     {"ARRAY": ["[","ELEMS","]"]},{"ARRAY": ["[","]"]},

@@ -3,8 +3,9 @@ package ru.osipov.labs.lab2.jsonParser.jsElements;
 import ru.osipov.labs.lab2.jsonParser.JsParserState;
 import ru.osipov.labs.lab1.structures.lists.KeyValuePair;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
-
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JsonObject extends JsonElement<StrLinkedHashMap<JsonElement>> {
     private StrLinkedHashMap<JsonElement> table;
@@ -17,6 +18,7 @@ public class JsonObject extends JsonElement<StrLinkedHashMap<JsonElement>> {
         this.table.put(k,id);
     }
 
+    //inherits from LinkedHashMap.
     public JsonElement Get(String k){//get element on the root level.
         return table.get(k);
     }
@@ -29,16 +31,20 @@ public class JsonObject extends JsonElement<StrLinkedHashMap<JsonElement>> {
 
     //get Element by path using path dot notation.
     public JsonElement getElement(String path){
-        String[] p = path.split("\\.");
+        ArrayList<String> p = new ArrayList<>();
+        Pattern regex = Pattern.compile("\\w+[^.]");
+        Matcher m = regex.matcher(path);
+        while(m.find())
+            p.add(m.group());
         StrLinkedHashMap<JsonElement> cnode = table;//ROOT.
         JsonElement n  = null;
-        if(p == null || p.length == 0)
+        if(p == null || p.size() == 0)
             return getProperty(path);
         for(String c : p){
             n = cnode.get(c);
+            if(n == null)
+                return n;
             try {//is interior node
-                if(n == null)
-                    return n;
                 cnode = (StrLinkedHashMap<JsonElement>) n.getValue();//isTable.
             }catch (ClassCastException e){//that was leaf.
                 return cnode.get(c);

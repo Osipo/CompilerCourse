@@ -11,6 +11,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 //PRODUCE ANNOTATED TREE FROM given (field: parsed)
+//TODO: Hide reset() into setActionType(TranslatorActions a)
+//TODO: Replace operator '=' with 'PUTFIELD' for ids which are fields of class.
+//TODO: Replace name of field id with full name of class and field separated by dot 'className.field'
 public class SemanticAnalyzer implements Action<Node<Token>> {
     private Env stable;//Symbols table (for id, vars and etc.)
 
@@ -25,6 +28,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
     private SInfo currentType;
     private List<ClassInfo> classes;
     private ClassInfo curClass;
+    private String curClassName;
     private MethodInfo curMethod;
     private EntryCategory currentScope;
     private Node<Token> currentNode;
@@ -419,7 +423,12 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
 
     //Check types of expressions. (traverse tree in POST_ORDER)
     private void typeCheck(LinkedNode<Token> n){
-        if(n.getParent() != null && n.getParent().getValue().getName().equals("def")
+        if(n.getValue().getName().equals("class")){
+            LinkedNode<Token> c_id = n.getChildren().get(3);
+            curClass = (ClassInfo)c_id.getRecord();
+            c_id = null;
+        }
+        else if(n.getParent() != null && n.getParent().getValue().getName().equals("def")
                 && n.getParent().getChildren().indexOf(n) == 1){//id of method was found.
             currentNode = n;
             curMethod = n.getRecord() == null ? null : (MethodInfo)n.getRecord();
@@ -512,6 +521,10 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 sb.append("L").append(lcounter).append(':').append(" \n");
                 while(!pStack.isEmpty()){
                     sb.append("POP_P ").append(pStack.top()).append(" \n");
+
+                    //RETURN OLD VALUE OF FIELD (PASSED BY VALUE)
+                    if(curClass.containsField(pStack.top()))
+                        sb.append("PUTFIELD ").append(curClass.getName()).append(" ").append(pStack.top()).append(" ").append(pStack.top()).append(" \n");
                     pStack.pop();
                 }
                 //POP FROM STACK AFTER CALLING.
@@ -586,6 +599,9 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 sb.append("L").append(lcounter).append(':').append(" \n");
                 while(!pStack.isEmpty()){
                     sb.append("POP_P ").append(pStack.top()).append(" \n");
+                    //RETURN OLD VALUE OF FIELD (PASSED BY VALUE)
+                    if(curClass.containsField(pStack.top()))
+                        sb.append("PUTFIELD ").append(curClass.getName()).append(" ").append(pStack.top()).append(" ").append(pStack.top()).append(" \n");
                     pStack.pop();
                 }
                 TokenAttrs c = new TokenAttrs(arg.getParent().getValue());
@@ -623,6 +639,9 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 sb.append("L").append(lcounter).append(':').append(" \n");
                 while (!pStack.isEmpty()) {
                     sb.append("POP_P ").append(pStack.top()).append(" \n");
+                    //RETURN OLD VALUE OF FIELD (PASSED BY VALUE)
+                    if(curClass.containsField(pStack.top()))
+                        sb.append("PUTFIELD ").append(curClass.getName()).append(" ").append(pStack.top()).append(" ").append(pStack.top()).append(" \n");
                     pStack.pop();
                 }
                 TokenAttrs c = new TokenAttrs(arg.getParent().getValue());
@@ -684,7 +703,11 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 TokenAttrs code = new TokenAttrs(n.getValue());
                 //operator ASSIGN (=) is unary or binary operator (when binary it contains type of expression to be assigned)
 
-                code.setCode("= "+exp+" "+t2.getRecord().getType()+" "+val.getLexem()+" \n");
+                //PUTFIELD if field or else '='
+                if(curClass.containsField(val.getLexem()))
+                    code.setCode("PUTFIELD "+curClass.getName()+" "+val.getLexem()+" "+exp+" \n");
+                else
+                    code.setCode("= "+exp+" "+t2.getRecord().getType()+" "+val.getLexem()+" \n");
                 n.setValue(code);
                 if(n.getRecord() == null){
                     n.setRecord(new Entry(n.getValue().getName(),t1.getRecord().getType(),EntryCategory.EXPR_TYPE,0));
@@ -693,10 +716,14 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             }
             //else if type of expression t1 can be extended to t2.
             else if(TypeNegotiation.greaterThan(t2,t1)){//t2 > t1.
-                Token val = t2.getValue();
-                Token exp = t1.getValue();
+                Token val = t2.getValue();//left
+                Token exp = t1.getValue();//right.
                 TokenAttrs code = new TokenAttrs(n.getValue());
-                code.setCode("= "+exp.getLexem()+" "+t2.getRecord().getType()+" "+val.getLexem()+" \n");
+                //PUTFIELD if field or else '='
+                if(curClass.containsField(val.getLexem()))
+                    code.setCode("PUTFIELD "+curClass.getName()+" "+val.getLexem()+" "+exp.getLexem()+" \n");
+                else
+                    code.setCode("= "+exp.getLexem()+" "+t2.getRecord().getType()+" "+val.getLexem()+" \n");
                 n.setValue(code);
                 //n.getRecord().setType(t2.getRecord().getType());
             }

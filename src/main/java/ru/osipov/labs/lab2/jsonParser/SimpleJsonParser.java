@@ -1,5 +1,6 @@
 package ru.osipov.labs.lab2.jsonParser;
 
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import ru.osipov.labs.lab1.structures.graphs.Pair;
 import ru.osipov.labs.lab2.jsonParser.jsElements.*;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;
@@ -215,8 +216,9 @@ public class SimpleJsonParser {
             }
             else if(c == '{') {
                 this.state = JsParserState.START;
-                objects.push(new JsonObject());
-                top.Put(propName.getValue(),objects.top());
+                JsonObject inner = new JsonObject();
+                top.Put(propName.getValue(),inner);
+                objects.push(inner);
                 this.S1.push(JsParserState.OPENBRACE);
             }
             else if(c == '\"') {
@@ -384,6 +386,8 @@ public class SimpleJsonParser {
                     this.state = JsParserState.OPENQP;
             }
             //datasets: 125, 559.
+            //array was read as last property of inner object.
+            //ERROR
             else if(c == '}' && S1.top() == JsParserState.OPENBRACE){//OPENROOT!!
                 this.state = JsParserState.CLOSEBRACE;
                 this.S1.pop();//close brace [,] openbrace
@@ -391,8 +395,10 @@ public class SimpleJsonParser {
                     this.S1.push(JsParserState.CLOSEBRACE);
                     ungetch(c);
                 }
-                else
+                else {
                     this.state = JsParserState.CLOSEQ;
+                    objects.pop();
+                }
             }
         }
         else if(state == JsParserState.CLOSEBRACE){

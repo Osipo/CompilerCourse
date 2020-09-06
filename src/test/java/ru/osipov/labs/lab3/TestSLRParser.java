@@ -20,6 +20,11 @@ import ru.osipov.labs.lab3.parsers.LRAlgorithm;
 import ru.osipov.labs.lab3.parsers.ParserMode;
 import ru.osipov.labs.lab3.parsers.LRParser;
 import ru.osipov.labs.lab3.trees.LinkedTree;
+import ru.osipov.labs.lab3.trees.SequentialNRVisitor;
+import ru.osipov.labs.lab3.trees.VisitorMode;
+import ru.osipov.labs.lab4.semantics.BreakChainNode;
+import ru.osipov.labs.lab4.semantics.DeleteUselessSyntaxNode;
+import ru.osipov.labs.lab4.semantics.MakeAstTree;
 
 import java.io.File;
 import java.io.IOException;
@@ -193,8 +198,29 @@ public class TestSLRParser {
         lexer.getImagefromStr(dir,"lexer_SLR_Test6");
         LRParser sa = new LRParser(G,lexer, LRAlgorithm.SLR);
         sa.setParserMode(ParserMode.DEBUG);
-        LinkedTree<Token> t = sa.parse(s);
-        assert t != null;
-        Graphviz.fromString(t.toDot("SLR_Parser_Test6")).render(Format.PNG).toFile(new File(dir+"SLR_Parser_Test6"));
+        LinkedTree<Token> tree = sa.parse(s);
+        assert tree != null;
+        Graphviz.fromString(tree.toDot("SLR_Parser_Test6")).render(Format.PNG).toFile(new File(dir+"SLR_Parser_Test6"));
+
+        tree.setVisitor(new SequentialNRVisitor<>());
+
+        //Sem Action 1: Delete useless syntax nodes.
+        DeleteUselessSyntaxNode act1 = new DeleteUselessSyntaxNode(G);
+        tree.visit(VisitorMode.PRE,act1);
+        System.out.println("Useless syntax node are deleted. (symbols like \",\" \";\" and etc.)");
+        Graphviz.fromString(tree.toDot("ptreeA1")).render(Format.PNG).toFile(new File(dir+"UsefulTree_SLR_Test6"));
+
+        //Sem Action 2: Delete chain Nodes (Rules like A -> B, B -> C).
+        BreakChainNode act2 = new BreakChainNode();
+        tree.visit(VisitorMode.PRE,act2);
+        System.out.println("Chain was deleted");
+        Graphviz.fromString(tree.toDot("ptreeA2")).render(Format.PNG).toFile(new File(dir+"ZippedTree_SLR_Test6"));
+
+//        //Sem Action 3: Build AS Tree.
+//        MakeAstTree act3 = new MakeAstTree(G);
+//        tree.visit(VisitorMode.PRE,act3);
+//        System.out.println("AST was built.");
+//        Graphviz.fromString(tree.toDot("pTreeA3")).render(Format.PNG).toFile(new File(dir+"ASTree_SLR_Test6"));
+//        System.out.println("Tree nodes after processing: "+tree.getCount());
     }
 }

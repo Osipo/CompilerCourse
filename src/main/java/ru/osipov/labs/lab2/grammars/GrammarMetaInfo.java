@@ -39,50 +39,63 @@ public class GrammarMetaInfo {
         this.aliases = new HashMap<>();
         this.types = new HashSet<>();
         this.scopeCategories = new HashSet<>();
+        this.begin = "";
+        this.end = "";
     }
 
     public void setOperands(Set<String> operands) {
-        this.operands = operands;
+        if(operands != null)
+             this.operands = operands;
     }
 
     public void setOperators(Set<String> operators) {
-        this.operators = operators;
+        if(operators != null)
+            this.operators = operators;
     }
 
     public void setAliases(Map<String, String> aliases) {
-        this.aliases = aliases;
+        if(aliases != null)
+            this.aliases = aliases;
     }
 
     public void setId(String id) {
-        this.id = id;
+        if(id != null)
+            this.id = id;
     }
 
     public void setCommentLine(String commentLine) {
-        this.commentLine = commentLine;
+        if(commentLine != null)
+            this.commentLine = commentLine;
     }
 
     public void setMlStart(String mlStart) {
-        this.mlStart = mlStart;
+        if(mlStart != null)
+            this.mlStart = mlStart;
     }
 
     public void setMlEnd(String mlEnd) {
-        this.mlEnd = mlEnd;
+        if(mlEnd != null)
+            this.mlEnd = mlEnd;
     }
 
     public void setBegin(String begin) {
-        this.begin = begin;
+        if(begin != null)
+            this.begin = begin;
     }
 
     public void setEnd(String end) {
-        this.end = end;
+        if(end != null)
+            this.end = end;
     }
 
     public void setKeywords(Set<String> keywords) {
-        this.keywords = keywords;
+        if(keywords != null)
+            this.keywords = keywords;
     }
 
     public void setTypes(Set<Pair<String, Integer>> types) {
-        this.types = types;
+        if(types != null)
+            this.types = types;
     }
 
     public Set<String> getKeywords() {

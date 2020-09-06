@@ -2,28 +2,37 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5cad473b-a1a8-424d-8493-cd1b0fd48c19" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/meta/JsonDocumentDescriptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/meta/JsonProperty.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/meta/JsonPropertyNumber.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/meta/JsonPropertyString.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/meta/JsonRange.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/jarAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/jarAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/ASTree_SLR.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/ASTree_SLR.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/Example_2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/Example_2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/test/ru/osipov/labs/lab2/TestLeftRecursion.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/test/ru/osipov/labs/lab2/TestLeftRecursion.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/test/ru/osipov/labs/lab3/TestLLParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/test/ru/osipov/labs/lab3/TestLLParser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/tests/test/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/IECode.code" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/Tree_SLR.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/Tree_SLR.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/UsefulTree_SLR_a1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/UsefulTree_SLR_a1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/ZippedTree_SLR_a2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/ZippedTree_SLR_a2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/ClassInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/ClassInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/Entry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/Entry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/FieldInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/FieldInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/MethodInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/MethodInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/ParameterInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/ParameterInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/TypeNegotiation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/semantics/TypeNegotiation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/IntermediateCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/IntermediateCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/GrammarMetaInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/GrammarMetaInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/SemanticAnalyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/SemanticAnalyzer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/TestSLRParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/TestSLRParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/grammarJson/Json_ECMA_404_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/grammarJson/Json_ECMA_404_2.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +112,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Exe">
+  <component name="RunManager" selected="Gradle.TestLLParser.testJsonGrammar">
     <configuration name="Exe" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ru.osipov.labs.exe.Exe" />
       <module name="ru.osipov.labs.CompilerCoursePr.main" />
@@ -226,11 +235,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.TestLLParser.testJsonGrammar" />
+        <item itemvalue="Gradle.TestSLRParser.test6" />
         <item itemvalue="Gradle.TestSLRParser.test5" />
         <item itemvalue="Application.Exe" />
-        <item itemvalue="Gradle.TestSLRParser.test6" />
         <item itemvalue="Gradle.TestLLParser.testJsonGrammar2" />
-        <item itemvalue="Gradle.TestLLParser.testJsonGrammar" />
       </list>
     </recent_temporary>
   </component>

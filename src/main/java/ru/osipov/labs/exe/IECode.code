@@ -1,5 +1,5 @@
 chr: 
-= 'q' char a 
+PUTFIELD Program a 'q' 
 = a char :res 
 calc: 
 = 5 long :t2 

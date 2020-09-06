@@ -1,38 +1,65 @@
--C:\Users\Oleg\IdeaProjects\CompilerCoursePr
 Source
 Grammar
-	T: [a, b, c, d, e]
-	keywords: []
-	N: [A, B, S]
+‹	T: [realNum, realHexNum, string, num, false, binNum, ,, empty, realOctalNum, hexNum, null, true, :, id, {, [, realBinNum, octalNum, }, ]]
+	keywords: [null, true, false]
+:	N: [VAL, ARRAY, MEMBERS, J, ELEMS, OBJECT, ELEM, MEMBER]
 	P {
-&		S -> a A d | b B d | a B e | b A e 
-
-		A -> c 
-
-		B -> c 
+		J -> ELEM 
+“		VAL -> realNum | realHexNum | ARRAY | string | num | false | binNum | OBJECT | realOctalNum | null | hexNum | true | id | realBinNum | octalNum 
+		ARRAY -> [ ELEMS ] 
+0		MEMBERS -> MEMBER , MEMBERS | MEMBER | empty 
+(		ELEMS -> ELEM , ELEMS | ELEM | empty 
+		OBJECT -> { MEMBERS } 
+		ELEM -> VAL 
+		MEMBER -> string : ELEM 
 	}
 
-	Start: S
-	N_g: [A, B, S]
+	Start: J
+<	N_g: [VAL, MEMBERS, ARRAY, J, ELEMS, OBJECT, ELEM, MEMBER]
+	N_e: [MEMBERS, ELEMS]
+Processed Grammar
+Grammar
+‹	T: [realNum, realHexNum, string, num, false, binNum, ,, empty, realOctalNum, hexNum, null, true, :, id, {, [, realBinNum, octalNum, }, ]]
+	keywords: [null, true, false]
+N	N: [ELEMS'1, VAL, MEMBERS, ARRAY, J, ELEMS, MEMBERS'1, OBJECT, MEMBER, ELEM]
+	P {
+		J -> ELEM 
+		ELEMS'1 -> , ELEMS | empty 
+“		VAL -> realNum | realHexNum | ARRAY | string | num | false | binNum | OBJECT | realOctalNum | null | hexNum | true | id | realBinNum | octalNum 
+'		MEMBERS -> MEMBER MEMBERS'1 | empty 
+		ARRAY -> [ ELEMS ] 
+"		MEMBERS'1 -> , MEMBERS | empty 
+!		ELEMS -> ELEM ELEMS'1 | empty 
+		OBJECT -> { MEMBERS } 
+		MEMBER -> string : ELEM 
+		ELEM -> VAL 
+	}
 
-	N_e: []
-[11, 3, 5, 7, 9]
-Alpha: [a, b, c, d, e]
-States of NFA: 11
-States of DFA: 7
-Finished: 5
-	Dead: 7
-MinDFA States: 6
-Patterns (F): 5
-Start: M1
-ñ2020-08-27 16:51:19.762  INFO   --- [    Test worker] g.n.g.service.CommandLineExecutor        : executing command [cmd, /C, dot.exe -Tsvg C:\Users\Oleg\AppData\Local\Temp\GraphvizJava\DotEngine434608936880030181\dotfile.dot -ooutfile.svg]
-0Table was initiated with 131071 null elements.
-#Canonical Set of Items was built.
-ACTION and GOTO are built.
-->[ 0 ] ->[ ] >>b
-->[ 2 0 ] ->[ b ] >>c
-->[ 6 2 0 ] ->[ c b ] >>d
-->[ 5 2 0 ] ->[ B b ] >>d
-->[ 7 5 2 0 ] ->[ d B b ] >>$
-->[ 3 0 ] ->[ S ] >>$
-ò2020-08-27 16:51:20.231  INFO   --- [    Test worker] g.n.g.service.CommandLineExecutor        : executing command [cmd, /C, dot.exe -Tsvg C:\Users\Oleg\AppData\Local\Temp\GraphvizJava\DotEngine1304239921647845962\dotfile.dot -ooutfile.svg]
+	Start: J
+P	N_g: [ELEMS'1, VAL, MEMBERS, ARRAY, J, MEMBERS'1, ELEMS, OBJECT, ELEM, MEMBER]
+,	N_e: [ELEMS'1, MEMBERS, MEMBERS'1, ELEMS]
+\[1593, 1692, 1031, 451, 1689, 156, 1127, 1598, 1124, 1652, 1596, 1694, 889, 902, 838, 905]
+©Alpha: [ , !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, :, ;, <, =, >, ?, @, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, [, \, ], _, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, {, }, ~, ?, ?, ?, ?]
+States of NFA: 1647
+States of DFA: 376
+Finished: 251
+	Dead: 2
+MinDFA States: 41
+Patterns (F): 22
+Start: M21
+json_t_1.txt
+	Gen: 46
+Recurse: 0
+
+dataset3.json
+
+Gen: 297
+Recurse: 16
+dataset4.json
+
+Gen: 531
+Recurse: 47
+dataset6.json
+
+Gen: 578
+Recurse: 31
