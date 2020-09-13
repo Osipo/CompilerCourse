@@ -12,6 +12,7 @@ public class LookAheadBufferedLexer implements LexerIO{
 
     protected int line;
     protected int col;
+    protected InputStream source;
 
     public LookAheadBufferedLexer(int bsize){
         this.bsize = bsize;
@@ -20,6 +21,7 @@ public class LookAheadBufferedLexer implements LexerIO{
         this.EOL = 0;
         this.line = 1;
         this.col = 0;
+        this.source = null;
     }
 
     public LookAheadBufferedLexer(){
@@ -59,12 +61,14 @@ public class LookAheadBufferedLexer implements LexerIO{
     }
 
     @Override
-    public int getch(InputStream r) throws IOException {
+    public int getch(InputStream s) throws IOException {
+        if(source == null)
+            source = s;
         if(bufp > 0)
             return buf[--bufp];
         else{
             col++;
-            char c = (char)r.read();
+            char c = (char)source.read();
             //System.out.println((int)c);
             if(c == '\n'){
                 line++; col = 0;
@@ -75,7 +79,9 @@ public class LookAheadBufferedLexer implements LexerIO{
 
     @Override
     public int getFilech(InputStream r) throws IOException {
-        char c = (char)r.read();
+        if(source == null)
+            source = r;
+        char c = (char)source.read();
         if(c == '\n'){
             line += 1;
             col = 0;
@@ -97,5 +103,6 @@ public class LookAheadBufferedLexer implements LexerIO{
         bufp = 0;
         this.buf = null;
         this.buf = new char[bsize];
+        this.source = null;
     }
 }

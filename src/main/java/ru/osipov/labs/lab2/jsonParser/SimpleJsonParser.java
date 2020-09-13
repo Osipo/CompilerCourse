@@ -1,6 +1,5 @@
 package ru.osipov.labs.lab2.jsonParser;
 
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import ru.osipov.labs.lab1.structures.graphs.Pair;
 import ru.osipov.labs.lab2.jsonParser.jsElements.*;
 import ru.osipov.labs.lab1.structures.lists.LinkedStack;

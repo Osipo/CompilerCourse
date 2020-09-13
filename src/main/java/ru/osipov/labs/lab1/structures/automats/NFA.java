@@ -15,9 +15,8 @@ public class NFA extends Graph {
     protected Vertex start;
     protected Vertex finish;//when NFA is modeling, the Final states set is the set of the next possible states which contains final state.
     protected HashSet<Character> alpha;
-    private HashSet<Vertex> comboF;
     public NFA(){
-        this.comboF = new HashSet<>();
+
     }
 
     public void setStart(Vertex v){
