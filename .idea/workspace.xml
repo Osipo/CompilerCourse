@@ -6,19 +6,16 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/libs/CompilerCoursePr.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/CompilerCoursePr.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/automats/NFA.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/automats/NFA.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/LookAheadBufferedLexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/LookAheadBufferedLexer.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/Exe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/Exe.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/IECode.code" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab1/structures/automats/NFA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab1/structures/automats/NFA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/json/C#_Cut.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/json/C#_Cut.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/LookAheadBufferedLexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/LookAheadBufferedLexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/IntermediateCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/IntermediateCodeGenerator.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

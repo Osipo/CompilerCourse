@@ -134,7 +134,7 @@ public class Exe implements CommandLineRunner {
             if(semantic.hasErrors())
                 semantic.showErrors();
             else
-                generator.generateCode(dir+sc+".code");
+                generator.generateCode(sc.substring(0,sc.lastIndexOf('.'))+".code");
         }
         else{
             System.out.println("Syntax errors detected!");

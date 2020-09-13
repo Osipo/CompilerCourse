@@ -35,7 +35,7 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
         }
         FileWriter fw = null;
         try{
-            fw = new FileWriter(f,true);
+            fw = new FileWriter(f,false);
             this.writer = fw;
             tree.visit(VisitorMode.PRE, this);
         }
