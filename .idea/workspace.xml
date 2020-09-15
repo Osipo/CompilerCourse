@@ -6,16 +6,32 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/jarAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/jarAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/automats/NFA.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/automats/NFA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/LookAheadBufferedLexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/LookAheadBufferedLexer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Compilers CP Osipov O. K._saved .docx" beforeDir="false" afterPath="$PROJECT_DIR$/Compilers CP Osipov O. K._saved .docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/tests/test/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/Exe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/Exe.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/exe/IECode.code" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/IntermediateCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/IntermediateCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/SLR_Parser_Test6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/TestSLRParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/TestSLRParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/UsefulTree_SLR_Test6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/ZippedTree_SLR_Test6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/grammarJson/G_Lab3_3_m.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/grammarJson/G_Lab3_3_m.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/lexer_Test1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/lexer_Test2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/lexer_Test3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/parser_Test1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/parser_Test2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/parser_Test3.png" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -95,7 +111,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Exe">
+  <component name="RunManager" selected="Gradle.TestSLRParser.test7">
     <configuration name="Exe" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ru.osipov.labs.exe.Exe" />
       <module name="ru.osipov.labs.CompilerCoursePr.main" />
@@ -134,26 +150,6 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.lab3.TestLLParser.testJsonGrammar&quot;" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":cleanTest" />
-            <option value=":test" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="TestLLParser.testJsonGrammar2" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.lab3.TestLLParser.testJsonGrammar2&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -208,21 +204,41 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="TestSLRParser.test7" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.lab3.TestSLRParser.test7&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":cleanTest" />
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Application.Exe" />
       <item itemvalue="Gradle.Lab2" />
       <item itemvalue="Gradle.TestSLRParser.test5" />
       <item itemvalue="Gradle.TestSLRParser.test6" />
       <item itemvalue="Gradle.TestLLParser.testJsonGrammar" />
-      <item itemvalue="Gradle.TestLLParser.testJsonGrammar2" />
+      <item itemvalue="Gradle.TestSLRParser.test7" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.TestSLRParser.test7" />
         <item itemvalue="Gradle.TestLLParser.testJsonGrammar" />
         <item itemvalue="Gradle.TestSLRParser.test6" />
         <item itemvalue="Gradle.TestSLRParser.test5" />
         <item itemvalue="Application.Exe" />
-        <item itemvalue="Gradle.TestLLParser.testJsonGrammar2" />
       </list>
     </recent_temporary>
   </component>

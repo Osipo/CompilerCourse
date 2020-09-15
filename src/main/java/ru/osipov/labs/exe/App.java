@@ -68,7 +68,7 @@ public class App implements CommandLineRunner {
                     DFALexer lexer = new DFALexer(new DFA(nfa));
                     lexer.getImagefromStr(p+"\\", "Lexer");
 
-                    SLRGrammarParse(G,lexer,p,dir,sc);
+                    LRGrammarParse(G,lexer,p,dir,sc,LRAlgorithm.SLR);
 
                 } catch (InvalidJsonGrammarException e) {//Json document has wrong structure.
                     System.out.println(e.getMessage());
@@ -164,8 +164,8 @@ public class App implements CommandLineRunner {
         }
     }
 
-    private void SLRGrammarParse(Grammar G, ILexer lexer,String p, String dir, String sc) throws IOException {
-        LRParser sa = new LRParser(G,lexer, LRAlgorithm.SLR);//Parser algorithm: SLR(1)
+    private void LRGrammarParse(Grammar G, ILexer lexer,String p, String dir, String sc, LRAlgorithm alg) throws IOException {
+        LRParser sa = new LRParser(G,lexer, alg);//Parser algorithm: SLR(1)
 
         //sa.setParserMode(ParserMode.DEBUG);
         System.out.println("SLR(1) Parser and Lexer was built successful.");

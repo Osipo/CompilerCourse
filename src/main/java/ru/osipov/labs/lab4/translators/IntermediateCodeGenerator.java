@@ -16,14 +16,14 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
     private Grammar G;
     private long lcounter;
     private FileWriter writer;
-    private LinkedStack<String> labels;
+    //private LinkedStack<String> labels;
 
     public IntermediateCodeGenerator(Grammar G,LinkedTree<Token> tree,long lc){
         this.G = G;
         this.tree = tree;
         this.lcounter = lc;
         this.writer = null;
-        this.labels = new LinkedStack<>();
+        //this.labels = new LinkedStack<>();
     }
 
     //GEN_CODE(TREE)
@@ -102,7 +102,12 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
                     //move label from while to statements after else. (label for FALSE_WHILE which skips WHILE_loop statements)
                     if(arg.getValue().getName().equals("while")){
                         writer.write(l);//write label from ELS node
-                        a2.setCode(a1.getCode());//set label from WHILE node to ELS node.
+
+                        //a2.setCode(a1.getCode());//set FALSE_label from WHILE node to ELS node.
+                        String fl = a1.getCode().substring(a1.getCode().indexOf('-') + 1);
+                        if(!fl.contains("\n"))
+                            fl = fl + "\n";
+                        a2.setCode(fl);
                     }
                     else {
                         writer.write(a1.getCode());
@@ -126,12 +131,15 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
 
                     //begin while-loop body.
                     writer.write(loop+"\n");
-                    labels.push(loop);
+                    //labels.push(loop);
 
                     //save loop that skips the while-section into WHILE Node.
                     LinkedNode<Token> p = arg.getParent();
                     TokenAttrs after_while = new TokenAttrs(p.getValue());
-                    after_while.setCode(eloop+"\n");
+
+                    //SAVE LABELS
+                    //after_while.setCode(eloop+"\n");
+                    after_while.setCode(loop+"-"+eloop);
                     arg.getParent().setValue(after_while);
                 }
             }
@@ -161,15 +169,23 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
                 Token t = arg.getValue();
                 if(t instanceof TokenAttrs) {
                     TokenAttrs a1 = (TokenAttrs)t;
-                    String l = labels.top();
-                    labels.pop();
+                    //EXTRACT TRUE LABEL
+                    //String l = labels.top();
+                    //labels.pop();
+
+
                     writer.write(a1.getCode());
                     Token t2 = arg.getParent().getValue();
                     String l2 = "";
+                    String l = "";
                     if(t2 instanceof TokenAttrs){
                         TokenAttrs l2_a = (TokenAttrs)t2;
-                        l2 = l2_a.getCode();
-                        l2 = l2.substring(0,l2.length() - 1);//remove redundant \n symbol.
+                        //EXTRACT FALSE LABEL.
+                        //l2 = l2_a.getCode();
+                        //l2 = l2.substring(0,l2.length() - 1);//remove redundant \n symbol.
+                        int spl = l2_a.getCode().indexOf('-');
+                        l = l2_a.getCode().substring(0,spl);
+                        l2 = l2_a.getCode().substring(spl + 1);
                     }
                     writer.write("IFTRUE "+a1.getLexem()+" "+l+" "+l2+" \n");
                 }

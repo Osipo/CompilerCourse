@@ -36,5 +36,11 @@
   ,{"MULLOP": "*"},{"MULLOP": "/"},{"MULLOP": "%"}
   ,{"RELOP": "<"},{"RELOP": "<="},{"RELOP": ">"},{"RELOP": ">="},{"RELOP": "=="},{"RELOP": "<>"}
   ],
-  "start": "P"
+  "start": "P",
+  "meta": {
+    "operators": ["+","-","*","^","/","%","<","<=",">",">=","==","<>","="],
+    "operands": ["num","id","realNum"],
+    "scopeStart": "{",
+    "scopeEnd": "}"
+  }
 }
