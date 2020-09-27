@@ -81,16 +81,17 @@ You can set additional metadata to your Grammar.
  1. "keywords" : list of strings which represent keywords of language.  
  Each ***keyword*** is treated as a terminal with same pattern as its name.  
  2. "meta" : JsonObject  which contains additional data for semantic analysis:  
-    2.1 "id" : The name of terminal, which represent an id - entry of symbol table.  
-    2.2 "commentLine" : The name of terminal, which represents the begining  
+    2.1 **"id"** : The name of terminal, which represent an id - entry of symbol table.  
+    2.2 **"commentLine"** : The name of terminal, which represents the begining  
     of the single line comment. Comments are ignored by parser.  
-    2.3 "mlCommentStart" : The name of terminal which represents the begining  
+    2.3 **"mlCommentStart"** : The name of terminal which represents the begining  
     of the multiline comment.  
-    2.4 "mlCommentEnd" : The string which marks the end of the  
-    multiline comment.
-    2.5 "operands" : The list of strings. Each element is a terminalName  
-    (property name of "terms" object.)
-    2.6 "operators"
+    2.4 **"mlCommentEnd"** : The string which marks the end of the  
+    multiline comment.  
+    2.5 **"operands"** : The list of strings. Each element is a terminalName  
+    (property name of "terms" object). This property is used for semantic Analysis.  
+    2.6 **"operators"** : The list of strings. Each element is a terminalName  
+    (property name of "terms" object). This property is used for semantic Analysis.  
 
 ### Regex syntax
 The ***regular expressions*** syntax is described as follows: 
