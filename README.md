@@ -94,7 +94,12 @@ You can set additional metadata to your Grammar.
     (property name of "terms" object). This property is used for semantic Analysis.  
     2.6 **"operators"** : The list of strings. Each element is a terminalName  
     (property name of "terms" object). This property is used for semantic Analysis.  
-
+    2.7 **"aliases"** : The alternative names for terminal symbols.  
+    Used for parsing of unary operators (which has the same pattern as its binary operator)  
+    2.8 **"scopeStart" : The name of terminalName. Defines the begining of the
+    **new scope**. Used for semantic Analysis.
+    2.9 **"scopeEnd"** : The name of terminalName. Defines the end of the  
+    **current scope**. Used for semantic Analysis.
 ### Regex syntax
 The ***regular expressions*** syntax is described as follows: 
  - `a` - *regular expression* which represent a single character string ("a").  
