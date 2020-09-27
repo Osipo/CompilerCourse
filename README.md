@@ -98,8 +98,8 @@ There are reserved two character codes:
  regular expression which matches any single character strings.  
  - 1 - character code, which means **null**.  
 
-You can use terminalName which has **null expression**  
-in other regular expressions.  
+You can use *terminalName* which has **null expression**  
+in other regular expressions. 
 
 
 ## Technical requirements.
