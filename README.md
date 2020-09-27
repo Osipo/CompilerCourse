@@ -81,7 +81,7 @@ You can set additional metadata to your Grammar.
  1. **"keywords"** : list of strings which represent keywords of language.  
  Each ***keyword*** is treated as a terminal with same pattern as its name.  
  When you are defining **keywords** you must ensure that overlapped pattern exists.  
- Also, each character which is part of **keyword** MUST BE IN patterns (***regular expressions***)  
+ Also, each character which is a part of **keyword** MUST BE IN patterns (***regular expressions***)  
  2. **"meta"** : JsonObject  which contains additional data for semantic analysis:  
     2.1 **"id"** : The name of terminal, which represent an id - entry of symbol table.  
     2.2 **"commentLine"** : The name of terminal, which represents the begining  
