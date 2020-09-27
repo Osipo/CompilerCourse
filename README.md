@@ -25,7 +25,7 @@ The structure of json document is described as follows
 ```JSON
 {  
     "terms" : {  
-          "id" : "[A-Z][A-Za-z0-9_]+",  
+          "name" : "[A-Z][A-Za-z0-9_]+",  
           "num" : "[0-9]+",  
           "empty" : null,  
           "realNum" : "[0-9]+(.[0-9]+((E|e)(@+|-)[0-9]+|empty)|empty)",  
@@ -33,20 +33,34 @@ The structure of json document is described as follows
           "+" : "+",    
           "-" : "-",  
           "*" : "*",  
-          "/" : "/"  
+          "/" : "/",  
+          "(" : "(",  
+          ")" : ")",  
+          "//" : "//",  
+          "/*" : "/@*"  
     },   
     "nonTerms" : [  
         "E", "T", "S", "F"  
     ],   
     "productions" : [  
         {"S" : "E"},  
-        {"E" : ["E", "+", "T"]}, {"E": "T"},  
-        {"T" : ["T", "*", "F"]}  
+        {"E" : ["E", "+", "T"]}, {"E" : ["E", "-", "T"]}, {"E": "T"},  
+        {"T" : ["T", "*", "F"]}, {"T" : ["T", "/", "F"]}, {"T" : "F"},  
+        {"F" : ["(","name",")"]}, {"F" : "E"}  
     ],  
-    "start" : "S"  
+    "start" : "S",  
+    "keywords" : [],  
+    "meta" : {  
+        "id" : "name",  
+        "commentLine" : "//",  
+        "mlCommentStart" : "/*",  
+        "mlCommentEnd" : "*/",  
+    }  
 }
 ```
- 
+
+### 
+
 ### Regex syntax
 The ***regular expressions*** syntax is described as follows: 
  - `a` - *regular expression* which represent a single character string ("a").  
@@ -59,11 +73,11 @@ The ***regular expressions*** syntax is described as follows:
  - `@` - escape symbol. (like a `\` in many programming languages).   
  Use to ignore operators (such as `^`, `|`, `(`, `)`,`*`,`+`,`_`).
  Any single character preceded with `@` is treated as an operand  
- Example: **regular expressions : `@*`, `@+`** are treated as `*` and `+`. But not **subExpressions**.
+ Example: **regular expressions : `@*`, `@+`** are treated as `*` and `+`.  
  They both match strings : `"+", "*"`.  
  So to use `@` as operand you must type `@@`.
  It is unnecessary to use `@` in regexs with single character. (Expressions like `"a", "+", "*"` with length = 1)  
- Any single character expression is treated as operand.   
+ Any single character expression (i.e. full expression) is treated as operand.  
  WARNING: the length of the expression is the length of the JsonString  
  (** i.e. the length of the string which is a value of property `"pattern".    
  - null - regular expression which matches **empty strings**.  
@@ -82,6 +96,10 @@ WARNING: All **regular expressions** are **CASE SENSITIVE**.
 There are reserved two character codes:
  - 0 - character code, which means **'_'** ,  
  regular expression which matches any single character strings.  
+ - 1 - character code, which means **null**.  
+
+You can use terminalName which has **null expression**  
+in other regular expressions.  
 
 
 ## Technical requirements.
