@@ -16,14 +16,12 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
     private Grammar G;
     private long lcounter;
     private FileWriter writer;
-    //private LinkedStack<String> labels;
 
     public IntermediateCodeGenerator(Grammar G,LinkedTree<Token> tree,long lc){
         this.G = G;
         this.tree = tree;
         this.lcounter = lc;
         this.writer = null;
-        //this.labels = new LinkedStack<>();
     }
 
     //GEN_CODE(TREE)
@@ -131,14 +129,14 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
 
                     //begin while-loop body.
                     writer.write(loop+"\n");
-                    //labels.push(loop);
+                    
 
-                    //save loop that skips the while-section into WHILE Node.
+                    //save loops into WHILE Node.
                     LinkedNode<Token> p = arg.getParent();
                     TokenAttrs after_while = new TokenAttrs(p.getValue());
 
                     //SAVE LABELS
-                    //after_while.setCode(eloop+"\n");
+                    
                     after_while.setCode(loop+"-"+eloop);
                     arg.getParent().setValue(after_while);
                 }
@@ -169,20 +167,14 @@ public class IntermediateCodeGenerator implements Action<Node<Token>> {
                 Token t = arg.getValue();
                 if(t instanceof TokenAttrs) {
                     TokenAttrs a1 = (TokenAttrs)t;
-                    //EXTRACT TRUE LABEL
-                    //String l = labels.top();
-                    //labels.pop();
-
-
+                   
                     writer.write(a1.getCode());
                     Token t2 = arg.getParent().getValue();
                     String l2 = "";
                     String l = "";
                     if(t2 instanceof TokenAttrs){
                         TokenAttrs l2_a = (TokenAttrs)t2;
-                        //EXTRACT FALSE LABEL.
-                        //l2 = l2_a.getCode();
-                        //l2 = l2.substring(0,l2.length() - 1);//remove redundant \n symbol.
+                        //EXTRACT TRUE AND FALSE LABELS.
                         int spl = l2_a.getCode().indexOf('-');
                         l = l2_a.getCode().substring(0,spl);
                         l2 = l2_a.getCode().substring(spl + 1);

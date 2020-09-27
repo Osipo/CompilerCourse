@@ -53,7 +53,7 @@ public class NRVisitor<T> implements Visitor<T> {
     }
 
     @Override
-    public void inOrder(Tree<T> t, Action<Node<T>> act) {
+    public  void inOrder(Tree<T> t, Action<Node<T>> act) {
         Node<T> m = t.root();//ROOT(T)
 
         if(act == null){
@@ -98,7 +98,7 @@ public class NRVisitor<T> implements Visitor<T> {
 
 
     @Override
-    public void postOrder(Tree<T> tree, Action<Node<T>> act) {
+    public  void postOrder(Tree<T> tree, Action<Node<T>> act) {
         Node<T> m = tree.root();//ROOT(T)
 
         if(act == null){
