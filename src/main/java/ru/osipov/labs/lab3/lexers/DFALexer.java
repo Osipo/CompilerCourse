@@ -156,6 +156,10 @@ public class DFALexer extends DFA implements ILexer {
         this.id = s;
     }
 
+    public String getIdName(){
+        return this.id;
+    }
+
     @Override
     public Token recognize(InputStream f) throws IOException {
         char cur = (char)io.getch(f);
@@ -189,6 +193,7 @@ public class DFALexer extends DFA implements ILexer {
                     }
                     cur = sb.charAt(sb.length() - 1);
                     sb.deleteCharAt(sb.length() - 1);
+                    //System.out.println(sb);
                     io.ungetch(cur);
                     pl++;
                     s = states.top();
@@ -222,7 +227,7 @@ public class DFALexer extends DFA implements ILexer {
                     }
                     return new Token("$","$",'t',io.getLine(),io.getCol());
                 }
-                if(s.getValue().equals(this.id) && keywords.size() > 0 && keywords.contains(sb.toString())) {
+                if((s.getValue().equals(this.id) || this.id == null) && keywords.size() > 0 && keywords.contains(sb.toString())) {
                     prevTok = new Token(sb.toString(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
@@ -278,7 +283,7 @@ public class DFALexer extends DFA implements ILexer {
                     }
                     return new Token("$","$",'t',io.getLine(),io.getCol());
                 }
-                if(s.getValue().equals("id") && keywords.size() > 0 && keywords.contains(sb.toString())) {
+                if((s.getValue().equals(this.id) || this.id == null) && keywords.size() > 0 && keywords.contains(sb.toString())) {
                     prevTok = new Token(sb.toString(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }

@@ -6,6 +6,9 @@ import ru.osipov.labs.lab1.structures.observable.ObservableHashSet;
 import ru.osipov.labs.lab1.utils.ColUtils;
 import ru.osipov.labs.lab2.grammars.json.InvalidJsonGrammarException;
 import ru.osipov.labs.lab2.jsonParser.jsElements.*;
+import ru.osipov.labs.lab3.lexers.Token;
+import ru.osipov.labs.lab3.trees.LinkedTree;
+import ru.osipov.labs.lab4.translators.grammars.GrammarReader;
 
 import java.io.*;
 import java.util.*;
@@ -25,6 +28,17 @@ public class Grammar {
     private Set<String> N_e;//Non-terminals which generates empty words.
 
     private boolean isMod = false;//flag for getGrammarWithoutEqualRules procedure.
+
+    private Grammar(){
+        this.T = new HashSet<>();
+        this.N = new HashSet<>();
+        this.P = new HashMap<>();
+        this.meta = new GrammarMetaInfo();
+        this.meta.setId("id");
+        this.S = null;
+        this.E = null;
+        this.lex_rules = new HashMap<>();
+    }
 
     public Grammar(Set<String> T, Set<String> N, Map<String,Set<GrammarString>> P,String start, String em, Map<String,List<String>> lexs, GrammarMetaInfo meta){
         this.T = T;
@@ -300,7 +314,7 @@ public class Grammar {
                                     entity = new GrammarSymbol('n', X);
                                 }
                                 else
-                                    throw new InvalidJsonGrammarException("Illegal grammar symbol!" +
+                                    throw new InvalidJsonGrammarException("Illegal grammar symbol! " +X+
                                             "\nExpected non-terminal or termnial or keyword of Grammar.",null);
                                 alpha.addSymbol(entity);
                             }
@@ -441,6 +455,10 @@ public class Grammar {
         }
     }
 
+    public GrammarMetaInfo getMeta(){
+        return meta;
+    }
+
     public Set<String> getTerminals() {
         return T;
     }
@@ -451,6 +469,16 @@ public class Grammar {
 
     public Map<String,Set<GrammarString>> getProductions() {
         return P;
+    }
+
+    public void setStart(String s){
+        if(s != null && this.N.contains(s))
+            this.S = s;
+    }
+
+    public void setEmpty(String e){
+        if(e != null && this.T.contains(e))
+            this.E = e;
     }
 
     public String getStart() {
@@ -516,6 +544,8 @@ public class Grammar {
     public String getScopeEnd(){
         return this.meta.getEnd();
     }
+
+
 
     //Compute L(U) for U non-term
     private Set<GrammarSymbol> getL_i(String header){
@@ -1756,4 +1786,12 @@ public class Grammar {
         return preffix;
     }
 
+    public static Grammar makeGrammarFromTree(LinkedTree<Token> pTree){
+        Grammar g = new Grammar();
+        GrammarReader greader = new GrammarReader();
+        greader.readGrammar(pTree,g);
+        g.computeN_g();
+        g.computeN_e();
+        return g;
+    }
 }
