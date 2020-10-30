@@ -1,0 +1,25 @@
+{
+  "terms": {
+    "tab": "    ",
+    "sp": " ",
+    "nl": "\n",
+    "cl": ":",
+    ">": ">",
+    ",": ",",
+    "id": "[A-Za-z@_]([A-Za-z0-9@_]+|empty)",
+    "empty": null
+  },
+  "keywords": ["terms","prods","prod"],
+  "nonTerms": ["S","TERMS","TBODY","PRODS","TLIST","PLIST","T","P","IDS"],
+  "productions": [
+    {"S": ["TERMS","PRODS"]},
+    {"TERMS": ["terms","cl","TBODY"]},
+    {"TBODY": ["nl","TLIST","nl"]},
+    {"TLIST": "empty"},{"TLIST": ["TLIST","nl","T"]},{"TLIST": ["T"]},
+    {"T": ["tab","id"]},
+    {"PRODS": ["prods","cl","nl","PLIST"]},
+    {"PLIST": "empty"},{"PLIST": ["PLIST","nl","P"]},{"PLIST": ["P"]},
+    {"P": ["tab","IDS","sp",">","sp","id"]},{"IDS": ["IDS",",","sp","id"]},{"IDS": "id"}
+  ],
+  "start": "S"
+}

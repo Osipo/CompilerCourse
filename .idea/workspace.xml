@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5cad473b-a1a8-424d-8493-cd1b0fd48c19" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab4/translators/grammars/GrammarReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/Experimental/input/AExpr_G.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/ILexerConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/invalidG/notLR/SLR_t1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/json/JsonParserTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/json/input/SomeData.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/TestYmlG.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/grammarJson/G_TYml.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/input/Yml_1.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -15,46 +20,21 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/automats/CNFA.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/automats/CNFA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/automats/DFA.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/automats/DFA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/automats/NFA.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/automats/NFA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/graphs/Graph.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/graphs/Graph.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/graphs/Pair.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/graphs/Pair.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/graphs/Vertex.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/graphs/Vertex.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/lists/ArrStack.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/lists/ArrStack.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/lists/LinkedList.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/lists/LinkedList.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/lists/LinkedQueue.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/lists/LinkedQueue.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/lists/LinkedStack.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/lists/LinkedStack.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/observable/ObservableHashSet.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/structures/observable/ObservableHashSet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/utils/ColUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/utils/ColUtils.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/utils/RegexRPNParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/utils/RegexRPNParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/grammars/Grammar.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/grammars/Grammar.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/grammars/GrammarString.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/grammars/GrammarString.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/grammars/GrammarSymbol.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/grammars/GrammarSymbol.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/ProcessExp.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/ProcessExp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/JsParserState.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/JsParserState.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/JsonBoolean.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/JsonBoolean.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/StrLinkedHashMap.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/jsonParser/jsElements/StrLinkedHashMap.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/Lab3.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/Lab3.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/DFALexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/DFALexer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/generators/FALexerGenerator.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/generators/FALexerGenerator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/parsers/LLParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/parsers/LLParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/parsers/generators/LLParserGenerator.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/parsers/generators/LLParserGenerator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/LinkedNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/LinkedNode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/LinkedTree$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/LinkedTree$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/LinkedTree.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/LinkedTree.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/NRVisitor.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/NRVisitor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/Node.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/trees/Node.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab4/Lab4.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab4/Lab4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/libs/CompilerCoursePr.jar" beforeDir="false" afterPath="$PROJECT_DIR$/build/libs/CompilerCoursePr.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/reports/tests/test/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/tests/test/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/Grammar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/Grammar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/JsParserState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/JsParserState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/SimpleJsonParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/SomeData.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/SomeData.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/jsonParser/jsElements/JsonObject.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/DFALexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/DFALexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/ChainedAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/trees/ChainedAction.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -101,7 +81,7 @@
   </component>
   <component name="ProjectId" id="1YymWn0BzCzUefQPap5V7ePvcu7" />
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/java/ru/osipov/labs/Experimental/input" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/java/ru/osipov/labs/json/input" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -112,13 +92,14 @@
       <recent name="ru.osipov.labs.lab4.parsers" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Oleg\IdeaProjects\CompilerCoursePr\src\test\java\ru\osipov\labs\json\input" />
       <recent name="C:\Users\Oleg\IdeaProjects\CompilerCoursePr\src\test\java\ru\osipov\labs\Experimental\input" />
       <recent name="C:\Users\Oleg\IdeaProjects\CompilerCoursePr\src\test\java\ru\osipov\labs\Experimental\grammarJson" />
       <recent name="C:\Users\Oleg\IdeaProjects\CompilerCoursePr\src\test\java\ru\osipov\labs\Experimental" />
       <recent name="C:\Users\Oleg\IdeaProjects\CompilerCoursePr\src\test\resources" />
-      <recent name="C:\Users\Oleg\IdeaProjects\CompilerCoursePr\src\main\java\ru\osipov\labs\lab2\jsonParser" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Oleg\IdeaProjects\CompilerCoursePr\src\test\java\ru\osipov\labs\lab3\grammarJson" />
       <recent name="C:\Users\Oleg\IdeaProjects\CompilerCoursePr\src\main\java\ru\osipov\labs\lab3" />
     </key>
   </component>
@@ -134,27 +115,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.ExperimentsTest.testG2">
-    <configuration name="ExperimentsTest.testG1" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.Experimental.ExperimentsTest.testG1&quot;" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":cleanTest" />
-            <option value=":test" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Gradle.JsonParserTest.testSomeData">
     <configuration name="ExperimentsTest.testG2" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -215,6 +176,26 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="JsonParserTest.testSomeData" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.json.JsonParserTest.testSomeData&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":cleanTest" />
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="Lab2" type="GradleRunConfiguration" factoryName="Gradle">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -234,12 +215,12 @@
       <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="TestSLRParser.test7" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestYmlG.testYml_1Txt" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.lab3.TestSLRParser.test7&quot;" />
+        <option name="scriptParameters" value="--tests &quot;ru.osipov.labs.lab3.TestYmlG.testYml_1Txt&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -256,19 +237,19 @@
     </configuration>
     <list>
       <item itemvalue="Gradle.Lab2" />
-      <item itemvalue="Gradle.TestSLRParser.test7" />
-      <item itemvalue="Gradle.ExperimentsTest.testG1" />
       <item itemvalue="Gradle.ExperimentsTest.testG2" />
       <item itemvalue="Gradle.ExperimentsTest.testRef" />
       <item itemvalue="Gradle.ExperimentsTest.testRef2" />
+      <item itemvalue="Gradle.TestYmlG.testYml_1Txt" />
+      <item itemvalue="Gradle.JsonParserTest.testSomeData" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.JsonParserTest.testSomeData" />
+        <item itemvalue="Gradle.TestYmlG.testYml_1Txt" />
         <item itemvalue="Gradle.ExperimentsTest.testG2" />
         <item itemvalue="Gradle.ExperimentsTest.testRef2" />
         <item itemvalue="Gradle.ExperimentsTest.testRef" />
-        <item itemvalue="Gradle.ExperimentsTest.testG1" />
-        <item itemvalue="Gradle.TestSLRParser.test7" />
       </list>
     </recent_temporary>
   </component>
@@ -297,5 +278,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/TestYmlG.java</url>
+          <line>27</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

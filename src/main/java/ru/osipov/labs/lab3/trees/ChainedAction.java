@@ -1,6 +1,6 @@
 package ru.osipov.labs.lab3.trees;
 
-public abstract class ChainedAction<T> implements Action<T> {
+public class ChainedAction<T> implements Action<T> {
 
     private Action<T> prevAct;
 

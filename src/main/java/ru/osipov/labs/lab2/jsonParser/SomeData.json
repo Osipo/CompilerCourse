@@ -13,6 +13,6 @@
   "num2" : num1,
   "num3" : num2,
   "num4" : arr,
-  "inter1" : q.q3,
-  "inter2" : q.q3.q4
+  "inter1" : .q.q3,
+  "inter2" : .q.q3.q4
 }

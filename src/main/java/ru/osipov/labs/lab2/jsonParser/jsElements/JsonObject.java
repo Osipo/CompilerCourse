@@ -32,13 +32,14 @@ public class JsonObject extends JsonElement<StrLinkedHashMap<JsonElement>> {
     //get Element by path using path dot notation.
     public JsonElement getElement(String path){
         ArrayList<String> p = new ArrayList<>();
-        Pattern regex = Pattern.compile("\\w+[^.]");
+        Pattern regex = Pattern.compile("\\w([^.]*)");
         Matcher m = regex.matcher(path);
         while(m.find())
             p.add(m.group());
         StrLinkedHashMap<JsonElement> cnode = table;//ROOT.
         JsonElement n  = null;
-        if(p == null || p.size() == 0)
+        System.out.println(p);
+        if(p.size() == 0)
             return getProperty(path);
         for(String c : p){
             n = cnode.get(c);

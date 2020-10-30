@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-public class DFALexer extends DFA implements ILexer {
+public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
 
     private LexerIO io;
     private Set<String> keywords;
@@ -24,6 +24,7 @@ public class DFALexer extends DFA implements ILexer {
     private String mlcStart;
     private String mlcEnd;
     private String id;
+    private char[] ignore;
 
     public DFALexer(DFA dfa, LexerIO io){
         super(dfa,true);
@@ -37,6 +38,7 @@ public class DFALexer extends DFA implements ILexer {
         this.mlcEnd = null;
         this.id = null;
         this.prevTok = null;
+        this.ignore = null;
     }
 
     public DFALexer(NFA nfa, LexerIO io){
@@ -51,6 +53,7 @@ public class DFALexer extends DFA implements ILexer {
         this.mlcStart = null;
         this.mlcEnd = null;
         this.id = null;
+        this.ignore = null;
     }
 
     public DFALexer(CNFA nfa){
@@ -69,6 +72,7 @@ public class DFALexer extends DFA implements ILexer {
         this.mlcStart = null;
         this.mlcEnd = null;
         this.id = null;
+        this.ignore = null;
     }
 
 
@@ -87,6 +91,7 @@ public class DFALexer extends DFA implements ILexer {
         this.mlcStart = null;
         this.mlcEnd = null;
         this.id = null;
+        this.ignore = null;
     }
 
     public DFALexer(DFA dfa){
@@ -104,6 +109,7 @@ public class DFALexer extends DFA implements ILexer {
         this.mlcStart = null;
         this.mlcEnd = null;
         this.id = null;
+        this.ignore = null;
     }
 
     @Override
@@ -163,11 +169,23 @@ public class DFALexer extends DFA implements ILexer {
     @Override
     public Token recognize(InputStream f) throws IOException {
         char cur = (char)io.getch(f);
-        while(cur == ' ' || cur == '\t' || cur == '\n' || cur == '\r') {
-            if (cur == '\n') {
-                io.setCol(0);
+
+        if(ignore == null || ignore.length == 0) {
+            while (cur == ' ' || cur == '\t' || cur == '\n' || cur == '\r') {
+                if (cur == '\n') {
+                    io.setCol(0);
+                }
+                cur = (char) io.getch(f);
             }
-            cur = (char) io.getch(f);
+        }
+        else {
+            while(Arrays.binarySearch(ignore,cur) >= 0 && ((int)cur) != 65535){
+//                System.out.println(cur);
+//                System.out.println(Arrays.binarySearch(ignore,cur));
+                if(cur == '\n')
+                    io.setCol(0);
+                cur = (char) io.getch(f);
+            }
         }
         if(((int)cur) == 65535)
             return new Token("$","$",'t',io.getLine(),io.getCol());
@@ -331,5 +349,19 @@ public class DFALexer extends DFA implements ILexer {
         io.setLine(1);
         io.clear();
         this.prevTok = null;
+    }
+
+    @Override
+    public void setIgnoreSymbols(char[] symbols) {
+        //COPY ARRAY symbols to ignore (NOT BY REFERENCE!)
+        if(symbols == null) {
+            this.ignore = null;
+            System.out.println("default ignore symbols are set [nl,tab,r,space]");
+            return;
+        }
+        this.ignore = new char[symbols.length];
+        System.arraycopy(symbols, 0, this.ignore, 0, ignore.length);
+        Arrays.sort(this.ignore);
+        //System.out.println("Ignore symbols: "+ Arrays.toString(this.ignore));
     }
 }

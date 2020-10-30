@@ -1,0 +1,18 @@
+{
+  "d": "string",
+  "q": { "q1": "1","q2": [["1","2"],["3"],"4",{"d":"empty"}],"q3": {"q4": "4"}},
+  "arr": ["1","2",4___0__0_0l,"3"],
+  "arr2": [{"ob1": "12"},{"ob2": "23",
+    "obar": ["99",["98"],"97",{"internal": "i"}]
+  }],
+  "d2" : "created",
+  "b" : false,
+  "isExt" : true,
+  "nullifier" : null,
+  "num1" : 12.24,
+  "num2" : num1,
+  "num3" : num2,
+  "num4" : arr,
+  "inter1" : q.q3,
+  "inter2" : q.q3.q4
+}

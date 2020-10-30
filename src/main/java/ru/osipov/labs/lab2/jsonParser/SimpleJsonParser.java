@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 //PARSE JSON Documents.
-//NOTE: Only rooted Json Document (i.e. JsonText in JsonDocument bounded without object
+//NOTE: Only rooted Json Document (i.e. JsonText in JsonDocument bounded with object)
 // (File with single string: "something" or with single literal (true, 12.5) IS NOT VALID)
 // (VALID File is JSON Object with its properties)
 public class SimpleJsonParser {
@@ -126,7 +126,6 @@ public class SimpleJsonParser {
    public JsonObject parse(String fileName) {
         LinkedStack<JsonObject> obs = new LinkedStack<>();
         obs.push(new JsonObject());
-        //FileInputStream f = null;
         LinkedStack<JsonArray> arrays = new LinkedStack<>();
         try (FileInputStream f  = new FileInputStream(new File(fileName).getAbsolutePath());
              InputStreamReader ch = new InputStreamReader(f);
@@ -160,6 +159,7 @@ public class SimpleJsonParser {
             System.out.println("Cannot parse to Json Document!");
             return null;
         }
+
         this.S1.clear();
         this.col = 0;
         this.line = 1;
@@ -301,6 +301,23 @@ public class SimpleJsonParser {
             clear();
             this.state = JsParserState.CLOSEQ;
         }
+        else if(state == JsParserState.ID_READ){
+            if(S1.top() == JsParserState.COLON && c != ',' && c != ':' && c != '}' && c != ']' && c != '{' && c != '['){
+                this.state = S1.top();
+                S1.pop();
+                readId(f,c,propName,top,null);
+            }
+            else if(S1.top() == JsParserState.ARRELEM && c != ',' && c != ':' && c != '}' && c != ']' && c != '{' && c != '['){
+                this.state = S1.top();
+                S1.pop();
+                readId(f,c,null,top,arrays.top());
+            }
+            else{
+                S1.pop();
+                this.state = JsParserState.CLOSEQ;
+                ungetch(c);
+            }
+        }
         else if(state == JsParserState.CLOSEQ){
             //System.out.println(propName.getValue()+":"+top.getValue().get(propName.getValue()));
             if(c == ','  && S1.top() == JsParserState.ARRELEM){
@@ -346,7 +363,7 @@ public class SimpleJsonParser {
                     this.state = JsParserState.OPENQP;
             }
             else
-                err(c,", or ] or }");
+                err(c,", or ] or } ");
         }
         else if(state == JsParserState.OPENBRACE){
             if(c == '}' && S1.top() == JsParserState.OPENBRACE){
@@ -567,13 +584,34 @@ public class SimpleJsonParser {
         b.append(c);
         while(i < 2147483647){
             c = (char)getch(f);
-            if(c == ',' || c == '\t' || c =='\n' || c == ' ' || c == '}' || c == ']' || c == '\r')
+            if(c == ',' || c == '\t' || c =='\n' || c == ' ' || c == '}' || c == ']' || c == '\r' || c == '{' || c == '[')
                 break;
             b.append(c);
             i++;
         }
         String v = b.toString();
-        if(v.equals("true")){
+
+        //IF PROPERTY IS ALREADY INIT (IN CASE OF MUTIPLE IDS)
+        JsonElement old = null;
+        if(ob != null && propName != null && (old = ob.getProperty(propName.getValue())) != null){
+            try{
+                JsonString ov = (JsonString)old;
+                JsonElement l =  ob.getElement(v);
+                JsonString appendv = null;
+                if(l == null)
+                    appendv = new JsonString(v);
+                else
+                    appendv = (JsonString)l;
+                JsonString nv = new JsonString(ov.getValue() + appendv.getValue());
+                ob.Put(propName.getValue(),nv);
+            }
+            catch (ClassCastException ex){
+                System.out.println("Property \""+propName.getValue()+"\" has already value.");
+                System.out.println("All ids MUST REFER TO STRING values!");
+                throw new JsonParseException("Cannot use multiple ids with values of different types!",null);
+            }
+        }
+        else if(v.equals("true")){
             addLiteral(ob,propName,arr,new JsonBoolean('t'));
         }
         else if(v.equals("false")){
@@ -584,9 +622,17 @@ public class SimpleJsonParser {
         }
         else{
             JsonElement l =  ob.getElement(v);
+            //if id is not a propName THEN treat it as a STRING literal
             addLiteral(ob,propName,arr,(l == null) ? new JsonString(v) : l);
         }
-        this.state = JsParserState.CLOSEQ;
+
+        //SINGLE ID WAS READ.
+        //this.state = JsParserState.CLOSEQ;
+
+        //ID WAS READ. TRY(READ NEXT ID  OR  COMMA (,))
+        S1.push(this.state);//save prev state.
+        this.state = JsParserState.ID_READ;
+
         ungetch(c);
     }
 
@@ -1106,7 +1152,7 @@ public class SimpleJsonParser {
     }
 
     private <T> void addLiteral(JsonObject ob, JsonString propName, JsonArray arr,JsonElement<T> el){
-        if(propName == null || ob == null){
+        if(propName == null || ob == null){//property name was not specified => it is an array element.
             arr.add(el);
         }
         else
