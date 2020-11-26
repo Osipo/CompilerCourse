@@ -23,6 +23,7 @@ public class JsonParserTest {
         SimpleJsonParser parser = new SimpleJsonParser();
         JsonObject ob = parser.parse(s);
         assert ob != null;
-        System.out.println(ob);
+        System.out.println("---------------");
+        System.out.println(ob.toString());
     }
 }
