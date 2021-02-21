@@ -2,6 +2,8 @@ package ru.osipov.labs.lab1.structures.lists;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+
 //LIFO
 public class LinkedStack<T> implements Iterable<T> {
     private ElementType<T> _head;
@@ -9,6 +11,19 @@ public class LinkedStack<T> implements Iterable<T> {
 
     public LinkedStack(){
         this._count = 0;
+    }
+
+    public LinkedStack(LinkedStack<T> elems){
+        this._count = 0;
+        for(T elem : elems){
+            push(elem);
+        }
+    }
+    public LinkedStack(List<T> elems){
+        this._count = 0;
+        for(T elem : elems){
+            push(elem);
+        }
     }
 
     //EMPTY(S): BOOLEAN

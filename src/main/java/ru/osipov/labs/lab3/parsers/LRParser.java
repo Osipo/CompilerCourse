@@ -80,7 +80,7 @@ public class LRParser extends Parser {
                 Pair<Integer,String> k = new Pair<>(cstate,t);
                 if(mode == ParserMode.DEBUG)
                     System.out.println(states+" "+S+" >>"+t);
-                //command =  s_state
+                //command =  move_to s_state
                 //      | r_header:size
                 //      | acc
                 //      | err

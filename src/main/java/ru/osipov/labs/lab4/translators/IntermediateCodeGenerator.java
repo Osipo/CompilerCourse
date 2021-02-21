@@ -11,6 +11,53 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Generates IE code
+ * Commands description:
+ * (curly braces { and } put only for indicating of parameters. They are not part of syntax!)
+ * ( '|' symbol in expressions like {p1 | p2} is used to only specify 'XOR' between usage of p1 and p2)
+ *
+ * TYPE OF VARIABLES IN IE code:
+ *  Temporary variables have prefix :t
+ *  Parameters of functions and methods have prefix :p
+ *  The absence of parameter of command is indicated as :z
+ *  The return value of the method has name :res
+ *  {var} indicates on name of variable of any type except :z type
+ *  {pname} indicates on name of variable of parameter type.
+ *  {rval} indicates the pure literal value
+ *  {res_type} indicates the type name
+ *  {ovar} indicates on name of variable of any type.
+ *  {l} indicates the label name or method name
+ *  {lo} indicates optional label name which can be omit with specifying :z name.
+ * COMMANDS:
+ * PUTFIELD {class_name} {field_name} {value}
+ *       puts value to the field field_name of the class class_name
+ * GOTO {l1} {l2}
+ *      moves to the instruction which is labeled with {l1}
+ *      and after assigning a value to variable :res
+ *      returns to the instruction which is labeled with {l2}
+ *      if {l2} was not specified, that means do not return the old context
+ *
+ * = {var1} {res_type} {var2}
+ *      copy a value from variable {var1} to the variable {var2} which has specified type {res_type}
+ *  ( * | + | - | / ) {var1} {res_type} {var2}
+ *      arithmetic commands which is equivalent to {var2} = {var2} ( * | + | - | / ) ({res_type}){var1}
+ * PUSH_P {var}
+ *    puts into stack the value of variable with name {var} or raw value {value}
+ *    saves a part of execution context (old value of variables)
+ * POP_P {var}
+ *     extract value from the top of the stack and saves it into variable {var}
+ * PARAM {var1} :z {pname}
+ *     saves value from {var1} to {pname}
+ * IFFALSE {var}  {l1}  {lo2}
+ *     if result of variable {var} is false when move to the instruction labeled with {l1}
+ *     else move to the instruction labeled with {lo2}
+ *     if {lo2} is equal to :z that means if-Statement without else.
+ * IFTRUE {var}  {l1}  {l2}
+ *      if result of variable {var} is true when move to the instuction labeled with {l1}
+ *      else move to the instruction labeled with {l2}.
+ *      This command specifies a While-Loop-Statement
+ */
 public class IntermediateCodeGenerator implements Action<Node<Token>> {
     private LinkedTree<Token> tree;
     private Grammar G;

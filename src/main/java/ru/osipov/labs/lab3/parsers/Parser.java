@@ -37,5 +37,7 @@ public abstract class Parser {
         lexer.setMlCommentStart(G.getMlCommentStart());
         lexer.setMlCommentEnd(G.getMlCommentEnd());
         lexer.setIdName(G.getIdName());
+        lexer.setIgnorable(G.getIgnorable());
+        this.mode = ParserMode.HIDE;
     }
 }

@@ -1,17 +1,19 @@
 package ru.osipov.labs.lab2.jsonParser.meta;
 
+import ru.osipov.labs.lab2.jsonParser.jsElements.JsonElement;
+
 public abstract class JsonRange extends JsonProperty {
     protected int min;
     protected int max;
-    public JsonRange(String name, String type, boolean required) {
-        super(name, type, required);
+    public JsonRange(String name, String type, boolean required, JsonElement el) {
+        super(name, type, required,el);
     }
-    public JsonRange(String name, String type) {
-        super(name, type,false);
+    public JsonRange(String name, String type, JsonElement el) {
+        super(name, type,false,el);
     }
 
-    public JsonRange(String name,String type,boolean required, int min,int max){
-        super(name,type,required);
+    public JsonRange(JsonElement el, String name,String type,boolean required, int min,int max){
+        super(name,type,required,el);
         this.min = min;
         this.max = max;
     }
@@ -29,5 +31,9 @@ public abstract class JsonRange extends JsonProperty {
 
     public int getMax() {
         return max;
+    }
+
+    public String toString(){
+        return "[ type = \"" + type + "\", name = \"" + name + "\", value = \"" + val.toString() + "\", min = \"" + min + "\", max = \"" + max +"\" ]";
     }
 }

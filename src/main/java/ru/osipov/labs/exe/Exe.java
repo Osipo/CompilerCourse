@@ -88,7 +88,7 @@ public class Exe implements CommandLineRunner {
         LinkedTree<Token> tree = sa.parse(sc);
         if(tree != null){
             System.out.println("Parsed successful.");
-            Graphviz.fromString(tree.toDot("ptree")).render(Format.PNG).toFile(new File(dir+"\\Tree_SLR"));
+            Graphviz.fromString(tree.toDot("ptree")).render(Format.PNG).toFile(new File(dir+"\\Ex_2_Tree_SLR"));
 
             System.out.println("Tree nodes: "+tree.getCount());
 
@@ -98,19 +98,19 @@ public class Exe implements CommandLineRunner {
             DeleteUselessSyntaxNode act1 = new DeleteUselessSyntaxNode(G);
             tree.visit(VisitorMode.PRE,act1);
             System.out.println("Useless syntax node are deleted. (symbols like \",\" \";\" and etc.)");
-            Graphviz.fromString(tree.toDot("ptreeA1")).render(Format.PNG).toFile(new File(dir+"\\UsefulTree_SLR_a1"));
+            Graphviz.fromString(tree.toDot("ptreeA1")).render(Format.PNG).toFile(new File(dir+"\\Ex_2_UsefulTree_SLR_a1"));
 
             //Sem Action 2: Delete chain Nodes (Rules like A -> B, B -> C).
             BreakChainNode act2 = new BreakChainNode();
             tree.visit(VisitorMode.PRE,act2);
             System.out.println("Chain was deleted");
-            Graphviz.fromString(tree.toDot("ptreeA2")).render(Format.PNG).toFile(new File(dir+"\\ZippedTree_SLR_a2"));
+            Graphviz.fromString(tree.toDot("ptreeA2")).render(Format.PNG).toFile(new File(dir+"\\Ex_2_ZippedTree_SLR_a2"));
 
             //Sem Action 3: Build AS Tree.
             MakeAstTree act3 = new MakeAstTree(G);
             tree.visit(VisitorMode.PRE,act3);
             System.out.println("AST was built.");
-            Graphviz.fromString(tree.toDot("pTreeA3")).render(Format.PNG).toFile(new File(dir+"\\ASTree_SLR"));
+            Graphviz.fromString(tree.toDot("pTreeA3")).render(Format.PNG).toFile(new File(dir+"\\Ex_2_ASTree_SLR_a3"));
             System.out.println("Tree nodes after processing: "+tree.getCount());
 
             //Semantic analyzer and IE code generator.

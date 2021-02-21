@@ -1,19 +1,21 @@
 package ru.osipov.labs.lab2.jsonParser.meta;
 
+import ru.osipov.labs.lab2.jsonParser.jsElements.JsonElement;
+
 public class JsonPropertyNumber extends JsonRange {
 
     protected int exMin;
     protected int exMax;
-    public JsonPropertyNumber(String name, String type, boolean required) {
-        super(name, type, required);
+    public JsonPropertyNumber(String name, String type, boolean required, JsonElement e) {
+        super(name, type, required, e);
     }
 
-    public JsonPropertyNumber(String name, String type) {
-        super(name, type);
+    public JsonPropertyNumber(String name, String type, JsonElement e) {
+        super(name, type, e);
     }
 
-    public JsonPropertyNumber(String name, String type, boolean required, int min, int max) {
-        super(name, type, required, min, max);
+    public JsonPropertyNumber(JsonElement el, String name, String type, boolean required, int min, int max) {
+        super(el,name, type, required, min, max);
     }
 
     public void setExMin(int exMin) {
@@ -30,5 +32,9 @@ public class JsonPropertyNumber extends JsonRange {
 
     public int getExMax() {
         return exMax;
+    }
+
+    public String toString(){
+        return "[ type = \"" + type + "\", name = \"" + name + "\", value = \"" + val.toString() + "\", exMin = \"" + exMin + "\", exMax = \"" + exMax +"\" ]";
     }
 }

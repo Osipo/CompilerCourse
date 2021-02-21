@@ -2,10 +2,7 @@ package ru.osipov.labs.lab2.grammars;
 
 import ru.osipov.labs.lab1.structures.graphs.Pair;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 //Meta information of Grammar for semantic actions
 public class GrammarMetaInfo {
@@ -13,6 +10,7 @@ public class GrammarMetaInfo {
     private Set<String> operands;//for operator precedence grammar (operands, operators, aliases)
     private Set<String> operators;
     private Map<String,String> aliases;
+    private Map<String, List<String>> ignorable; /* symbols that are not part of lexem but included in regex */
 
     //Comments
     private String commentLine;
@@ -39,6 +37,7 @@ public class GrammarMetaInfo {
         this.aliases = new HashMap<>();
         this.types = new HashSet<>();
         this.scopeCategories = new HashSet<>();
+        this.ignorable = new HashMap<>();
         this.begin = "";
         this.end = "";
     }
@@ -98,6 +97,11 @@ public class GrammarMetaInfo {
             this.types = types;
     }
 
+    public void setIgnorable(Map<String, List<String>> ignorable) {
+        if(ignorable != null)
+            this.ignorable = ignorable;
+    }
+
     public Set<String> getKeywords() {
         return keywords;
     }
@@ -108,6 +112,10 @@ public class GrammarMetaInfo {
 
     public Set<String> getOperators() {
         return operators;
+    }
+
+    public Map<String, List<String>> getIgnorable(){
+        return ignorable;
     }
 
     public Map<String, String> getAliases() {

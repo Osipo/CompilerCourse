@@ -396,7 +396,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             p.setRef(refFlag);
             stable.addEntry(new SInfo(name,p));
             //ADD INFO TO CUR_METHOD.
-            curMethod.addParameter(p);
+            curMethod.addParameter(p);/* CHECK LIST OF PARAMS */
             node.setRecord(p);
             refFlag = false;
             currentType = null;
@@ -464,8 +464,11 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             if(mId.getRecord() instanceof MethodInfo){
                 StringBuilder sb = new StringBuilder();
                 MethodInfo mi = (MethodInfo) mId.getRecord();
-                List<ParameterInfo> params = mi.getParams();
+                //LIST > STACK [PARAMS]
+                LinkedStack<ParameterInfo> params = mi.getParams();
                 List<LinkedNode<Token>> args = arg.getChildren();
+                //REVERSE ARGS
+                //Collections.reverse(args);/*reverse children AS THEY ARE BUILT FROM STACK OF PARSER*/
                 if(params.size() != args.size()){
                     errors.add(new SemanticError("Error at: ("+mId.getValue().getLine()+", "+mId.getValue().getColumn()+") Wrong number of parameters of method:  "+mId.getValue().getLexem()+". Expected:  "+params.size()+" but actual:  "+args.size(),SemanticErrorType.WRONG_PARAMS_NUMBER));
                     return;
@@ -474,14 +477,17 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 LinkedStack<String> pStack = new LinkedStack<>();
                 List<String> sentNames = new ArrayList<>();//names of variables which sent to the arg list of CALL expression as Refs
                 boolean errs = false;
-                for(int i = 0; i < params.size(); i++){
-                    ParameterInfo param = params.get(i);
+                int i = 0;
+                int j = params.size();
+                /*At stack: p1, p0.  At args: p1, p0.*/
+                for(ParameterInfo param : params){
                     String ptype = param.getType();
                     String pname = param.getName();
                     String atype = args.get(i).getRecord() == null ? "Null" : args.get(i).getRecord().getType();
                     String aname = args.get(i).getRecord() == null ? ":undef" : args.get(i).getRecord().getName();
+                    //System.out.println(aname + " :: " + atype + " :: "+ptype);
                     if(!ptype.equals(atype)){
-                        errors.add(new SemanticError("Error at: ("+args.get(i).getValue().getLine()+", "+args.get(i).getValue().getColumn()+") Expected type of "+(i + 1)+" parameter:  "+ptype+" but found:  "+atype,SemanticErrorType.WRONG_TYPE));
+                        errors.add(new SemanticError("Error at: ("+args.get(i).getValue().getLine()+", "+args.get(i).getValue().getColumn()+") Expected type of "+(j)+" parameter:  "+ptype+" but found:  "+atype,SemanticErrorType.WRONG_TYPE));
                         errs = true;
                         continue;
                     }
@@ -492,6 +498,8 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                     }
                     else
                         sentNames.add(aname);
+                    i++;
+                    j--;
                 }
                 if(curMethod == null){
                     errors.add(new SemanticError("Error at: ("+currentNode.getValue().getLine()+", "+currentNode.getValue().getColumn()+"). Current method body belongs to method that is redefined!",SemanticErrorType.TYPE_REDEFINED));
@@ -500,18 +508,21 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                 if(errs){//WRONG TYPES OF PARAMETERS
                     return;
                 }
-                List<ParameterInfo> oldParams = curMethod.getParams();
+                //LIST > STACK [PARAMS]
+                LinkedStack<ParameterInfo> oldParams = curMethod.getParams();
+
                 //FOR EACH PARAMETER IN CURRENT METHOD SAVE THEM INTO STACK.
-                for(int i = 0; i < oldParams.size();i++){
-                    ParameterInfo p = oldParams.get(i);
+                for(ParameterInfo p : oldParams){
                     if(!sentNames.contains(p.getName())) {
                         pStack.push(p.getName());
                         sb.append("PUSH_P ").append(p.getName()).append(" \n");
                     }
                 }
                 //THEN PUT NEW VALUES TO PARAMETERS.
-                for(int i = 0; i < params.size();i++){
-                    sb.append("PARAM ").append(args.get(i).getValue().getLexem()).append(" :z ").append(":p").append(i).append(" \n");
+                j = params.size() - 1;
+                for(i = 0; i < params.size();i++){
+                    sb.append("PARAM ").append(args.get(i).getValue().getLexem()).append(" :z ").append(":p").append(j).append(" \n");
+                    j--;
                 }
 
                 //ADD TO STACK OLD PARAMETERS OF CURRENT METHOD.
@@ -558,16 +569,17 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             if(mId.getRecord() instanceof MethodInfo){
                 StringBuilder sb = new StringBuilder();
                 MethodInfo mi = (MethodInfo) mId.getRecord();
-                List<ParameterInfo> params = mi.getParams();
+                //LIST > STACK [PARAMS]
+                LinkedStack<ParameterInfo> params = mi.getParams();
                 String argumentName = "";
                 LinkedStack<String> pStack = new LinkedStack<>();
                 if(params.size() != 1){
                     errors.add(new SemanticError("Error at: ("+arg.getValue().getLine()+", "+arg.getValue().getColumn()+") Wrong number of parameters of method:  "+mId.getValue().getLexem()+". Expected:  "+params.size()+" but actual:  "+1,SemanticErrorType.WRONG_PARAMS_NUMBER));
                     return;
                 }
-                String ptype = params.get(0).getType();
+                String ptype = params.top().getType(); //params.get(0).getType();
                 String aname = arg.getRecord() == null ? ":undef" : arg.getRecord().getName();
-                boolean isRef = params.get(0).isRef();
+                boolean isRef = params.top().isRef();
                 String atype = arg.getRecord() == null ? "Null" : arg.getRecord().getType();
                 if(!ptype.equals(atype)){
                     errors.add(new SemanticError("Error at: ("+arg.getValue().getLine()+", "+arg.getValue().getColumn()+") Expected type of "+1+" parameter:  "+ptype+" but found:  "+atype,SemanticErrorType.WRONG_TYPE));
@@ -583,11 +595,11 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                     errors.add(new SemanticError("Error at: ("+currentNode.getValue().getLine()+", "+currentNode.getValue().getColumn()+"). Current method body belongs to method that is redefined!",SemanticErrorType.TYPE_REDEFINED));
                     return;
                 }
-                List<ParameterInfo> oldParams = curMethod.getParams();
+                //LIST > STACK [PARAMS]
+                LinkedStack<ParameterInfo> oldParams = curMethod.getParams();
                 //FOR EACH PARAMETER IN CURRENT METHOD SAVE THEM INTO STACK.
-                for(int i = 0; i < oldParams.size();i++){
-                    ParameterInfo p = oldParams.get(i);
-                    if(!argumentName.equals(p.getName())) {
+                for(ParameterInfo p : oldParams){
+                    if(!argumentName.equals(p.getName())) {//IF ARG WAS NOT A PARAMETER
                         pStack.push(p.getName());
                         sb.append("PUSH_P ").append(p.getName()).append(" \n");
                     }
@@ -610,7 +622,7 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             }
             return;
         }
-        //Else if it is a single right NON_Term_node of CALL (CALL of method without parameters)
+        //Else if it is a single right NON_Term_node of CALL (CALL of method without parameters) => AP node
         else if(arg.getParent().getValue().getName().equals("CALL") && arg.getParent().getChildren().indexOf(arg) == 0 ){
             LinkedNode<Token> mId = arg.getParent().getChildren().get(1);
             //method not defined.
@@ -624,12 +636,12 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
                     errors.add(new SemanticError("Error at: (" + currentNode.getValue().getLine() + ", " + currentNode.getValue().getColumn() + "). Current method body belongs to method that is redefined!", SemanticErrorType.TYPE_REDEFINED));
                     return;
                 }
-                List<ParameterInfo> oldParams = curMethod.getParams();
+                //LIST > STACK [PARAMS]
+                LinkedStack<ParameterInfo> oldParams = curMethod.getParams();
                 LinkedStack<String> pStack = new LinkedStack<>();
                 StringBuilder sb = new StringBuilder();
                 //FOR EACH PARAMETER IN CURRENT METHOD SAVE THEM INTO STACK.
-                for (int i = 0; i < oldParams.size(); i++) {
-                    ParameterInfo p = oldParams.get(i);
+                for (ParameterInfo p : oldParams) {
                     pStack.push(p.getName());
                     sb.append("PUSH_P ").append(p.getName()).append(" \n");
                 }
@@ -806,8 +818,10 @@ public class SemanticAnalyzer implements Action<Node<Token>> {
             && arg.getParent().getChildren().indexOf(arg) == 1){
             currentNode = arg;
             if(arg.getRecord() != null && arg.getRecord() instanceof MethodInfo){
-
-                oldPNames.addAll(  ((MethodInfo)arg.getRecord()).getParams().stream().map(Entry::getName).collect(Collectors.toList()));
+                LinkedStack<ParameterInfo> oldparams = ((MethodInfo) arg.getRecord()).getParams();
+                for(ParameterInfo p : oldparams)
+                    oldPNames.add(p.getName());
+                //oldPNames.addAll(  ((MethodInfo)arg.getRecord()).getParams().stream().map(Entry::getName).collect(Collectors.toList()));
             }
         }
         else if(arg.getValue().getName().equals(G.getIdName()) && currentNode != null){

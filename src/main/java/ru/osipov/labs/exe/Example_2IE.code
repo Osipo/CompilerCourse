@@ -3,9 +3,9 @@ PUTFIELD Program a 'q'
 = a char :res 
 calc: 
 = 5 long :t2 
-um :p1:long :z :t1 
+um :p0:long :z :t1 
 - :t2:long :t1:long :t3 
-= :t3 long :p1 
+= :t3 long :p0 
 PUSH_P :p0 
 PUSH_P :p1 
 GOTO chr: L1: 
@@ -13,37 +13,37 @@ L1:
 POP_P :p1 
 POP_P :p0 
 PUSH_P 5 
-PUSH_P :p0 
+PUSH_P :p1 
+PARAM :p0 :z :p1 
 PARAM 5 :z :p0 
-PARAM :p1 :z :p1 
 GOTO calc: L3: 
 L3: 
-POP_P :p0 
+POP_P :p1 
 POP_P 5 
-= :res long :p1 
+= :res long :p0 
 = 4 long :t4 
-+ :p1:long :t4:long :t5 
++ :p0:long :t4:long :t5 
 ^ 5:int 2:int :t6 
 = :t6 long :t7 
 * :t5:long :t7:long :t8 
-= :t8 long :p1 
-= :p0 long :t9 
-> :t9:long :p1:long :t10 
+= :t8 long :p0 
+= :p1 long :t9 
+> :t9:long :p0:long :t10 
 IFFALSE :t10 L4: :z 
-= :p0 long :t11 
-<= :p1:long :t11:long :t12 
+= :p1 long :t11 
+<= :p0:long :t11:long :t12 
 IFTRUE :t12 L5:  L6: 
 L5: 
 = 1 long :t13 
-+ :p1:long :t13:long :t14 
-= :t14 long :p1 
-= :p0 long :t11 
-<= :p1:long :t11:long :t12 
++ :p0:long :t13:long :t14 
+= :t14 long :p0 
+= :p1 long :t11 
+<= :p0:long :t11:long :t12 
 IFTRUE :t12 L5:  L6:  
 L4: 
-= :p0 long :t15 
-= :t15 long :p1 
+= :p1 long :t15 
+= :t15 long :p0 
 L6: 
-= :p0 long :t16 
-* :t16:long :p1:long :t17 
+= :p1 long :t16 
+* :t16:long :p0:long :t17 
 = :t17 long :res 

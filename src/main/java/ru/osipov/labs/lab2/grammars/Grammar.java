@@ -58,6 +58,7 @@ public class Grammar {
         this.meta.setId("id");
         JsonElement T = jsonG.getElement("terms");
 
+        /* SECTION TERMINALS */
         if(T instanceof JsonObject){
             this.T = new HashSet<>();
             lex_rules = new HashMap<>();
@@ -105,7 +106,7 @@ public class Grammar {
         else
             throw new InvalidJsonGrammarException("Expected \"terms\" property with value of the JsonObject with names of terminals and their values (list of String patterns)!\n\t terms : {term_i : string | null | [string_i...] , ... n} ",null);
 
-        //optional keywords.
+        //OPTIONAL KEYWORDS.
         JsonElement K = jsonG.getElement("keywords");
         if(K instanceof JsonArray){
             Set<String> keywords = new HashSet<>();
@@ -121,7 +122,34 @@ public class Grammar {
             this.meta.setKeywords(keywords);
         }
 
-        //nonTerms
+        /* SECTION IGNORABLE */
+        JsonElement IG = jsonG.getElement("ignorable");
+        if(IG instanceof JsonObject){
+            JsonObject o = (JsonObject) IG;
+            Set<String> props = o.getValue().keySet();
+            Map<String, List<String>> ignorable = new HashMap<>();
+            for(String prop : props){
+                List<String> l = new LinkedList<>();
+                JsonElement el = o.getProperty(prop);
+                if(el instanceof JsonArray) {
+                    ArrayList<JsonElement> symbols = ((JsonArray) el).getElements();
+                    for (JsonElement s : symbols) {
+                        if (s instanceof JsonString) {
+                            l.add(((JsonString) s).getValue());
+                        } else
+                            throw new InvalidJsonGrammarException("Value of property \"" + prop + "\"is not a String value at object \"ignorable\"", null);
+                    }
+                }
+                else if(el instanceof JsonString){
+                    l.add(((JsonString) el).getValue());
+                }
+                else
+                    throw new InvalidJsonGrammarException("Expected String value or array of strings for property \"" + prop + "\" at object \"ignorable\"!",null);
+            }
+            this.meta.setIgnorable(ignorable);
+        }
+
+        //SECTION NONTERMINALS
         JsonElement N = jsonG.getElement("nonTerms");
         if(N instanceof JsonArray){
             this.N = new HashSet<>();
@@ -137,7 +165,7 @@ public class Grammar {
         else
             throw new InvalidJsonGrammarException("Expected \"nonTerms\" property with list of String names of non-terminals",null);
 
-        //optional meta
+        /* OPTIONAL META */
         JsonElement M = jsonG.getElement("meta");
         if(M instanceof JsonObject){
             JsonObject o = (JsonObject) M;
@@ -506,6 +534,8 @@ public class Grammar {
     public Set<String> getKeywords(){
         return this.meta.getKeywords();
     }
+
+    public Map<String, List<String>> getIgnorable(){ return this.meta.getIgnorable();}
 
     public Set<String> getOperands(){ return this.meta.getOperands();}
 

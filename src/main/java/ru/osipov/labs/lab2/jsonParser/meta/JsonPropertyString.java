@@ -1,11 +1,13 @@
 package ru.osipov.labs.lab2.jsonParser.meta;
 
+import ru.osipov.labs.lab2.jsonParser.jsElements.JsonElement;
+
 public class JsonPropertyString extends JsonRange {
 
     protected String format;
     protected String regex;
-    public JsonPropertyString(String name, String type, boolean required,int max) {
-        super(name, type, required);
+    public JsonPropertyString(JsonElement v, String name, String type, boolean required, int max) {
+        super(name, type, required, v);
         this.format = null;
         this.regex = null;
         this.min = 0;
@@ -27,6 +29,10 @@ public class JsonPropertyString extends JsonRange {
 
     public String getFormat() {
         return format;
+    }
+
+    public String toString(){
+        return "[ type = \"" + type + "\", name = \"" + name + "\", value = \"" + val.toString() + "\", min = \"" + min + "\", max = \"" + max +"\",\n format = \"" + format + "\", regex = \"" + regex + "\"  ]";
     }
 
 }

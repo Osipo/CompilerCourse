@@ -13,19 +13,24 @@ import java.util.*;
 import java.util.stream.Collectors;
 public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
 
-    private LexerIO io;
-    private Set<String> keywords;
-    private Set<String> operands;
-    private Map<String,String> aliases;
-    private Token prevTok;
+    private LexerIO io;//reader of stream of chars (from file or str or etc.)
+    private Token prevTok;// lexer previous recognized Token.
+    private char[] ignore;// symbols that are ignored at InputStream
 
-
+    /* these fields are allusion for GrammarMetaInfo type */
+    /* The reason is why GrammarMetaInfo is not used here
+       is that we need fully independent Lexer without coupling to specific Grammar.
+     */
     private String commentStart;
     private String mlcStart;
     private String mlcEnd;
     private String id;
-    private char[] ignore;
+    private Set<String> keywords;
+    private Set<String> operands;
+    private Map<String,String> aliases;
+    private Map<String, List<String>> ignorable;
 
+    /*TODO: Make builder instead of .ctors */
     public DFALexer(DFA dfa, LexerIO io){
         super(dfa,true);
         this.deleteDeadState();
@@ -39,6 +44,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         this.id = null;
         this.prevTok = null;
         this.ignore = null;
+        this.ignorable = null;
     }
 
     public DFALexer(NFA nfa, LexerIO io){
@@ -54,6 +60,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         this.mlcEnd = null;
         this.id = null;
         this.ignore = null;
+        this.ignorable = null;
     }
 
     public DFALexer(CNFA nfa){
@@ -73,6 +80,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         this.mlcEnd = null;
         this.id = null;
         this.ignore = null;
+        this.ignorable = null;
     }
 
 
@@ -92,6 +100,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         this.mlcEnd = null;
         this.id = null;
         this.ignore = null;
+        this.ignorable = null;
     }
 
     public DFALexer(DFA dfa){
@@ -110,6 +119,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         this.mlcEnd = null;
         this.id = null;
         this.ignore = null;
+        this.ignorable = null;
     }
 
     @Override
@@ -120,6 +130,11 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
     @Override
     public Set<String> getKeywords(){
         return keywords;
+    }
+
+    @Override
+    public void setIgnorable(Map<String, List<String>> ignorable) {
+        this.ignorable = ignorable;
     }
 
     @Override
@@ -189,7 +204,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         }
         if(((int)cur) == 65535)
             return new Token("$","$",'t',io.getLine(),io.getCol());
-        Vertex s = this.start;
+        Vertex s = this.start;// s == state.
         LinkedStack<Vertex> states = new LinkedStack<>();
         states.push(s);
         StringBuilder sb = new StringBuilder();
@@ -212,53 +227,55 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
                     cur = sb.charAt(sb.length() - 1);
                     sb.deleteCharAt(sb.length() - 1);
                     //System.out.println(sb);
-                    io.ungetch(cur);
+                    io.ungetch(cur);//get back one symbol
                     pl++;
                     s = states.top();
                     states.pop();
                 }
+                /* REGION_BEGIN_COMMENTS */
                 if(s.getValue().equals(this.commentStart)){//commentLine start.
                     while(cur != '\n' && ((int)cur) != 65535){//check also EOF symbol
                         cur = (char)io.getch(f);
                     }
                     return null;//return null for comments.
                 }
-                else if(s.getValue().equals(this.mlcStart)){
-                    int mls = 0; int mle = mlcEnd.length();
+                else if(s.getValue().equals(this.mlcStart)) {
+                    int mls = 0;
+                    int mle = mlcEnd.length();
                     boolean isp = false;
-                    while(cur != 65535){//cur != EOF
-                        cur = (char)io.getch(f);
-                        while(mls < mle && mlcEnd.charAt(mls) == cur ){
-                            cur = (char)io.getch(f);
+                    while (cur != 65535) {//cur != EOF
+                        cur = (char) io.getch(f);
+                        while (mls < mle && mlcEnd.charAt(mls) == cur) {
+                            cur = (char) io.getch(f);
                             isp = true;
                             mls++;
                         }
-                        if(mls == mle){
-                           return null;//mlComment found. return null
-                        }
-                        else {
+                        if (mls == mle) {
+                            return null;//mlComment found. return null
+                        } else {
                             mls = 0;
-                            if(isp)
+                            if (isp)
                                 io.ungetch(cur);
                             isp = false;
                         }
                     }
-                    return new Token("$","$",'t',io.getLine(),io.getCol());
-                }
+                    return new Token("$", "$", 't', io.getLine(), io.getCol());
+                } /* REGION_END_COMMENTS */
+                /* KEYWORD (comment first condition at predicate if needed)*/
                 if((s.getValue().equals(this.id) || this.id == null) && keywords.size() > 0 && keywords.contains(sb.toString())) {
-                    prevTok = new Token(sb.toString(), sb.toString(), 't',io.getLine(),io.getCol());
+                    prevTok = makeToken(sb.toString(), sb.toString());//new Token(sb.toString(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else if(prevTok == null || (operands.size() > 0 && operands.contains(prevTok.getName())) ){
-                    prevTok =  new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
+                    prevTok =  makeToken(s.getValue(), sb.toString());//new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else if(prevTok != null && operands.size() > 0){
-                    prevTok = new Token(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString(), 't',io.getLine(),io.getCol());
+                    prevTok = makeToken(aliases.getOrDefault(s.getValue(), s.getValue()), sb.toString());//new Token(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else {
-                    prevTok =  new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
+                    prevTok =  makeToken(s.getValue(), sb.toString());//new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
             }
@@ -273,6 +290,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
             if((int)cur == 65535)
                 sb.deleteCharAt(sb.length() - 1);//remove redundant read EOF ch.
             if(s.isFinish()) {
+                /* REGION_BEGIN_COMMENTS */
                 if(s.getValue().equals(this.commentStart)){//commentLine start.
                     while(cur != '\n' && ((int)cur) != 65535){//check also EOF symbol
                         cur = (char)io.getch(f);
@@ -300,21 +318,22 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
                         }
                     }
                     return new Token("$","$",'t',io.getLine(),io.getCol());
-                }
+                }/* REGION_END_COMMENTS */
+                /* KEYWORD (comment first condition at predicate if needed)*/
                 if((s.getValue().equals(this.id) || this.id == null) && keywords.size() > 0 && keywords.contains(sb.toString())) {
-                    prevTok = new Token(sb.toString(), sb.toString(), 't',io.getLine(),io.getCol());
+                    prevTok = makeToken(sb.toString(), sb.toString());//new Token(sb.toString(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else if(prevTok == null || (operands.size() > 0 && operands.contains(prevTok.getName())) ){
-                    prevTok =  new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
+                    prevTok =  makeToken(s.getValue(), sb.toString());//new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else if(prevTok != null && operands.size() > 0){
-                    prevTok = new Token(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString(), 't',io.getLine(),io.getCol());
+                    prevTok = makeToken(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString());//new Token(aliases.getOrDefault(s.getValue(),s.getValue()), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
                 else {
-                    prevTok =  new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
+                    prevTok =  makeToken(s.getValue(), sb.toString());//new Token(s.getValue(), sb.toString(), 't',io.getLine(),io.getCol());
                     return prevTok;
                 }
             }
@@ -329,6 +348,21 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         }
     }
 
+    /* construct new Token WITH scanning IGNORABLE */
+    protected Token makeToken(String name, String val){
+        if(this.ignorable == null)
+            return new Token(name, val, 't', io.getLine(), io.getCol());
+        else if(this.ignorable.getOrDefault(name, null) == null)
+            return new Token(name, val, 't', io.getLine(), io.getCol());
+        List<Character> symbols = this.ignorable.get(name).stream().map(x -> x.charAt(0)).collect(Collectors.toList());
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < val.length(); i++){
+            if(symbols.contains(val.charAt(i)))
+                continue;
+            sb.append(val.charAt(i));
+        }
+        return new Token(name, sb.toString(), 't', io.getLine(), io.getCol());
+    }
 
     //Try move on from current character c
     //IF NOT => Try move on from any character (search edge with any label (char) 0)

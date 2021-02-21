@@ -67,3 +67,34 @@
 	"d" : "string"
 }
 
+Test descriptor
+Hq1 : [ type = "string", name = "q1", value = "1", min = "0", max = "1",
+% format = "null", regex = "null"  ]
+7b : [ type = "boolean", name = "b", value = "false" ]
+Tinternal : [ type = "string", name = "internal", value = "i", min = "0", max = "1",
+% format = "null", regex = "null"  ]
+Hq4 : [ type = "string", name = "q4", value = "4", min = "0", max = "1",
+% format = "null", regex = "null"  ]
+Jd : [ type = "string", name = "d", value = "empty", min = "0", max = "5",
+% format = "null", regex = "null"  ]
+Cnullifier : [ type = "null", name = "nullifier", value = "null" ]
+Pinter2 : [ type = "string", name = "inter2", value = "4", min = "0", max = "1",
+% format = "null", regex = "null"  ]
+>isExt : [ type = "boolean", name = "isExt", value = "true" ]
+Nd2 : [ type = "string", name = "d2", value = "created", min = "0", max = "7",
+% format = "null", regex = "null"  ]
+J$_0 : [ type = "string", name = "$_0", value = "1", min = "0", max = "1",
+% format = "null", regex = "null"  ]
+J$_1 : [ type = "string", name = "$_1", value = "2", min = "0", max = "1",
+% format = "null", regex = "null"  ]
+J$_2 : [ type = "string", name = "$_2", value = "4", min = "0", max = "1",
+% format = "null", regex = "null"  ]
+Vnum1 : [ type = "number", name = "num1", value = "12.24", exMin = "0", exMax = "0" ]
+J$_3 : [ type = "string", name = "$_3", value = "3", min = "0", max = "1",
+% format = "null", regex = "null"  ]
+Vnum3 : [ type = "number", name = "num3", value = "12.24", exMin = "0", exMax = "0" ]
+Kob2 : [ type = "string", name = "ob2", value = "23", min = "0", max = "2",
+% format = "null", regex = "null"  ]
+Vnum2 : [ type = "number", name = "num2", value = "12.24", exMin = "0", exMax = "0" ]
+Kob1 : [ type = "string", name = "ob1", value = "12", min = "0", max = "2",
+% format = "null", regex = "null"  ]

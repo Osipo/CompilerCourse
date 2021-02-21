@@ -1,20 +1,22 @@
 package ru.osipov.labs.lab4.semantics;
 
+import ru.osipov.labs.lab1.structures.lists.LinkedStack;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MethodInfo extends Entry {
-    private List<ParameterInfo> params;
+    private LinkedStack<ParameterInfo> params;
 
     public MethodInfo(String name, String type, int mem) {
         super(name,type, EntryCategory.METHOD, mem);
-        this.params = new ArrayList<>();
+        this.params = new LinkedStack<>();
     }
 
     //copy constructor.
     public MethodInfo(MethodInfo info){
         super(info.getName(),info.getType(),info.getCat(),info.getMem());
-        this.params = new ArrayList<>(info.getParams());
+        this.params = new LinkedStack<ParameterInfo>(info.getParams());
     }
 
     @Override
@@ -26,7 +28,7 @@ public class MethodInfo extends Entry {
         this.params.add(p);
     }
 
-    public List<ParameterInfo> getParams(){
+    public LinkedStack<ParameterInfo> getParams(){
         return params;
     }
 
