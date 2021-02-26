@@ -15,7 +15,7 @@ class Program {
 
     # Define method calc with two parameters
     def long calc(int a, ref long b){
-        b = 5 - ( - b) ;
+        b = 5_000_000 - ( - b) ;
         chr () ;
         b = calc(5, b) ;
         b = ( b + 4 ) * 5 ^ 2;

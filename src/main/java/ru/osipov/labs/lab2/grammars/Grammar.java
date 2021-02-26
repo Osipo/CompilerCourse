@@ -145,6 +145,7 @@ public class Grammar {
                 }
                 else
                     throw new InvalidJsonGrammarException("Expected String value or array of strings for property \"" + prop + "\" at object \"ignorable\"!",null);
+                ignorable.put(prop, l);
             }
             this.meta.setIgnorable(ignorable);
         }

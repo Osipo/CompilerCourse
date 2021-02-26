@@ -2,7 +2,7 @@ chr:
 PUTFIELD Program a 'q' 
 = a char :res 
 calc: 
-= 5 long :t2 
+= 5000000 long :t2 
 um :p0:long :z :t1 
 - :t2:long :t1:long :t3 
 = :t3 long :p0 

@@ -352,8 +352,9 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
     protected Token makeToken(String name, String val){
         if(this.ignorable == null)
             return new Token(name, val, 't', io.getLine(), io.getCol());
-        else if(this.ignorable.getOrDefault(name, null) == null)
+        else if(this.ignorable.getOrDefault(name, null) == null) {
             return new Token(name, val, 't', io.getLine(), io.getCol());
+        }
         List<Character> symbols = this.ignorable.get(name).stream().map(x -> x.charAt(0)).collect(Collectors.toList());
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < val.length(); i++){
