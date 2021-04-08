@@ -28,7 +28,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
     private Set<String> keywords;
     private Set<String> operands;
     private Map<String,String> aliases;
-    private Map<String, List<String>> ignorable;
+    private Map<String, List<String>> ignorable;// symbols that are part of regex but not a part of lexem
 
     /*TODO: Make builder instead of .ctors */
     public DFALexer(DFA dfa, LexerIO io){
@@ -357,6 +357,8 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         }
         List<Character> symbols = this.ignorable.get(name).stream().map(x -> x.charAt(0)).collect(Collectors.toList());
         StringBuilder sb = new StringBuilder();
+
+        /* Do not include symbols from ignorable */
         for(int i = 0; i < val.length(); i++){
             if(symbols.contains(val.charAt(i)))
                 continue;

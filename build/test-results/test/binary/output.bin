@@ -1,100 +1,494 @@
-BCurrent working dir: C:\Users\Oleg\IdeaProjects\CompilerCoursePr
----------------
-{
-	"inter2" : "4",
-	"inter1" : {
-		"q4" : "4"
-	},
-	"num4" : [
-		"1",
-		"2",
-		4000,
-		"3"
-	],
-	"num3" : 12.24,
-	"num2" : 12.24,
-	"num1" : 12.24,
-	"nullifier" : null,
-	"isExt" : true,
-	"b" : false,
-	"d2" : "created",
-	"arr2" : [
-		{
-			"ob1" : "12"
-		},
-		{
-			"obar" : [
+-C:\Users\Oleg\IdeaProjects\CompilerCoursePr
+Source
+Grammar
+X	T: [==, realNum, <=, <>, %, num, (, ), *, +, -, empty, /, {, ;, id, <, }, =, ^, >, >=]
+	keywords: []
+?	N: [P, PLUSOP, OP, B, AE, T, E, PE, F, OPLIST, RELOP, MULLOP]
+	P {
 
-				"99",
-				[
+		P -> B 
+		OP -> id = E | B 
+		PLUSOP -> + | - 
+		B -> { OPLIST } 
+$		AE -> T | AE PLUSOP T | PLUSOP T 
+		T -> F | T MULLOP F 
+		E -> AE | AE RELOP AE 
+%		PE -> realNum | num | id | ( AE ) 
+		OPLIST -> OP | OPLIST ; OP 
+		F -> PE | F ^ PE 
+&		RELOP -> == | <= | <> | < | > | >= 
+		MULLOP -> % | * | / 
+	}
 
-					"98"
-				],
+	Start: P
+A	N_g: [P, PLUSOP, OP, B, T, AE, PE, E, F, OPLIST, RELOP, MULLOP]
 
-				"97",
-				{
-					"internal" : "i"
-				}
-			],
-			"ob2" : "23"
-		}
-	],
-	"arr" : [
-		"1",
-		"2",
-		4000,
-		"3"
-	],
-		"q" : {
-		"q3" : {
-			"q4" : "4"
-		},
-		"q2" : [
-			[
-					"1",
-				"2"
-			],
-			[
-				"3"
-			],
-			"4",
-			{
-				"d" : "empty"
-			}
-		],
-		"q1" : "1"
-	},
-	"d" : "string"
+	N_e: []
+i[690, 196, 153, 143, 682, 694, 199, 156, 211, 684, 201, 4, 213, 686, 148, 203, 688, 205, 679, 207, 209]
+óAlpha: [%, (, ), *, +, -, ., /, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ;, <, =, >, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, ^, _, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, {, }]
+States of NFA: 679
+States of DFA: 170
+Finished: 164
+	Dead: 8
+MinDFA States: 26
+Patterns (F): 22
+Start: M30
+ò2021-04-08 21:38:48.101  INFO   --- [    Test worker] g.n.g.service.CommandLineExecutor        : executing command [cmd, /C, dot.exe -Tsvg C:\Users\Oleg\AppData\Local\Temp\GraphvizJava\DotEngine1663883523285980409\dotfile.dot -ooutfile.svg]
+#Canonical Set of Items was built.
+ACTION and GOTO are built.
+"Canonical Grammar LR(0) items : {
+	I0: {
+		[B -> .{ OPLIST } ]
+		[P -> .B ]
+		[P' -> .P ]
+	}
+	I1: {
+		[P -> B .]
+	}
+	I2: {
+		[P' -> P .]
+	}
+	I3: {
+		[B -> .{ OPLIST } ]
+		[B -> { .OPLIST } ]
+		[OP -> .B ]
+		[OPLIST -> .OP ]
+		[OP -> .id = E ]
+		[OPLIST -> .OPLIST ; OP ]
+	}
+	I4: {
+		[OP -> B .]
+	}
+	I5: {
+		[OP -> id .= E ]
+	}
+	I6: {
+		[OPLIST -> OP .]
+	}
+	I7: {
+		[B -> { OPLIST .} ]
+		[OPLIST -> OPLIST .; OP ]
+	}
+	I8: {
+		[B -> .{ OPLIST } ]
+		[OPLIST -> OPLIST ; .OP ]
+		[OP -> .B ]
+		[OP -> .id = E ]
+	}
+	I9: {
+		[B -> { OPLIST } .]
+	}
+	I10: {
+		[OPLIST -> OPLIST ; OP .]
+	}
+	I11: {
+		[T -> .T MULLOP F ]
+		[PLUSOP -> .- ]
+		[PE -> .id ]
+		[F -> .F ^ PE ]
+		[E -> .AE ]
+		[E -> .AE RELOP AE ]
+		[F -> .PE ]
+		[AE -> .AE PLUSOP T ]
+		[T -> .F ]
+		[PE -> .num ]
+		[PE -> .realNum ]
+		[PE -> .( AE ) ]
+		[AE -> .T ]
+		[OP -> id = .E ]
+		[PLUSOP -> .+ ]
+		[AE -> .PLUSOP T ]
+	}
+	I12: {
+		[OP -> id = E .]
+	}
+	I13: {
+		[F -> F .^ PE ]
+		[T -> F .]
+	}
+	I14: {
+		[PE -> num .]
+	}
+	I15: {
+		[MULLOP -> .% ]
+		[MULLOP -> ./ ]
+		[T -> T .MULLOP F ]
+		[MULLOP -> .* ]
+		[AE -> T .]
+	}
+	I16: {
+		[PE -> id .]
+	}
+	I17: {
+		[PE -> .num ]
+		[T -> .T MULLOP F ]
+		[PE -> .realNum ]
+		[PE -> .id ]
+		[PE -> .( AE ) ]
+		[F -> .F ^ PE ]
+		[F -> .PE ]
+		[AE -> PLUSOP .T ]
+		[T -> .F ]
+	}
+	I18: {
+		[PE -> realNum .]
+	}
+	I19: {
+		[AE -> AE .PLUSOP T ]
+		[PLUSOP -> .- ]
+		[E -> AE .]
+		[PLUSOP -> .+ ]
+		[RELOP -> .<= ]
+		[RELOP -> .< ]
+		[RELOP -> .<> ]
+		[RELOP -> .> ]
+		[E -> AE .RELOP AE ]
+		[RELOP -> .== ]
+		[RELOP -> .>= ]
+	}
+	I20: {
+		[T -> .T MULLOP F ]
+		[PLUSOP -> .- ]
+		[PE -> .id ]
+		[F -> .F ^ PE ]
+		[F -> .PE ]
+		[AE -> .AE PLUSOP T ]
+		[T -> .F ]
+		[PE -> .num ]
+		[PE -> .realNum ]
+		[PE -> .( AE ) ]
+		[AE -> .T ]
+		[PLUSOP -> .+ ]
+		[PE -> ( .AE ) ]
+		[AE -> .PLUSOP T ]
+	}
+	I21: {
+		[PLUSOP -> + .]
+	}
+	I22: {
+		[PLUSOP -> - .]
+	}
+	I23: {
+		[F -> PE .]
+	}
+	I24: {
+		[AE -> AE .PLUSOP T ]
+		[PLUSOP -> .- ]
+		[PLUSOP -> .+ ]
+		[PE -> ( AE .) ]
+	}
+	I25: {
+		[AE -> AE PLUSOP .T ]
+		[PE -> .num ]
+		[T -> .T MULLOP F ]
+		[PE -> .realNum ]
+		[PE -> .id ]
+		[PE -> .( AE ) ]
+		[F -> .F ^ PE ]
+		[F -> .PE ]
+		[T -> .F ]
+	}
+	I26: {
+		[PE -> ( AE ) .]
+	}
+	I27: {
+		[MULLOP -> .% ]
+		[MULLOP -> ./ ]
+		[AE -> AE PLUSOP T .]
+		[T -> T .MULLOP F ]
+		[MULLOP -> .* ]
+	}
+	I28: {
+		[MULLOP -> % .]
+	}
+	I29: {
+		[MULLOP -> * .]
+	}
+	I30: {
+		[MULLOP -> / .]
+	}
+	I31: {
+		[PE -> .num ]
+		[PE -> .realNum ]
+		[T -> T MULLOP .F ]
+		[PE -> .id ]
+		[PE -> .( AE ) ]
+		[F -> .F ^ PE ]
+		[F -> .PE ]
+	}
+	I32: {
+		[T -> T MULLOP F .]
+		[F -> F .^ PE ]
+	}
+	I33: {
+		[PE -> .num ]
+		[PE -> .realNum ]
+		[F -> F ^ .PE ]
+		[PE -> .id ]
+		[PE -> .( AE ) ]
+	}
+	I34: {
+		[F -> F ^ PE .]
+	}
+	I35: {
+		[RELOP -> <= .]
+	}
+	I36: {
+		[RELOP -> <> .]
+	}
+	I37: {
+		[RELOP -> == .]
+	}
+	I38: {
+		[RELOP -> < .]
+	}
+	I39: {
+		[T -> .T MULLOP F ]
+		[PLUSOP -> .- ]
+		[PE -> .id ]
+		[F -> .F ^ PE ]
+		[F -> .PE ]
+		[AE -> .AE PLUSOP T ]
+		[T -> .F ]
+		[PE -> .num ]
+		[PE -> .realNum ]
+		[PE -> .( AE ) ]
+		[E -> AE RELOP .AE ]
+		[AE -> .T ]
+		[PLUSOP -> .+ ]
+		[AE -> .PLUSOP T ]
+	}
+	I40: {
+		[RELOP -> > .]
+	}
+	I41: {
+		[RELOP -> >= .]
+	}
+	I42: {
+		[AE -> AE .PLUSOP T ]
+		[PLUSOP -> .- ]
+		[PLUSOP -> .+ ]
+		[E -> AE RELOP AE .]
+	}
+	I43: {
+		[MULLOP -> .% ]
+		[AE -> PLUSOP T .]
+		[MULLOP -> ./ ]
+		[T -> T .MULLOP F ]
+		[MULLOP -> .* ]
+	}
 }
-
-Test descriptor
-Hq1 : [ type = "string", name = "q1", value = "1", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-7b : [ type = "boolean", name = "b", value = "false" ]
-Tinternal : [ type = "string", name = "internal", value = "i", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-Hq4 : [ type = "string", name = "q4", value = "4", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-Jd : [ type = "string", name = "d", value = "empty", min = "0", max = "5",
-% format = "null", regex = "null"  ]
-Cnullifier : [ type = "null", name = "nullifier", value = "null" ]
-Pinter2 : [ type = "string", name = "inter2", value = "4", min = "0", max = "1",
-% format = "null", regex = "null"  ]
->isExt : [ type = "boolean", name = "isExt", value = "true" ]
-Nd2 : [ type = "string", name = "d2", value = "created", min = "0", max = "7",
-% format = "null", regex = "null"  ]
-J$_0 : [ type = "string", name = "$_0", value = "1", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-J$_1 : [ type = "string", name = "$_1", value = "2", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-J$_2 : [ type = "string", name = "$_2", value = "4", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-Vnum1 : [ type = "number", name = "num1", value = "12.24", exMin = "0", exMax = "0" ]
-J$_3 : [ type = "string", name = "$_3", value = "3", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-Vnum3 : [ type = "number", name = "num3", value = "12.24", exMin = "0", exMax = "0" ]
-Kob2 : [ type = "string", name = "ob2", value = "23", min = "0", max = "2",
-% format = "null", regex = "null"  ]
-Vnum2 : [ type = "number", name = "num2", value = "12.24", exMin = "0", exMax = "0" ]
-Kob1 : [ type = "string", name = "ob1", value = "12", min = "0", max = "2",
-% format = "null", regex = "null"  ]
+	 GOTO: {
+	25, realNum = 18
+	11, PE = 23
+	19, + = 21
+	19, - = 22
+	11, ( = 20
+
+	8, B = 4
+	11, + = 21
+	19, RELOP = 39
+	11, - = 22
+
+	0, B = 1
+	39, AE = 42
+	19, PLUSOP = 25
+	19, < = 38
+	19, > = 40
+	39, PLUSOP = 17
+	8, OP = 10
+	39, id = 16
+	11, PLUSOP = 17
+
+	0, P = 2
+	24, PLUSOP = 25
+	11, E = 12
+
+	7, } = 9
+	11, F = 13
+	27, MULLOP = 31
+	24, ) = 26
+	24, + = 21
+	24, - = 22
+	11, id = 16
+	11, T = 15
+	33, PE = 34
+
+	8, { = 3
+	25, ( = 20
+
+	0, { = 3
+	33, realNum = 18
+	20, num = 14
+	8, id = 5
+	11, AE = 19
+	3, OP = 6
+	25, F = 13
+	33, id = 16
+	42, + = 21
+	17, num = 14
+
+	3, B = 4
+	25, PE = 23
+	42, - = 22
+	25, T = 27
+	11, realNum = 18
+	42, PLUSOP = 25
+	13, ^ = 33
+	27, % = 28
+	15, % = 28
+	39, ( = 20
+	27, * = 29
+	39, + = 21
+	43, % = 28
+	15, * = 29
+	39, - = 22
+	25, id = 16
+	27, / = 30
+	31, ( = 20
+	39, num = 14
+	43, * = 29
+	15, / = 30
+	17, PE = 23
+	3, id = 5
+	31, num = 14
+	43, / = 30
+	43, MULLOP = 31
+	39, F = 13
+	20, PE = 23
+
+	3, { = 3
+	5, = = 11
+	31, F = 32
+	20, ( = 20
+	11, num = 14
+	20, + = 21
+	39, T = 15
+	20, - = 22
+	20, PLUSOP = 17
+	25, num = 14
+	19, <> = 36
+	19, <= = 35
+	17, realNum = 18
+	33, num = 14
+	17, ( = 20
+	39, PE = 23
+	31, PE = 23
+	3, OPLIST = 7
+	20, F = 13
+	33, ( = 20
+	39, realNum = 18
+	20, id = 16
+	31, realNum = 18
+	20, T = 15
+	17, id = 16
+	15, MULLOP = 31
+	32, ^ = 33
+	19, == = 37
+	17, F = 13
+
+	7, ; = 8
+	31, id = 16
+	17, T = 43
+	19, >= = 41
+	20, realNum = 18
+	20, AE = 24
+}
+->[ 0 ] ->[ ] >>{
+->[ 3 0 ] ->[ { ] >>id
+->[ 5 3 0 ] ->[ id { ] >>=
+"->[ 11 5 3 0 ] ->[ = id { ] >>id
+'->[ 16 11 5 3 0 ] ->[ id = id { ] >>+
+'->[ 23 11 5 3 0 ] ->[ PE = id { ] >>+
+&->[ 13 11 5 3 0 ] ->[ F = id { ] >>+
+&->[ 15 11 5 3 0 ] ->[ T = id { ] >>+
+'->[ 19 11 5 3 0 ] ->[ AE = id { ] >>+
+-->[ 21 19 11 5 3 0 ] ->[ + AE = id { ] >>id
+2->[ 25 19 11 5 3 0 ] ->[ PLUSOP AE = id { ] >>id
+7->[ 16 25 19 11 5 3 0 ] ->[ id PLUSOP AE = id { ] >>*
+7->[ 23 25 19 11 5 3 0 ] ->[ PE PLUSOP AE = id { ] >>*
+6->[ 13 25 19 11 5 3 0 ] ->[ F PLUSOP AE = id { ] >>*
+6->[ 27 25 19 11 5 3 0 ] ->[ T PLUSOP AE = id { ] >>*
+<->[ 29 27 25 19 11 5 3 0 ] ->[ * T PLUSOP AE = id { ] >>id
+A->[ 31 27 25 19 11 5 3 0 ] ->[ MULLOP T PLUSOP AE = id { ] >>id
+G->[ 16 31 27 25 19 11 5 3 0 ] ->[ id MULLOP T PLUSOP AE = id { ] >><>
+G->[ 23 31 27 25 19 11 5 3 0 ] ->[ PE MULLOP T PLUSOP AE = id { ] >><>
+F->[ 32 31 27 25 19 11 5 3 0 ] ->[ F MULLOP T PLUSOP AE = id { ] >><>
+7->[ 27 25 19 11 5 3 0 ] ->[ T PLUSOP AE = id { ] >><>
+(->[ 19 11 5 3 0 ] ->[ AE = id { ] >><>
+3->[ 36 19 11 5 3 0 ] ->[ <> AE = id { ] >>realNum
+6->[ 39 19 11 5 3 0 ] ->[ RELOP AE = id { ] >>realNum
+<->[ 18 39 19 11 5 3 0 ] ->[ 25.2E-11 RELOP AE = id { ] >>^
+6->[ 23 39 19 11 5 3 0 ] ->[ PE RELOP AE = id { ] >>^
+5->[ 13 39 19 11 5 3 0 ] ->[ F RELOP AE = id { ] >>^
+;->[ 33 13 39 19 11 5 3 0 ] ->[ ^ F RELOP AE = id { ] >>id
+?->[ 16 33 13 39 19 11 5 3 0 ] ->[ i ^ F RELOP AE = id { ] >>;
+@->[ 34 33 13 39 19 11 5 3 0 ] ->[ PE ^ F RELOP AE = id { ] >>;
+5->[ 13 39 19 11 5 3 0 ] ->[ F RELOP AE = id { ] >>;
+5->[ 15 39 19 11 5 3 0 ] ->[ T RELOP AE = id { ] >>;
+6->[ 42 39 19 11 5 3 0 ] ->[ AE RELOP AE = id { ] >>;
+&->[ 12 11 5 3 0 ] ->[ E = id { ] >>;
+->[ 6 3 0 ] ->[ OP { ] >>;
+ ->[ 7 3 0 ] ->[ OPLIST { ] >>;
+%->[ 8 7 3 0 ] ->[ ; OPLIST { ] >>id
+)->[ 5 8 7 3 0 ] ->[ id ; OPLIST { ] >>=
+/->[ 11 5 8 7 3 0 ] ->[ = id ; OPLIST { ] >>id
+4->[ 16 11 5 8 7 3 0 ] ->[ id = id ; OPLIST { ] >>^
+4->[ 23 11 5 8 7 3 0 ] ->[ PE = id ; OPLIST { ] >>^
+3->[ 13 11 5 8 7 3 0 ] ->[ F = id ; OPLIST { ] >>^
+:->[ 33 13 11 5 8 7 3 0 ] ->[ ^ F = id ; OPLIST { ] >>num
+>->[ 14 33 13 11 5 8 7 3 0 ] ->[ 25 ^ F = id ; OPLIST { ] >>;
+>->[ 34 33 13 11 5 8 7 3 0 ] ->[ PE ^ F = id ; OPLIST { ] >>;
+3->[ 13 11 5 8 7 3 0 ] ->[ F = id ; OPLIST { ] >>;
+3->[ 15 11 5 8 7 3 0 ] ->[ T = id ; OPLIST { ] >>;
+4->[ 19 11 5 8 7 3 0 ] ->[ AE = id ; OPLIST { ] >>;
+3->[ 12 11 5 8 7 3 0 ] ->[ E = id ; OPLIST { ] >>;
+*->[ 10 8 7 3 0 ] ->[ OP ; OPLIST { ] >>;
+ ->[ 7 3 0 ] ->[ OPLIST { ] >>;
+$->[ 8 7 3 0 ] ->[ ; OPLIST { ] >>{
+)->[ 3 8 7 3 0 ] ->[ { ; OPLIST { ] >>id
+-->[ 5 3 8 7 3 0 ] ->[ id { ; OPLIST { ] >>=
+8->[ 11 5 3 8 7 3 0 ] ->[ = id { ; OPLIST { ] >>realNum
+<->[ 18 11 5 3 8 7 3 0 ] ->[ 25.34 = id { ; OPLIST { ] >><=
+9->[ 23 11 5 3 8 7 3 0 ] ->[ PE = id { ; OPLIST { ] >><=
+8->[ 13 11 5 3 8 7 3 0 ] ->[ F = id { ; OPLIST { ] >><=
+8->[ 15 11 5 3 8 7 3 0 ] ->[ T = id { ; OPLIST { ] >><=
+9->[ 19 11 5 3 8 7 3 0 ] ->[ AE = id { ; OPLIST { ] >><=
+@->[ 35 19 11 5 3 8 7 3 0 ] ->[ <= AE = id { ; OPLIST { ] >>num
+C->[ 39 19 11 5 3 8 7 3 0 ] ->[ RELOP AE = id { ; OPLIST { ] >>num
+G->[ 14 39 19 11 5 3 8 7 3 0 ] ->[ 25 RELOP AE = id { ; OPLIST { ] >>+
+G->[ 23 39 19 11 5 3 8 7 3 0 ] ->[ PE RELOP AE = id { ; OPLIST { ] >>+
+F->[ 13 39 19 11 5 3 8 7 3 0 ] ->[ F RELOP AE = id { ; OPLIST { ] >>+
+F->[ 15 39 19 11 5 3 8 7 3 0 ] ->[ T RELOP AE = id { ; OPLIST { ] >>+
+G->[ 42 39 19 11 5 3 8 7 3 0 ] ->[ AE RELOP AE = id { ; OPLIST { ] >>+
+M->[ 21 42 39 19 11 5 3 8 7 3 0 ] ->[ + AE RELOP AE = id { ; OPLIST { ] >>id
+R->[ 25 42 39 19 11 5 3 8 7 3 0 ] ->[ PLUSOP AE RELOP AE = id { ; OPLIST { ] >>id
+W->[ 16 25 42 39 19 11 5 3 8 7 3 0 ] ->[ id PLUSOP AE RELOP AE = id { ; OPLIST { ] >>*
+W->[ 23 25 42 39 19 11 5 3 8 7 3 0 ] ->[ PE PLUSOP AE RELOP AE = id { ; OPLIST { ] >>*
+V->[ 13 25 42 39 19 11 5 3 8 7 3 0 ] ->[ F PLUSOP AE RELOP AE = id { ; OPLIST { ] >>*
+V->[ 27 25 42 39 19 11 5 3 8 7 3 0 ] ->[ T PLUSOP AE RELOP AE = id { ; OPLIST { ] >>*
+\->[ 29 27 25 42 39 19 11 5 3 8 7 3 0 ] ->[ * T PLUSOP AE RELOP AE = id { ; OPLIST { ] >>id
+a->[ 31 27 25 42 39 19 11 5 3 8 7 3 0 ] ->[ MULLOP T PLUSOP AE RELOP AE = id { ; OPLIST { ] >>id
+f->[ 16 31 27 25 42 39 19 11 5 3 8 7 3 0 ] ->[ id MULLOP T PLUSOP AE RELOP AE = id { ; OPLIST { ] >>}
+f->[ 23 31 27 25 42 39 19 11 5 3 8 7 3 0 ] ->[ PE MULLOP T PLUSOP AE RELOP AE = id { ; OPLIST { ] >>}
+e->[ 32 31 27 25 42 39 19 11 5 3 8 7 3 0 ] ->[ F MULLOP T PLUSOP AE RELOP AE = id { ; OPLIST { ] >>}
+V->[ 27 25 42 39 19 11 5 3 8 7 3 0 ] ->[ T PLUSOP AE RELOP AE = id { ; OPLIST { ] >>}
+G->[ 42 39 19 11 5 3 8 7 3 0 ] ->[ AE RELOP AE = id { ; OPLIST { ] >>}
+7->[ 12 11 5 3 8 7 3 0 ] ->[ E = id { ; OPLIST { ] >>}
+-->[ 6 3 8 7 3 0 ] ->[ OP { ; OPLIST { ] >>}
+1->[ 7 3 8 7 3 0 ] ->[ OPLIST { ; OPLIST { ] >>}
+5->[ 9 7 3 8 7 3 0 ] ->[ } OPLIST { ; OPLIST { ] >>}
+(->[ 4 8 7 3 0 ] ->[ B ; OPLIST { ] >>}
+*->[ 10 8 7 3 0 ] ->[ OP ; OPLIST { ] >>}
+ ->[ 7 3 0 ] ->[ OPLIST { ] >>}
+$->[ 9 7 3 0 ] ->[ } OPLIST { ] >>$
+->[ 1 0 ] ->[ B ] >>$
+->[ 2 0 ] ->[ P ] >>$
+ò2021-04-08 21:38:49.711  INFO   --- [    Test worker] g.n.g.service.CommandLineExecutor        : executing command [cmd, /C, dot.exe -Tsvg C:\Users\Oleg\AppData\Local\Temp\GraphvizJava\DotEngine4072015112771873328\dotfile.dot -ooutfile.svg]
+BUseless syntax node are deleted. (symbols like "," ";" and etc.)
+ò2021-04-08 21:38:50.742  INFO   --- [    Test worker] g.n.g.service.CommandLineExecutor        : executing command [cmd, /C, dot.exe -Tsvg C:\Users\Oleg\AppData\Local\Temp\GraphvizJava\DotEngine2358830353824534482\dotfile.dot -ooutfile.svg]
+Chain was deleted
+ò2021-04-08 21:38:51.211  INFO   --- [    Test worker] g.n.g.service.CommandLineExecutor        : executing command [cmd, /C, dot.exe -Tsvg C:\Users\Oleg\AppData\Local\Temp\GraphvizJava\DotEngine1160712240986335184\dotfile.dot -ooutfile.svg]
+AST was built.
+ò2021-04-08 21:38:51.570  INFO   --- [    Test worker] g.n.g.service.CommandLineExecutor        : executing command [cmd, /C, dot.exe -Tsvg C:\Users\Oleg\AppData\Local\Temp\GraphvizJava\DotEngine8780225796483603032\dotfile.dot -ooutfile.svg]
+!Tree nodes after processing: 32

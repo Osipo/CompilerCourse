@@ -20,7 +20,8 @@
     ";": ";",
     "id": "[A-Za-z@_]([A-Za-z@_0-9]+|empty)",
     "num": "[0-9]+",
-    "realNum": "[0-9]+.[0-9]+(((E|e)(-|empty)[0-9]+)|empty)",
+    "Exponent" : "(((E|e)(-|empty)[0-9]+)|empty)",
+    "realNum": ["num", ".", "num", "Exponent"],
     "empty": null
   },
   "nonTerms": ["E","AE","T","F","PE","RELOP","PLUSOP","MULLOP","OP","OPLIST","P","B"],

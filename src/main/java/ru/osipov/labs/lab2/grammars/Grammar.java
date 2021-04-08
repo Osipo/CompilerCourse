@@ -92,7 +92,12 @@ public class Grammar {
                     ArrayList<JsonElement> patterns = ((JsonArray) el).getElements();
                     for(JsonElement pattern : patterns){
                         if(pattern instanceof JsonString){
-                            l.add(((JsonString) pattern).getValue());
+                            String pval = ((JsonString) pattern).getValue();
+                            List<String> regex_defs = lex_rules.getOrDefault(pval, null);
+                            if(regex_defs == null)
+                                l.add(pval);
+                            else
+                                l.addAll(regex_defs);
                         }
                         else
                             throw new InvalidJsonGrammarException("Value of terminal "+t+" is not a String pattern",null);
@@ -156,7 +161,12 @@ public class Grammar {
             this.N = new HashSet<>();
             ArrayList<JsonElement> nterms = ((JsonArray) N).getElements();
             for(JsonElement e : nterms){
-                if(e instanceof JsonString) {
+                //If it is already defined as Terminal => throw exception
+                if(e instanceof JsonString && this.T.contains(((JsonString) e).getValue())){
+                    throw new InvalidJsonGrammarException("Ambiguous String name \"" + ((JsonString) e).getValue() + "\".\n It is also terminal name!", null);
+                }
+                //Else if it is a unique string
+                else if(e instanceof JsonString) {
                     this.N.add(((JsonString) e).getValue());
                 }
                 else
@@ -316,6 +326,8 @@ public class Grammar {
         JsonElement P = jsonG.getElement("productions");
         if(P instanceof JsonArray){
             this.P = new HashMap<>();
+            HashSet<String> real_terms = new HashSet<>();
+            real_terms.add(this.E);
             ArrayList<JsonElement> rules = ((JsonArray) P).getElements();
             for(JsonElement e : rules){
                 try {
@@ -337,8 +349,10 @@ public class Grammar {
                                 String X = ((JsonString) symbol).getValue();
                                 GrammarSymbol entity;
                                 //System.out.println(X+" : "+X.length());
-                                if(this.T.contains(X))
-                                    entity = new GrammarSymbol('t',X);
+                                if(this.T.contains(X)) {
+                                    entity = new GrammarSymbol('t', X);
+                                    real_terms.add(X);
+                                }
                                 else if(this.N.contains(X)) {
                                     entity = new GrammarSymbol('n', X);
                                 }
@@ -356,8 +370,10 @@ public class Grammar {
                         GrammarString alpha = new GrammarString();
                         String X = ((JsonString) rpart).getValue();
                         GrammarSymbol entity;
-                        if(this.T.contains(X))
-                            entity = new GrammarSymbol('t',X);
+                        if(this.T.contains(X)) {
+                            entity = new GrammarSymbol('t', X);
+                            real_terms.add(X);
+                        }
                         else if(this.N.contains(X))
                             entity = new GrammarSymbol('n',X);
                         else
@@ -377,18 +393,27 @@ public class Grammar {
                     this.P.put(key,product_rules);
                 }
                 catch (ClassCastException err){
-                    throw new InvalidJsonGrammarException("productions is not a list of objects!",err);
+                    throw new InvalidJsonGrammarException("Production item must be a json object with single property which contains a grammar string!",err);
                 }
             }
+            /* update terms after checks [init T only on those terms that are actually presented in rules]*/
+            this.T.clear();
+            this.T = null;
+            this.T = real_terms;
         }
         else
-            throw new InvalidJsonGrammarException("productions is not a list!",null);
+            throw new InvalidJsonGrammarException("Property \"productions\" is not a list!",null);
 
+        /* PROCESS START SECTION */
         JsonElement S = jsonG.getElement("start");
-        if(S instanceof JsonString)
+        /* if START is a non-terminal symbol => throw exception */
+        if(S instanceof JsonString && !this.N.contains(((JsonString) S).getValue())){
+            throw new InvalidJsonGrammarException("Required non-terminal name. But found unrecognized grammar symbol: \"" + ((JsonString) S).getValue() + "\"", null);
+        }
+        else if(S instanceof JsonString)
             this.S = ((JsonString) S).getValue();
         else
-            throw new InvalidJsonGrammarException("Expected start property with String value!",null);
+            throw new InvalidJsonGrammarException("Expected \"start\" property with String value!",null);
         computeN_g();
         computeN_e();
     }

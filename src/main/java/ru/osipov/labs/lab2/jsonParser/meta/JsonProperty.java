@@ -8,13 +8,13 @@ public class JsonProperty {
     protected boolean required;
     protected JsonElement val;
 
-    public JsonProperty(String name,String type,boolean required, JsonElement val){
+    public JsonProperty(String name, String type, boolean required, JsonElement val){
         this.name = name;
         this.type = type;
         this.required = required;
         this.val = val;
     }
-    public JsonProperty(String name,String type, JsonElement val){
+    public JsonProperty(String name, String type, JsonElement val){
         this(name,type,false,val);
     }
 

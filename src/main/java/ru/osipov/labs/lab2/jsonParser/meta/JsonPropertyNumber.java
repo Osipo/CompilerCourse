@@ -15,7 +15,7 @@ public class JsonPropertyNumber extends JsonRange {
     }
 
     public JsonPropertyNumber(JsonElement el, String name, String type, boolean required, int min, int max) {
-        super(el,name, type, required, min, max);
+        super(el, name, type, required, min, max);
     }
 
     public void setExMin(int exMin) {

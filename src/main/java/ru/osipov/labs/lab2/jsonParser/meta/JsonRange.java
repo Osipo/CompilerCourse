@@ -6,13 +6,13 @@ public abstract class JsonRange extends JsonProperty {
     protected int min;
     protected int max;
     public JsonRange(String name, String type, boolean required, JsonElement el) {
-        super(name, type, required,el);
+        super(name, type, required, el);
     }
     public JsonRange(String name, String type, JsonElement el) {
         super(name, type,false,el);
     }
 
-    public JsonRange(JsonElement el, String name,String type,boolean required, int min,int max){
+    public JsonRange(JsonElement el, String name, String type, boolean required, int min, int max){
         super(name,type,required,el);
         this.min = min;
         this.max = max;

@@ -18,6 +18,7 @@ public class FALexerGenerator {
 
     public CNFA buildNFA(Grammar G){
         Map<String, List<String>> rules = G.getLexicalRules();
+        Set<String> terms = G.getTerminals();
 
         HashSet<Character> alpha = new HashSet<>();
         RegexRPNParser parser = new RegexRPNParser();
@@ -29,9 +30,15 @@ public class FALexerGenerator {
         Elem<Integer> idC = new Elem<>(1);
         Map<String,String> ids_p = new HashMap<>();
         List<Vertex> Fs = new ArrayList<>();
-        for(String id : rules.keySet()){
+        for(String id : terms){
             List<String> patterns = rules.get(id);
-            for(String pattern : patterns){
+            StringBuilder sbp = new StringBuilder();
+            for(String pat : patterns) {//JUST CONCAT ALL PATTERNS INTO ONE.
+                sbp.append(pat);
+            }
+            if(!id.equals(G.getEmpty())){
+                /* BEGIN PATTERN PROCESSING */
+                String pattern = sbp.toString();
                 LinkedStack<Character> rpn = new LinkedStack<>();
                 if(pattern.length() == 1) {
                     char c = pattern.charAt(0);
@@ -68,6 +75,9 @@ public class FALexerGenerator {
                     //System.out.println(p_i);
                     rpn = parser.GetInput(p_i);//convert regex to postfix.
                 }
+//                System.out.println("term: "+id);
+//                System.out.println("pattern: "+pattern);
+//                System.out.println("rpn: "+rpn.toString());
                 CNFA nfa = Main.buildNFA(rpn,parser,idC);
                 alpha.addAll(nfa.getAlpha());
                 nfa.getFinish().setValue(id);
@@ -80,15 +90,13 @@ public class FALexerGenerator {
                 //System.out.println(nfa.getFinish());
                 Edge e = new Edge(vs,nfa.getStart(),(char)1);
                 //Edge ue = new Edge(nfa.getFinish(),nf,(char)1);
+                /* END PATTERN PROCESSING */
             }
         }
         CNFA comboNFA = new CNFA();
         comboNFA.setComboStart(vs);
         comboNFA.setFinished(Fs);
         System.out.println(comboNFA.getFinished());
-//        System.out.println(comboNFA.getNodes());
-//        System.out.println(comboNFA.getStart());
-//        System.out.println(comboNFA.getFinished());
         alpha.remove((char)1);//empty-character is not part of the alpha.
         System.out.println("Alpha: "+alpha);
         comboNFA.setAlpha(alpha);//alpha will include zero-character code (char)0 for any-character symbol.
