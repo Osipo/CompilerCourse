@@ -47,6 +47,6 @@ public class JsonProperty {
     }
 
     public String toString(){
-        return "[ type = \"" + type + "\", name = \"" + name + "\", value = \"" + val.toString() + "\" ]";
+        return "[ type = \"" + type + "\", name = \"" + name + "\", required = \"" + required + "\",  value = \"" + val.toString() + "\" ]";
     }
 }

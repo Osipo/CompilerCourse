@@ -30,6 +30,8 @@ public class TestNonEmpty {
         Grammar G = new Grammar(ob);
         System.out.println("Source");
         System.out.println(G);
+        System.out.println("Shortened Grammar");
+        System.out.println(G.getShortenedGrammar());
         int N = G.getNonTerminals().size();
         G = G.getNonEmptyWordsGrammar();
         System.out.println("Target");

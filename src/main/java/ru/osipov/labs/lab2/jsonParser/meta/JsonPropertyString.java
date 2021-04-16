@@ -6,7 +6,7 @@ public class JsonPropertyString extends JsonRange {
 
     protected String format;
     protected String regex;
-    public JsonPropertyString(JsonElement v, String name, String type, boolean required, int max) {
+    public JsonPropertyString(String name, String type, boolean required, JsonElement v, int max) {
         super(name, type, required, v);
         this.format = null;
         this.regex = null;
@@ -32,7 +32,7 @@ public class JsonPropertyString extends JsonRange {
     }
 
     public String toString(){
-        return "[ type = \"" + type + "\", name = \"" + name + "\", value = \"" + val.toString() + "\", min = \"" + min + "\", max = \"" + max +"\",\n format = \"" + format + "\", regex = \"" + regex + "\"  ]";
+        return "[ type = \"" + type + "\", name = \"" + name + "\" required = \"" + required + "\", value = \"" + val.toString() + "\", min = \"" + min + "\", max = \"" + max +"\",\n format = \"" + format + "\", regex = \"" + regex + "\"  ]";
     }
 
 }

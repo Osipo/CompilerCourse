@@ -15,6 +15,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 //Context-Free-Grammar
+//algorithms which labeled [Algorithm...] implemented
+//from book "THE THEORY OF PARSING, TRANSLATION AND COMPILING" volume 1: PARSING.
+//A.V. Acho J. D. Ullman book.
 public class Grammar {
     private Set<String> T;
     private Set<String> N;
@@ -862,7 +865,7 @@ public class Grammar {
                 Set<GrammarString> a = P.get(p);//get all grammar strings with rule p.
                 for (GrammarString alpha : a) {//for each alternative
                     List<GrammarSymbol> symbols = alpha.getSymbols();
-                    for (GrammarSymbol s : symbols) {//check that alpha is (N_i-1  U  T)*
+                    for (GrammarSymbol s : symbols) {//check that alpha is (N_i-1  U  empty)*
                         if (!s.getVal().equals(this.E) && !(N_0.contains(s.getVal()))) {
                             t1 = false;
                             break;//stop scanning string
@@ -885,7 +888,7 @@ public class Grammar {
         }
     }
 
-    //Compute set of non-terminals which generate strings of Language L(_______).
+    //Compute set of non-terminals which generate strings of Language L(G).
     private void computeN_g(){
         Set<String> N_0 = new HashSet<>();
         Set<String> N_i = new HashSet<>();
@@ -900,7 +903,7 @@ public class Grammar {
                 Set<GrammarString> a = P.get(p);//get all grammar strings with rule p.
                 for (GrammarString alpha : a) {//for each alternative
                     List<GrammarSymbol> symbols = alpha.getSymbols();
-                    for (GrammarSymbol s : symbols) {//check that alpha is (N_i-1  U  T)*
+                    for (GrammarSymbol s : symbols) {//IF a IS NOT IN (N_i-1  U  T)*
                         if (s.getType() != 't' && !(N_0.contains(s.getVal()))) {
                             t1 = false;
                             break;//stop scanning string
@@ -915,7 +918,7 @@ public class Grammar {
             }
             S.pop();
             S.push(N_i);
-            if(N_i.equals(N_0)) {
+            if(N_i.equals(N_0)) {//IF N_i == N_i-1 => N_g = N_i
                 N_g = N_i;
                 return;
             }
@@ -961,50 +964,48 @@ public class Grammar {
         Set<String> NN = new HashSet<>();
         Map<String,Set<GrammarString>> newP = new HashMap<>();
         for(String p : rules) {
-            Set<GrammarString> r = P.get(p);
+            Set<GrammarString> r = P.get(p);/* current production with all alternatives */
             Set<GrammarString> oldr = new HashSet<>();
-            List<GrammarSymbol> str = null;
+            List<GrammarSymbol> str = null;/* scanning long rule (with more than 2 symbols) */
             int j = 1;
             Optional<GrammarString> op = r.stream().filter(x -> x.getSymbols().size() > 2).findFirst();
             if (op.isPresent()) {//has at least one alternative with 2 or more symbols
                 str = op.get().getSymbols();
-                List<GrammarSymbol> finalStr = str;
+                List<GrammarSymbol> finalStr = str;/* lambda parameter must be final */
                 r = r.stream().filter(x -> !x.getSymbols().equals(finalStr)).collect(Collectors.toSet());//r its all except first alternative which is scanning now
-                //if (str.size() > 2) {//if A1 consists of three or more symbols...
-                String pr = p;
+                String pr = p;/* header of new production */
+                /* BREAK LONG RULE */
                 for (int i = 0; i < str.size() - 2; i++) {
                     GrammarString n = new GrammarString();
                     n.addSymbol(str.get(i));
                     n.addSymbol(new GrammarSymbol('n', p + j));
                     NN.add(p + j);
-                    Set<GrammarString> nbody = new HashSet<>();
+                    Set<GrammarString> nbody = new HashSet<>();/* new production P_i */
                     nbody.add(n);
                     newP.put(pr, nbody);
                     pr = p + j;
                     j++;
-                }
-                GrammarString last = new GrammarString();
+                }//A -> aBbB => A -> aA1, A1 -> BA2, j == 3, pr = A2.
+                GrammarString last = new GrammarString();//append last part => A2 -> bB.
                 last.addSymbol(str.get(j - 1));
                 last.addSymbol(str.get(j));
                 NN.add(pr);
                 Set<GrammarString> nbody = new HashSet<>();
                 nbody.add(last);
                 newP.put(pr, nbody);
-                //}//end scaning first alternative. (else add oldr alternative)
-                Iterator<GrammarString> it = r.iterator();
+                Iterator<GrammarString> it = r.iterator();/* r is all except scanned rule */
                 while (it.hasNext()) {//scanning other alternatives.
-                    //for (int k = 0; k < r.size(); k++) {
                     int str2_idx = 1;
                     GrammarString rk = it.next();
-                    List<GrammarSymbol> str2 = rk.getSymbols();//r.get(k).getSymbols();
-                    Set<GrammarString> nbody2 = newP.get(p);
+                    List<GrammarSymbol> str2 = rk.getSymbols();
+                    Set<GrammarString> nbody2 = newP.get(p);/*first part of shortened rule::prev alternative) (value of nbody when i == 0)*/
                     if (str2.size() > 2) {
                         GrammarString sn = new GrammarString();
                         sn.addSymbol(str2.get(0));
                         sn.addSymbol(new GrammarSymbol('n', p + j));
-                        nbody2.add(sn);
+                        nbody2.add(sn);/* add first part of new alternative into production P_i */
                         nbody2 = new HashSet<>();
-                        String pr2 = p + j;
+                        String pr2 = p + j;/* header of new production */
                         NN.add(pr2);
                         j++;
                         str2_idx++;
@@ -1029,15 +1030,15 @@ public class Grammar {
                         oldr.add(rk);
                     }
                 }//end scaning alternatives.
-            } else {
-                oldr.addAll(r);//r.get(0);
+            } else {//all alternatives are shortened
+                oldr.addAll(r);
             }
             Set<GrammarString> fl = newP.get(p);
             if(fl != null){
                 fl.addAll(oldr);//if some alternatives were short. (they are not producing new rules)
             }
             else{
-                newP.put(p,oldr);//if all alternatives were short.
+                newP.put(p,oldr);//if all alternatives were already short => do not shorten => just copy
             }
             NN.add(p);
         }
@@ -1532,9 +1533,9 @@ public class Grammar {
     public Grammar deleteUselessSymbols(){
         Map<String,Set<GrammarString>> newP = new HashMap<>();
         Set<String> NN = new HashSet<>(N);
-        NN.retainAll(this.N_g);
+        NN.retainAll(this.N_g);//NN =  N INTERSECT N_g
         Set<String> ps = P.keySet();
-        for(String p : ps){
+        for(String p : ps){/* Form P' where rule consists only from (T U NN)* */
             Set<GrammarString> bodies = P.get(p);
             Set<GrammarString> nbodies = new HashSet<>();
             for(GrammarString str : bodies){

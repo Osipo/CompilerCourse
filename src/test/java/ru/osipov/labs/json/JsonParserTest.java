@@ -12,6 +12,7 @@ import ru.osipov.labs.lab2.jsonParser.meta.JsonDocumentDescriptor;
 import ru.osipov.labs.lab2.jsonParser.meta.JsonProperty;
 import ru.osipov.labs.lab3.TestYmlG;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,10 +34,14 @@ public class JsonParserTest {
 
         System.out.println("Test descriptor");
         JsonDocumentDescriptor descriptor = new JsonDocumentDescriptor();
-        descriptor.describe(ob);
-        Set<Map.Entry<String, JsonProperty>> props = descriptor.getProperties().entrySet();
-        for(Map.Entry<String, JsonProperty> en : props){
-            System.out.println(en.getKey()+" : "+en.getValue());
+        descriptor.describe2(ob);
+        Set<Map.Entry<String, ArrayList<JsonProperty>>> props = descriptor.getProperties().entrySet();
+        for(Map.Entry<String, ArrayList<JsonProperty>> en : props){
+            System.out.print(en.getKey() + " {{\n");
+            for(JsonProperty pr : en.getValue()){
+                System.out.println("\t"+ pr.toString());
+            }
+            System.out.println("}}");
         }
     }
 }

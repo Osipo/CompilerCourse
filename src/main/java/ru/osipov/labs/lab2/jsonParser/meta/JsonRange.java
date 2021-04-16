@@ -12,7 +12,7 @@ public abstract class JsonRange extends JsonProperty {
         super(name, type,false,el);
     }
 
-    public JsonRange(JsonElement el, String name, String type, boolean required, int min, int max){
+    public JsonRange(String name, String type, boolean required, JsonElement el,  int min, int max){
         super(name,type,required,el);
         this.min = min;
         this.max = max;
@@ -34,6 +34,6 @@ public abstract class JsonRange extends JsonProperty {
     }
 
     public String toString(){
-        return "[ type = \"" + type + "\", name = \"" + name + "\", value = \"" + val.toString() + "\", min = \"" + min + "\", max = \"" + max +"\" ]";
+        return "[ type = \"" + type + "\", name = \"" + name + "\", required = \"" + required + "\", value = \"" + val.toString() + "\", min = \"" + min + "\", max = \"" + max +"\" ]";
     }
 }

@@ -14,8 +14,8 @@ public class JsonPropertyNumber extends JsonRange {
         super(name, type, e);
     }
 
-    public JsonPropertyNumber(JsonElement el, String name, String type, boolean required, int min, int max) {
-        super(el, name, type, required, min, max);
+    public JsonPropertyNumber(String name, String type, boolean required, JsonElement el,  int min, int max) {
+        super(name, type, required, el, min, max);
     }
 
     public void setExMin(int exMin) {
@@ -35,6 +35,6 @@ public class JsonPropertyNumber extends JsonRange {
     }
 
     public String toString(){
-        return "[ type = \"" + type + "\", name = \"" + name + "\", value = \"" + val.toString() + "\", exMin = \"" + exMin + "\", exMax = \"" + exMax +"\" ]";
+        return "[ type = \"" + type + "\", name = \"" + name + "\", required = \"" + required + "\", value = \"" + val.toString() + "\", exMin = \"" + exMin + "\", exMax = \"" + exMax +"\" ]";
     }
 }
