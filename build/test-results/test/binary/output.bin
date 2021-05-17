@@ -1,191 +1,159 @@
-BCurrent working dir: C:\Users\Oleg\IdeaProjects\CompilerCoursePr
----------------
-{
-	"inter2" : "4",
-	"inter1" : {
-		"q4" : "4"
-	},
-	"num4" : [
-		"1",
-		"2",
-		4000,
-		"3"
-	],
-	"num3" : 12.24,
-	"num2" : 12.24,
-	"num1" : 12.24,
-	"nullifier" : null,
-	"isExt" : true,
-	"b" : false,
-	"d2" : "created",
-	"arr2" : [
-		{
-			"ob1" : "12"
-		},
-		{
-			"obar" : [
+-C:\Users\Oleg\IdeaProjects\CompilerCoursePr
+Source
+Grammar
+'	T: [char, id, {, ;, ,, class, }, int]
+	keywords: [char, class, int]
+	N: [S, C, D, T, DL]
+	P {
+		S -> class id { C } 
+		C -> DL 
+		D -> id | D , id 
+		T -> char | id | int 
+		DL -> T D ; 
+	}
 
-				"99",
-				[
+	Start: S
+	N_g: [C, S, D, T, DL]
 
-					"98"
-				],
+	N_e: []
+term: char
+[char]
 
-				"97",
-				{
-					"internal" : "i"
-				}
-			],
-			"ob2" : "23"
-		}
-	],
-	"arr" : [
-		"1",
-		"2",
-		4000,
-		"3"
-	],
-		"q" : {
-		"q3" : {
-			"q4" : "4"
-		},
-		"q2" : [
-			[
-					"1",
-				"2"
-			],
-			[
-				"3"
-			],
-			"4",
-			{
-				"d" : "empty"
-			}
-		],
-		"q1" : "1"
-	},
-	"d" : "string"
+term: id
+
+[[a-z]+]
+	term: {
+[{]
+	term: ;
+[;]
+	term: ,
+[,]
+term: class
+	[class]
+	term: }
+[}]
+term: int
+[int]
+([133, 113, 116, 139, 8, 118, 130, 120]
+cAlpha: [a, b, c, d, e, f, g, h, i, j, k, l, ,, m, n, o, p, q, r, s, t, u, v, w, x, y, z, {, ;, }]
+States of NFA: 128
+States of DFA: 43
+Finished: 41
+
+Dead: 32
+MinDFA States: 6
+Patterns (F): 5
+Start: M1
+ò2021-05-17 18:06:43.691  INFO   --- [    Test worker] g.n.g.service.CommandLineExecutor        : executing command [cmd, /C, dot.exe -Tsvg C:\Users\Oleg\AppData\Local\Temp\GraphvizJava\DotEngine2042636848903415473\dotfile.dot -ooutfile.svg]
+#Canonical Set of Items was built.
+ACTION and GOTO are built.
+"Canonical Grammar LR(1) items : {
+	I0: {
+!		[S -> .class id { C }   { $ }]
+		[S' -> .S   { $ }]
+	}
+	I1: {
+		[S' -> S .  { $ }]
+	}
+	I2: {
+!		[S -> class .id { C }   { $ }]
+	}
+	I3: {
+!		[S -> class id .{ C }   { $ }]
+	}
+	I4: {
+		[C -> .DL   { } }]
+		[T -> .char   { id }]
+		[DL -> .T D ;   { } }]
+!		[S -> class id { .C }   { $ }]
+		[T -> .id   { id }]
+		[T -> .int   { id }]
+	}
+	I5: {
+!		[S -> class id { C .}   { $ }]
+	}
+	I6: {
+		[C -> DL .  { } }]
+	}
+	I7: {
+		[T -> int .  { id }]
+	}
+	I8: {
+		[DL -> T .D ;   { } }]
+		[D -> .D , id   { , }]
+		[D -> .id   { , }]
+		[D -> .id   { ; }]
+		[D -> .D , id   { ; }]
+	}
+	I9: {
+		[T -> char .  { id }]
+	}
+	I10: {
+		[T -> id .  { id }]
+	}
+	I11: {
+		[DL -> T D .;   { } }]
+		[D -> D ., id   { ; }]
+		[D -> D ., id   { , }]
+	}
+	I12: {
+		[D -> id .  { ; }]
+		[D -> id .  { , }]
+	}
+	I13: {
+		[D -> D , .id   { ; }]
+		[D -> D , .id   { , }]
+	}
+	I14: {
+		[DL -> T D ; .  { } }]
+	}
+	I15: {
+		[D -> D , id .  { , }]
+		[D -> D , id .  { ; }]
+	}
+	I16: {
+!		[S -> class id { C } .  { $ }]
+	}
 }
-
-Test descriptor
-/arr2/1/obar/2 {{
-Q	[ type = "string", name = "/arr2/1/obar/2", value = "97", min = "0", max = "2",
-% format = "null", regex = "null"  ]
-}}
-/q/q2/3/d {{
-O	[ type = "string", name = "/q/q2/3/d", value = "empty", min = "0", max = "5",
-% format = "null", regex = "null"  ]
-}}
-/arr2/1/obar/0 {{
-Q	[ type = "string", name = "/arr2/1/obar/0", value = "99", min = "0", max = "2",
-% format = "null", regex = "null"  ]
-}}
-/arr2/0/ob1 {{
-N	[ type = "string", name = "/arr2/0/ob1", value = "12", min = "0", max = "2",
-% format = "null", regex = "null"  ]
-}}
-/arr2/1/obar/1/0 {{
-S	[ type = "string", name = "/arr2/1/obar/1/0", value = "98", min = "0", max = "2",
-% format = "null", regex = "null"  ]
-}}
-	/num1 {{
-R	[ type = "boolean", name = "/num1", value = "12.24", exMin = "0", exMax = "0" ]
-}}
-	/num2 {{
-R	[ type = "boolean", name = "/num2", value = "12.24", exMin = "0", exMax = "0" ]
-}}
-/nullifier {{
-9	[ type = "null", name = "/nullifier", value = "null" ]
-}}
-/b {{
-5	[ type = "boolean", name = "/b", value = "false" ]
-}}
-/q/q2/0/0 {{
-K	[ type = "string", name = "/q/q2/0/0", value = "1", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-/q/q2/1/0 {{
-K	[ type = "string", name = "/q/q2/1/0", value = "3", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-/q/q2/0/1 {{
-K	[ type = "string", name = "/q/q2/0/1", value = "2", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-/d {{
-I	[ type = "string", name = "/d", value = "string", min = "0", max = "6",
-% format = "null", regex = "null"  ]
-}}
-/inter1/q4 {{
-L	[ type = "string", name = "/inter1/q4", value = "4", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-	/num3 {{
-R	[ type = "boolean", name = "/num3", value = "12.24", exMin = "0", exMax = "0" ]
-}}
-/num4/3 {{
-I	[ type = "string", name = "/num4/3", value = "3", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-/num4/2 {{
-S	[ type = "boolean", name = "/num4/2", value = "4000", exMin = "0", exMax = "0" ]
-}}
-/num4/1 {{
-I	[ type = "string", name = "/num4/1", value = "2", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-/num4/0 {{
-I	[ type = "string", name = "/num4/0", value = "1", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-	/q/q1 {{
-G	[ type = "string", name = "/q/q1", value = "1", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-/inter2 {{
-I	[ type = "string", name = "/inter2", value = "4", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
+	 GOTO: {
 
-/arr/0 {{
-H	[ type = "string", name = "/arr/0", value = "1", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-/q/q2/2 {{
-I	[ type = "string", name = "/q/q2/2", value = "4", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
+	4, T = 8
+	4, char = 9
+	4, int = 7
 
-/arr/1 {{
-H	[ type = "string", name = "/arr/1", value = "2", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
+	0, S = 1
+	0, class = 2
 
-/arr/2 {{
-R	[ type = "boolean", name = "/arr/2", value = "4000", exMin = "0", exMax = "0" ]
-}}
-/arr2/1/ob2 {{
-N	[ type = "string", name = "/arr2/1/ob2", value = "23", min = "0", max = "2",
-% format = "null", regex = "null"  ]
-}}
+	3, { = 4
+	5, } = 16
+	13, id = 15
+	8, D = 11
+	11, , = 13
+	2, id = 3
 
-/arr/3 {{
-H	[ type = "string", name = "/arr/3", value = "3", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-
-/isExt {{
-8	[ type = "boolean", name = "/isExt", value = "true" ]
-}}
-/q/q3/q4 {{
-J	[ type = "string", name = "/q/q3/q4", value = "4", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
-/d2 {{
-K	[ type = "string", name = "/d2", value = "created", min = "0", max = "7",
-% format = "null", regex = "null"  ]
-}}
-/arr2/1/obar/3/internal {{
-Y	[ type = "string", name = "/arr2/1/obar/3/internal", value = "i", min = "0", max = "1",
-% format = "null", regex = "null"  ]
-}}
+	4, C = 5
+	4, id = 10
+	8, id = 12
+	11, ; = 14
+	4, DL = 6
+}
+->[ 0 ] ->[ ] >>class
+->[ 2 0 ] ->[ class ] >>id
+%->[ 3 2 0 ] ->[ program class ] >>{
+,->[ 4 3 2 0 ] ->[ { program class ] >>char
+1->[ 9 4 3 2 0 ] ->[ char { program class ] >>id
+.->[ 8 4 3 2 0 ] ->[ T { program class ] >>id
+2->[ 12 8 4 3 2 0 ] ->[ a T { program class ] >>,
+2->[ 11 8 4 3 2 0 ] ->[ D T { program class ] >>,
+8->[ 13 11 8 4 3 2 0 ] ->[ , D T { program class ] >>id
+<->[ 15 13 11 8 4 3 2 0 ] ->[ b , D T { program class ] >>,
+2->[ 11 8 4 3 2 0 ] ->[ D T { program class ] >>,
+8->[ 13 11 8 4 3 2 0 ] ->[ , D T { program class ] >>id
+<->[ 15 13 11 8 4 3 2 0 ] ->[ c , D T { program class ] >>;
+2->[ 11 8 4 3 2 0 ] ->[ D T { program class ] >>;
+7->[ 14 11 8 4 3 2 0 ] ->[ ; D T { program class ] >>}
+.->[ 6 4 3 2 0 ] ->[ DL { program class ] >>}
+-->[ 5 4 3 2 0 ] ->[ C { program class ] >>}
+2->[ 16 5 4 3 2 0 ] ->[ } C { program class ] >>$
+->[ 1 0 ] ->[ S ] >>$
+ò2021-05-17 18:06:44.378  INFO   --- [    Test worker] g.n.g.service.CommandLineExecutor        : executing command [cmd, /C, dot.exe -Tsvg C:\Users\Oleg\AppData\Local\Temp\GraphvizJava\DotEngine9154803313544086705\dotfile.dot -ooutfile.svg]

@@ -120,9 +120,12 @@ public class Grammar {
             Set<String> keywords = new HashSet<>();
             ArrayList<JsonElement> kws = ((JsonArray) K).getElements();
             for(JsonElement e : kws){
+                List<String> l = new LinkedList<>();
                 if(e instanceof JsonString){
                     keywords.add(((JsonString) e).getValue());
                     this.T.add(((JsonString) e).getValue());//keywords are terms.
+                    l.add( ((JsonString) e).getValue());
+                    this.lex_rules.put( ((JsonString) e).getValue(), l);
                 }
                 else
                     throw new InvalidJsonGrammarException("Expected String value of reserved keyword in array \"keywords\"!",null);
@@ -330,7 +333,8 @@ public class Grammar {
         if(P instanceof JsonArray){
             this.P = new HashMap<>();
             HashSet<String> real_terms = new HashSet<>();
-            real_terms.add(this.E);
+            if(this.E != null)
+                real_terms.add(this.E);
             ArrayList<JsonElement> rules = ((JsonArray) P).getElements();
             for(JsonElement e : rules){
                 try {

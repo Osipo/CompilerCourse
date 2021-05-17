@@ -111,7 +111,7 @@ public class TestSLRParser {
         DFALexer lexer = new DFALexer(new DFA(nfa));
         assert lexer.getFinished().size() == 5;
         lexer.getImagefromStr(dir,"lexer_SLR_Test3");
-        LRParser sa = new LRParser(G,lexer);
+        LRParser sa = new LRParser(G, lexer);
         sa.setParserMode(ParserMode.DEBUG);
         LinkedTree<Token> t = sa.parse(s);
         assert t != null;

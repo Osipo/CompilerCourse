@@ -32,6 +32,9 @@ public class FALexerGenerator {
         List<Vertex> Fs = new ArrayList<>();
         for(String id : terms){
             List<String> patterns = rules.get(id);
+            System.out.println("term: "+id);
+            if(patterns != null)
+                System.out.println(patterns.toString());
             StringBuilder sbp = new StringBuilder();
             for(String pat : patterns) {//JUST CONCAT ALL PATTERNS INTO ONE.
                 sbp.append(pat);
