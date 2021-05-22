@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5cad473b-a1a8-424d-8493-cd1b0fd48c19" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/invalidG/notLR/SLR_t1_correct.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/xml/TestXml.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/xml/grammars/Xml_4th.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -16,38 +13,14 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.2.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/utils/RegexRPNParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/utils/RegexRPNParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/grammars/Grammar.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab2/grammars/Grammar.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/DFALexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/DFALexer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/ILexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/ILexer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab1/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/generators/FALexerGenerator.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/lexers/generators/FALexerGenerator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/parsers/LLParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/ru/osipov/labs/lab3/parsers/LLParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/test/ru/osipov/labs/lab3/TestLLParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/test/ru/osipov/labs/lab3/TestLLParser.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/reports/tests/test/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/tests/test/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab1/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab1/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab1/utils/RegexRPNParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab1/utils/RegexRPNParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/Grammar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/Grammar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/GrammarMetaInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/GrammarMetaInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/json/C#_Cut.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab2/grammars/json/C#_Cut.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/DFALexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/DFALexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/ILexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/ILexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/generators/FALexerGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/lexers/generators/FALexerGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/parsers/LLParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/parsers/LLParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/parsers/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru/osipov/labs/lab3/parsers/Parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/ASTree_SLR_Test7.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/ASTree_SLR_Test7.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/SLR_Parser_Test7.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/SLR_Parser_Test7.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/TestLLParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/TestLLParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/UsefulTree_SLR_Test7.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/UsefulTree_SLR_Test7.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/ZippedTree_SLR_Test7.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/ZippedTree_SLR_Test7.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/grammarJson/G_Lab3_3_m.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/grammarJson/G_Lab3_3_m.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/input/S_G_lab3_mod.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/input/S_G_lab3_mod.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/lexer_SLR_Test6.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/lexer_SLR_Test6.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/lexer_SLR_Test7.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/lexer_SLR_Test7.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/lexer_Test3.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/lexer_Test3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/parser_Test3.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/lab3/parser_Test3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/xml/Xml_lexer_testXml.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ru/osipov/labs/xml/Xml_lexer_testXml.png" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

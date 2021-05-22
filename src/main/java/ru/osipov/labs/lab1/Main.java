@@ -596,9 +596,10 @@ public class Main implements CommandLineRunner {
 
             if(state == 0) {
                 result.append(s.charAt(i));
-                state = 1;
+                if(s.charAt(i) != '(')
+                     state = 1;
             }
-            else if(s.charAt(i) == '*' || s.charAt(i) == '+')
+            else if(s.charAt(i) == '*' || s.charAt(i) == '+' || s.charAt(i) == ')')
                 result.append(s.charAt(i));
             else if(s.charAt(i) == '|'){
                 result.append('|');
