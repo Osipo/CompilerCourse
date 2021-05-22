@@ -15,7 +15,7 @@ public interface ILexer {
     void setOperands(Set<String> ops);
     Set<String> getOperands();
     void setAliases(Map<String,String> aliases);
-    void setIgnorable(Map<String, List<String>> ignorable);
+    void setSeparators(Map<String, List<String>> ignorable);
     Map<String,String> getAliases();
     void setCommentLine(String comment);
     void setMlCommentStart(String mlcS);

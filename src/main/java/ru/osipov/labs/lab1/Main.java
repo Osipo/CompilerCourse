@@ -338,17 +338,27 @@ public class Main implements CommandLineRunner {
 
     public static String addConcat(String s,RegexRPNParser parser){
         StringBuilder result = new StringBuilder();
+        char a, b;
         for(int i = 0; i < s.length(); i++){
             if(s.charAt(i) == '['){// replace class [A-Z] with expression (A|B|...|Z) and add '^' if needed.
                 char t = s.charAt(i);
-                if(i > 0 && s.charAt(i - 1) != '(' && s.charAt(i - 1) != '|'){
+
+                //if previous symbol is not operator add concatenation.
+                if(i > 0 && s.charAt(i - 1) != '(' && s.charAt(i - 1) != '|' && s.charAt(i - 1) != '^'){
                     result.append('^');
                 }
+
                 result.append('(');
-                int j = i + 1;
+                int j = i + 1;//first symbol after '['.
+
                 boolean wflag = false;
+
+                //scanning till ']' or to the end of string.
                 while(t != ']' && j < s.length()){
                     t = s.charAt(j);
+                    if(t == ']')// case expression like '[]'.
+                        break;
+
                     if(t == '@'){
                         result.append('@');
                         result.append(s.charAt(j + 1));
@@ -358,9 +368,10 @@ public class Main implements CommandLineRunner {
                         j++;
                         continue;
                     }
+
                     if(j + 1 < s.length() && s.charAt(j) == '-'){
-                        char a = s.charAt(j - 1);
-                        char b = s.charAt(j + 1);
+                        a = s.charAt(j - 1);
+                        b = s.charAt(j + 1);
                         if(a > b){
                             char temp = a;
                             a = b;
@@ -434,12 +445,175 @@ public class Main implements CommandLineRunner {
                     continue;
                 }
             }
+            //if i is terminal and next i + 1 symbol is also terminal or '('
             if(parser.isTerminal(s.charAt(i)) && i + 1 < s.length() && (parser.isTerminal(s.charAt(i + 1)) || s.charAt(i + 1) == '(' ) ){
                 result.append('^');
             }
+            //else if i is operator like ')' '*' '+' and next symbol is terminal or '('
             if((s.charAt(i) == ')' || s.charAt(i) == '*' || s.charAt(i) == '+' ) && i + 1 < s.length() && (parser.isTerminal(s.charAt(i + 1)) || s.charAt(i + 1) == '(') ){
                 result.append('^');
             }
+        }
+        return result.toString();
+    }
+
+    public static String addConcat2(String s, RegexRPNParser parser){
+        StringBuilder result = new StringBuilder();
+        char a = '\u0000', b = '\u0000', c, t;
+        int i = 0, j = 0, state = 0;
+        //states
+        // 0 == the begining of line or expression
+        // 1 == range detected '-'
+        // 2 == range processed.
+        // 3 == single symbol read (i.e. add '|')
+        // 4 == end of range reached ']'
+
+        while(i < s.length()){
+            //RANGES BEGIN
+            if(s.charAt(i) == '['){
+                state = 0;
+                //if previous symbol is not operator add concatenation.
+                if(i > 0 && s.charAt(i - 1) != '(' && s.charAt(i - 1) != '|' && s.charAt(i - 1) != '^'){
+                    result.append('^');
+                }
+
+                result.append('(');
+                j = i + 1;//first symbol after '['.
+                while(j < s.length()){
+                    t = s.charAt(j);
+                    //case [@$ where $ = end of string
+                    if(t == '@' && j + 1 >= s.length() && state == 0){
+                        result.append('@');
+                        result.append('@');
+                        j++; //that cause whole cycle to the end.
+                        continue;
+                    }
+                    //case [@* where * = any sequence of chars
+                    else if(t == '@' && state == 0){
+                        result.append('@');
+                        result.append(s.charAt(j + 1));
+                        j += 2;
+                        continue;
+                    }
+
+                    //case [*@$
+                    else if(t == '@' && j + 1 >= s.length() && state > 1){
+                        result.append('|');
+                        result.append('@');
+                        result.append('@');
+                        j++; //that cause whole cycle to the end.
+                        continue;
+                    }
+                    //case [*@*
+                    else if(t == '@' && state > 1){
+                        result.append('|');
+                        result.append('@');
+                        result.append(s.charAt(j + 1));
+                        j += 2;
+                        continue;
+                    }
+
+                    //case [a-* or [b-*
+                    else if(t == '-' && s.charAt(j - 1) != '[' && state != 1 && state != 2){
+                        a = s.charAt(j - 1);
+                        state = 1;
+                        j++;
+                        continue;
+                    }
+                    //case [-*
+                    else if(t == '-' && state != 1){
+                        if(state != 0)
+                            result.append('|').append((char)0);
+                        else
+                            result.append((char)0);
+                        state = 1;
+                        a = '\u0000';
+                        j++;
+                        continue;
+                    }
+                    //case [a-b* or [a--* or [a-]* or [a-@*  OR FROM PREV ELSE [-b* or [--* or [-]*
+                    else if(state == 1){
+                        b = t;
+                        //case [a-@*
+                        if(b == '@' && j + 1 < s.length()){
+                            b = s.charAt(j + 1);
+                            j++;
+                        }
+                        //case [a-]*
+                        else if(b == ']'){
+                            b = '\uffff';
+                            state = 4;
+                        }
+
+                        if(a > b){
+                            c = a;
+                            a = b;
+                            b = c;
+                        }
+                        while(a != b){
+                            a++;
+                            result.append('|').append(a);
+                        }
+                        j++;
+                        if(state == 4)
+                            break;
+                        state = 2;
+                        continue;
+                    }
+                    //case []* or [a]* or [a-b]* or [--]* or [a--]*
+                    else if(t == ']') {
+                        j++;
+                        state = 4;
+                        break;
+                    }
+
+                    //case [ab*
+                    if(state == 2 || state == 3)
+                        result.append('|');
+
+                    //case [a*
+                    result.append(t);
+                    state = 3;
+                    j++;
+                }// end inner while at range '[' ']'
+                result.append(')');
+                i = j;
+                continue;
+            }
+            else if(s.charAt(i) == '@' && i + 1 < s.length()){
+                result.append('@');
+                result.append(s.charAt(i + 1));
+                i += 2;
+                continue;
+            }
+            else if(s.charAt(i) == '@'){
+                result.append('@');
+                result.append('@');
+                i += 2;
+                continue;
+            }
+            // END OF RANGES
+
+            if(state == 0) {
+                result.append(s.charAt(i));
+                state = 1;
+            }
+            else if(s.charAt(i) == '*' || s.charAt(i) == '+')
+                result.append(s.charAt(i));
+            else if(s.charAt(i) == '|'){
+                result.append('|');
+                state = 0;
+            }
+            else if(s.charAt(i) == '('){
+                result.append('^');
+                result.append('(');
+                state = 0;
+            }
+            else {
+                result.append('^');
+                result.append(s.charAt(i));
+            }
+            i++;
         }
         return result.toString();
     }

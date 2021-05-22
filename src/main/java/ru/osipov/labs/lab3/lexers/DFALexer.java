@@ -28,7 +28,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
     private Set<String> keywords;
     private Set<String> operands;
     private Map<String,String> aliases;
-    private Map<String, List<String>> ignorable;// symbols that are part of regex but not a part of lexem
+    private Map<String, List<String>> separators;// symbols that are part of regex but not a part of lexem
 
     /*TODO: Make builder instead of .ctors */
     public DFALexer(DFA dfa, LexerIO io){
@@ -44,7 +44,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         this.id = null;
         this.prevTok = null;
         this.ignore = null;
-        this.ignorable = null;
+        this.separators = null;
     }
 
     public DFALexer(NFA nfa, LexerIO io){
@@ -60,7 +60,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         this.mlcEnd = null;
         this.id = null;
         this.ignore = null;
-        this.ignorable = null;
+        this.separators = null;
     }
 
     public DFALexer(CNFA nfa){
@@ -80,7 +80,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         this.mlcEnd = null;
         this.id = null;
         this.ignore = null;
-        this.ignorable = null;
+        this.separators = null;
     }
 
 
@@ -100,7 +100,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         this.mlcEnd = null;
         this.id = null;
         this.ignore = null;
-        this.ignorable = null;
+        this.separators = null;
     }
 
     public DFALexer(DFA dfa){
@@ -119,7 +119,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         this.mlcEnd = null;
         this.id = null;
         this.ignore = null;
-        this.ignorable = null;
+        this.separators = null;
     }
 
     @Override
@@ -133,8 +133,8 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
     }
 
     @Override
-    public void setIgnorable(Map<String, List<String>> ignorable) {
-        this.ignorable = ignorable;
+    public void setSeparators(Map<String, List<String>> separators) {
+        this.separators = separators;
     }
 
     @Override
@@ -185,7 +185,10 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
     public Token recognize(InputStream f) throws IOException {
         char cur = (char)io.getch(f);
 
+
+        //If IGNORE IS NOT SET THEN DELETE space symbols at Start of Token
         if(ignore == null || ignore.length == 0) {
+            //System.out.println("Ignore symbols are null");
             while (cur == ' ' || cur == '\t' || cur == '\n' || cur == '\r') {
                 if (cur == '\n') {
                     io.setCol(0);
@@ -193,10 +196,9 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
                 cur = (char) io.getch(f);
             }
         }
+        /* SKIP separators Symbols at Start of Token */
         else {
-            while(Arrays.binarySearch(ignore,cur) >= 0 && ((int)cur) != 65535){
-//                System.out.println(cur);
-//                System.out.println(Arrays.binarySearch(ignore,cur));
+            while(Arrays.binarySearch(ignore, cur) >= 0 && ((int)cur) != 65535){
                 if(cur == '\n')
                     io.setCol(0);
                 cur = (char) io.getch(f);
@@ -228,7 +230,7 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
                     sb.deleteCharAt(sb.length() - 1);
                     //System.out.println(sb);
                     io.ungetch(cur);//get back one symbol
-                    pl++;
+                    pl++;//
                     s = states.top();
                     states.pop();
                 }
@@ -348,17 +350,17 @@ public class DFALexer extends DFA implements ILexer, ILexerConfiguration {
         }
     }
 
-    /* construct new Token WITH scanning IGNORABLE */
+    /* construct new Token WITH scanning separators */
     protected Token makeToken(String name, String val){
-        if(this.ignorable == null)
+        if(this.separators == null)
             return new Token(name, val, 't', io.getLine(), io.getCol());
-        else if(this.ignorable.getOrDefault(name, null) == null) {
+        else if(this.separators.getOrDefault(name, null) == null) {
             return new Token(name, val, 't', io.getLine(), io.getCol());
         }
-        List<Character> symbols = this.ignorable.get(name).stream().map(x -> x.charAt(0)).collect(Collectors.toList());
+        List<Character> symbols = this.separators.get(name).stream().map(x -> x.charAt(0)).collect(Collectors.toList());
         StringBuilder sb = new StringBuilder();
 
-        /* Do not include symbols from ignorable */
+        /* Do not include symbols from separators */
         for(int i = 0; i < val.length(); i++){
             if(symbols.contains(val.charAt(i)))
                 continue;

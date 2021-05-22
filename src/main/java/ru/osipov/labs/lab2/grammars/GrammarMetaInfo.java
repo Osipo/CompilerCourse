@@ -10,7 +10,7 @@ public class GrammarMetaInfo {
     private Set<String> operands;//for operator precedence grammar (operands, operators, aliases)
     private Set<String> operators;
     private Map<String,String> aliases;
-    private Map<String, List<String>> ignorable; /* symbols that are not part of lexem but included in regex */
+    private Map<String, List<String>> separators; /* symbols that are not part of lexem rather than a separators which included in regex pattern */
 
     //Comments
     private String commentLine;
@@ -37,7 +37,7 @@ public class GrammarMetaInfo {
         this.aliases = new HashMap<>();
         this.types = new HashSet<>();
         this.scopeCategories = new HashSet<>();
-        this.ignorable = new HashMap<>();
+        this.separators = new HashMap<>();
         this.begin = "";
         this.end = "";
     }
@@ -97,9 +97,9 @@ public class GrammarMetaInfo {
             this.types = types;
     }
 
-    public void setIgnorable(Map<String, List<String>> ignorable) {
+    public void setSeparators(Map<String, List<String>> ignorable) {
         if(ignorable != null)
-            this.ignorable = ignorable;
+            this.separators = ignorable;
     }
 
     public Set<String> getKeywords() {
@@ -114,8 +114,8 @@ public class GrammarMetaInfo {
         return operators;
     }
 
-    public Map<String, List<String>> getIgnorable(){
-        return ignorable;
+    public Map<String, List<String>> getSeparators(){
+        return separators;
     }
 
     public Map<String, String> getAliases() {

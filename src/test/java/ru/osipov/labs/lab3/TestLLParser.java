@@ -62,6 +62,7 @@ public class TestLLParser {
         assert lexer.getFinished().size() == 5;
         lexer.getImagefromStr(dir,"lexer_Test1");
         LLParser sa = new LLParser(G,lexer);
+        sa.setParserMode(ParserMode.DEBUG);
         LinkedTree<Token> t = sa.parse(s);
         assert t != null;
         System.out.println(t.toString());
@@ -121,7 +122,7 @@ public class TestLLParser {
         G = Grammar.deleteLeftRecursion(G);
         G = G.deleteLeftFactor();
         assert G != null;
-        System.out.println("Target _______");
+        System.out.println("Target Processed Grammar");
         System.out.println(G);
         FALexerGenerator lg = new FALexerGenerator();
         CNFA nfa = lg.buildNFA(G);
@@ -131,13 +132,16 @@ public class TestLLParser {
         assert lexer.getFinished().size() == 22;
         lexer.getImagefromStr(dir,"lexer_Test3");
         LLParser sa = new LLParser(G,lexer);
+        //sa.setParserMode(ParserMode.DEBUG);
         LinkedTree<Token> t = sa.parse(s);
         assert t != null;
         System.out.println(t.toString());
+
+
         String e = "{P_1{}}{OPLIST_3{OPLIST_3'1{OPLIST_3'1{OPLIST_3'1{empty}}{OP_4{}}{OPLIST_3{OPLIST_3'1{empty}}{OP_4{E_5{E_5'1" +
                 "{AE_6{AE_6'2{AE_6'2{empty}}{T_8{T_8'1{T_8'1{empty}}{F_10{F_10'1{empty}}{PE_12{id}}}{MULLOP_11{*}}}" +
                 "{F_10{F_10'1{empty}}{PE_12{id}}}}{PLUSOP_9{+}}}{T_8{T_8'1{empty}}{F_10{F_10'1{empty}}{PE_12{25}}}}}{RELOP_7{<=}}}{AE_6{AE_6'2{empty}}" +
-                "{T_8{T_8'1{empty}}{F_10{F_10'1{empty}}{PE_12{25.34}}}}}}{=}{id}}}{{}}{;}}{OP_4{E_5{E_5'1{empty}}{AE_6{AE_6'2{empty}}{T_8{T_8'1{empty}}" +
+                "{T_8{T_8'1{empty}}{F_10{F_10'1{empty}}{PE_12{25000000.34}}}}}}{=}{id}}}{{}}{;}}{OP_4{E_5{E_5'1{empty}}{AE_6{AE_6'2{empty}}{T_8{T_8'1{empty}}" +
                 "{F_10{F_10'1{F_10'1{empty}}{PE_12{25}}{^}}{PE_12{id}}}}}}{=}{id}}{;}}{OP_4{E_5{E_5'1{AE_6{AE_6'2{empty}}{T_8{T_8'1{empty}}{F_10{F_10'1{F_10'1{empty}}" +
                 "{PE_12{i}}{^}}{PE_12{25.2E-11}}}}}{RELOP_7{<>}}}{AE_6{AE_6'2{AE_6'2{empty}}{T_8{T_8'1{T_8'1{empty}}{F_10{F_10'1{empty}}{PE_12{id}}}" +
                 "{MULLOP_11{*}}}{F_10{F_10'1{empty}}{PE_12{id}}}}{PLUSOP_9{+}}}{T_8{T_8'1{empty}}{F_10{F_10'1{empty}}{PE_12{id}}}}}}{=}{id}}}{{}}";
@@ -194,7 +198,7 @@ public class TestLLParser {
         //lexer.getImagefromStr(dir,"lexer_jsonG_E404");
 
         //build parser.
-        LLParser sa = new LLParser(G,lexer);
+        LLParser sa = new LLParser(G, lexer);
 
 
         //Test 1

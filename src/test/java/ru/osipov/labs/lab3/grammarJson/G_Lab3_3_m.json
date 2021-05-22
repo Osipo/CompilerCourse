@@ -19,10 +19,14 @@
     "<>": "<>",
     ";": ";",
     "id": "[A-Za-z@_]([A-Za-z@_0-9]+|empty)",
-    "num": "[0-9]+",
+    "num": "[0-9]+([@_]+[0-9]+)*",
     "Exponent" : "(((E|e)(-|empty)[0-9]+)|empty)",
     "realNum": ["num", ".", "num", "Exponent"],
     "empty": null
+  },
+  "separators": {
+    "num": "_",
+    "realNum": "_"
   },
   "nonTerms": ["E","AE","T","F","PE","RELOP","PLUSOP","MULLOP","OP","OPLIST","P","B"],
   "productions": [{"P": ["B"]},{"B": ["{","OPLIST","}"]},

@@ -32,13 +32,11 @@ public class FALexerGenerator {
         List<Vertex> Fs = new ArrayList<>();
         for(String id : terms){
             List<String> patterns = rules.get(id);
-            System.out.println("term: "+id);
-            if(patterns != null)
-                System.out.println(patterns.toString());
             StringBuilder sbp = new StringBuilder();
             for(String pat : patterns) {//JUST CONCAT ALL PATTERNS INTO ONE.
                 sbp.append(pat);
             }
+            System.out.println(id+": "+sbp.toString());
             if(!id.equals(G.getEmpty())){
                 /* BEGIN PATTERN PROCESSING */
                 String pattern = sbp.toString();
@@ -73,7 +71,8 @@ public class FALexerGenerator {
 
                     //System.out.println("Pattern: " +p_i);
                     parser.setTerminals(p_i.toCharArray());
-                    p_i = Main.addConcat(p_i,parser);//convert classes [A-Z] to (A|..|Z) expressions
+                    //p_i = Main.addConcat(p_i,parser);// convert classes [A-Z] to (A|..|Z) expressions
+                    p_i = Main.addConcat2(p_i, parser);
                     parser.setTerminals(p_i.toCharArray());
                     //System.out.println(p_i);
                     rpn = parser.GetInput(p_i);//convert regex to postfix.

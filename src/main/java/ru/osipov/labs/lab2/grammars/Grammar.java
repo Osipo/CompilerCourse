@@ -24,7 +24,7 @@ public class Grammar {
     private Map<String,Set<GrammarString>> P;//left part of production is Non-terminal. (because it is only Context-Free-Grammar)
     private String S;
     private String E;//terminal which means empty String.
-    private Map<String, List<String>> lex_rules; //terminals with their patterns. (Lexical rules)
+    private Map<String, List<String>> lex_rules; //terminals with their sub_patterns. (Lexical rules)
     private GrammarMetaInfo meta;//meta data of grammar.
 
     private Set<String> N_g;//Non-terminals which generates words.
@@ -133,12 +133,12 @@ public class Grammar {
             this.meta.setKeywords(keywords);
         }
 
-        /* SECTION IGNORABLE */
-        JsonElement IG = jsonG.getElement("ignorable");
+        /* SECTION SEPARATORS */
+        JsonElement IG = jsonG.getElement("separators");
         if(IG instanceof JsonObject){
             JsonObject o = (JsonObject) IG;
             Set<String> props = o.getValue().keySet();
-            Map<String, List<String>> ignorable = new HashMap<>();
+            Map<String, List<String>> separators = new HashMap<>();
             for(String prop : props){
                 List<String> l = new LinkedList<>();
                 JsonElement el = o.getProperty(prop);
@@ -148,17 +148,17 @@ public class Grammar {
                         if (s instanceof JsonString) {
                             l.add(((JsonString) s).getValue());
                         } else
-                            throw new InvalidJsonGrammarException("Value of property \"" + prop + "\"is not a String value at object \"ignorable\"", null);
+                            throw new InvalidJsonGrammarException("Value of property \"" + prop + "\"is not a String value at object \"separators\"", null);
                     }
                 }
                 else if(el instanceof JsonString){
                     l.add(((JsonString) el).getValue());
                 }
                 else
-                    throw new InvalidJsonGrammarException("Expected String value or array of strings for property \"" + prop + "\" at object \"ignorable\"!",null);
-                ignorable.put(prop, l);
+                    throw new InvalidJsonGrammarException("Expected String value or array of strings for property \"" + prop + "\" at object \"separators\"!",null);
+                separators.put(prop, l);
             }
-            this.meta.setIgnorable(ignorable);
+            this.meta.setSeparators(separators);
         }
 
         //SECTION NONTERMINALS
@@ -329,6 +329,7 @@ public class Grammar {
             }
         }
 
+        //SECTION PRODUCTIONS
         JsonElement P = jsonG.getElement("productions");
         if(P instanceof JsonArray){
             this.P = new HashMap<>();
@@ -568,7 +569,7 @@ public class Grammar {
         return this.meta.getKeywords();
     }
 
-    public Map<String, List<String>> getIgnorable(){ return this.meta.getIgnorable();}
+    public Map<String, List<String>> getSeparators(){ return this.meta.getSeparators();}
 
     public Set<String> getOperands(){ return this.meta.getOperands();}
 

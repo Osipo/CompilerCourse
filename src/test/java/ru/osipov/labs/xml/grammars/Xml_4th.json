@@ -1,0 +1,32 @@
+{
+  "terms": {
+    ">": ">",
+    "<": "<",
+    "</": "</",
+    "/>": "/>",
+    "eq": "=",
+    "quote": "\'",
+    "doubleQuote": "\"",
+    "alpha": "[A-Za-z]",
+    "digit": "[0-9]",
+    "non-zero-digit": "[1-9]",
+    "num": ["(","digit", "|", "non-zero-digit","digit","+",")"],
+    "nameChar": ["(","alpha", "|","digit", "|", "@_", "|", ".",
+      "|", "-", "|", ":", ")"],
+    "stringSymbols": ["(", "nameChar", "|", "\\_", ")", "*"],
+    "name": ["(", "alpha", "|", "@_", "|", ":", ")", "nameChar", "*"],
+    "e": null
+  },
+  "nonTerms": ["DOC", "ELEMS", "ELEM", "STAG", "ETAG", "EMPTYTAG", "CONTENT", "ATTRS", "ATTR", "ATTRVAL"],
+  "productions": [
+    {"DOC": "ELEM"},{"ELEM": ["STAG", "CONTENT", "ETAG"]},{"ELEM": "EMPTYTAG"},
+    {"STAG": ["<", "name", "ATTRS", ">"]}, {"ETAG": ["</","name",">"]},
+    {"EMPTYTAG": ["<", "name", "ATTRS", "/>"]}, {"CONTENT": "ELEMS"},
+    {"ELEMS": ["ELEMS", "ELEM"]},{"ELEMS": "e"},
+    {"ATTRS": ["ATTRS", "ATTR"]}, {"ATTRS": "e"},
+    {"ATTR": ["name", "eq", "ATTRVAL"]},
+    {"ATTRVAL": ["doubleQuote", "stringSymbols", "doubleQuote"]},
+    {"ATTRVAL": ["quote", "stringSymbols", "quote"]}
+  ],
+  "start": "DOC"
+}

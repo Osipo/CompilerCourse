@@ -90,7 +90,7 @@ public class LLParser extends Parser{
             Token tok = lexer.recognize(f);
             isParsed = true;
             while(tok == null || tok.getName().equals("Unrecognized")){
-                if(tok != null) {
+                if(tok != null) {//if really Unrecognized
                     System.out.println(tok);
                     isParsed = false;//TODO: MAY BE OPTIONAL
                 }
@@ -103,7 +103,7 @@ public class LLParser extends Parser{
             while(!X.getValue().getName().equals("$")) {
                 if(X.getValue().getName().equals(t)){//S.Top() == X && X == t
                     if(mode == ParserMode.DEBUG)
-                        System.out.println(S+" >>"+t+" action: "+"Remove "+t);
+                        System.out.println(S+" >>"+t+" action: "+"Remove from stack "+t);
                     S.top().getValue().setLexem(tok.getLexem());
                     S.pop();
                     tok = lexer.recognize(f);

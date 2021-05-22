@@ -33,7 +33,7 @@
   "keywords": ["class","true","false","if","else","while",
     "int","long","float","double","char","bool","void","not","def","ref","return"
   ],
-  "ignorable": {
+  "separators": {
     "num": "_",
     "realNum": "_"
   },
