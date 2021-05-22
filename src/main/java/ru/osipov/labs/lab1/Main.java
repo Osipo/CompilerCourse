@@ -584,12 +584,14 @@ public class Main implements CommandLineRunner {
                 result.append('@');
                 result.append(s.charAt(i + 1));
                 i += 2;
+                state = 1;
                 continue;
             }
             else if(s.charAt(i) == '@'){
                 result.append('@');
                 result.append('@');
                 i += 2;
+                state = 1;
                 continue;
             }
             // END OF RANGES
